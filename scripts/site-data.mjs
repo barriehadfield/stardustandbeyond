@@ -25,7 +25,7 @@ export const LEAD = { kind: "the-stardust", file: "image472" };
 // Section registry - drives the nav, the home "rooms" grid, and page builders.
 export const SECTIONS = [
   { kind: "the-stardust", label: "The Stardust", href: "the-stardust.html", unit: "photos", blurb: "The club, 1975." },
-  { kind: "the-boudoir", label: "The Boudoir", href: "the-boudoir.html", unit: "photos", blurb: "Steven's back-room, and The Onion Ring." },
+  { kind: "the-boudoir", label: "The Boudoir", href: "the-boudoir.html", unit: "photos", blurb: "Steven's bedroom, and The Onion Ring." },
   { kind: "steven", label: "Steven", href: "steven.html", unit: "photos", blurb: "Steven Roche, aka Margot." },
   { kind: "70s", label: "70's", href: "70s.html", unit: "photos", blurb: "The decade it all began." },
   { kind: "80s", label: "80's", href: "80s.html", unit: "photos", blurb: "Bigger, brighter, bolder." },

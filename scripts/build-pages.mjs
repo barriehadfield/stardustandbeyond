@@ -120,8 +120,9 @@ function layout({ title, active, main, home, desc, image }) {
   <meta name="twitter:title" content="${esc(pageTitle)}">
   <meta name="twitter:description" content="${esc(description)}">
   <meta name="twitter:image" content="${esc(ogImage)}">
-  <link rel="icon" href="public/images/site/logo.jpg">
-  <link rel="apple-touch-icon" href="public/images/site/logo.jpg">
+  <link rel="icon" href="public/images/site/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="public/images/site/icon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="public/images/site/icon-180.png">
   <link rel="stylesheet" href="js/vendor/photoswipe/photoswipe.css">
   <link rel="stylesheet" href="css/style.css?v=${ASSET.css}">${jsonLd}
 </head>

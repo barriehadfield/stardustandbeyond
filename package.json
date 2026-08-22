@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "optimize": "node scripts/optimize-images.mjs",
+    "favicon": "node scripts/make-favicon.mjs",
     "build": "node scripts/build-pages.mjs",
     "dev": "python3 scripts/dev-serve.py 8000 ."
   },

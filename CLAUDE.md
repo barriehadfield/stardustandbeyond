@@ -90,8 +90,9 @@ and `<name>-thumb.webp` / `<name>-thumb.jpg` (max edge 800px). Section folders a
 
 ## Placeholders still to set
 
-- `SITE.url` is `https://stardush.com` and there is **no `CNAME`** yet — create one
-  with the real domain and update `SITE.url` before launch, then rebuild.
+- Live at **stardustandbeyond.com** (GitHub Pages, custom domain via `CNAME`,
+  HTTPS cert approved). `SITE.url` matches. If the domain changes, update `SITE.url`
+  and the `CNAME`, then rebuild.
 - `SOCIAL` links are empty (empty ones are omitted from the page automatically).
 - `public/images/site/` is empty — add `logo.jpg` (favicon) and render the share card
   `og-card.jpg` from `source/og-card.html` (see the comment at the top of that file).

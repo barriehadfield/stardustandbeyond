@@ -11,7 +11,7 @@
 export const SITE = {
   name: "Stardust & Beyond",
   role: "A 1970s disco, and the friends who lived it",
-  url: "https://stardush.com",
+  url: "https://stardustandbeyond.com",
 };
 
 export const SOCIAL = {

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://stardush.com/sitemap.xml
+Sitemap: https://stardustandbeyond.com/sitemap.xml

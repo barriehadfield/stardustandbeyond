@@ -8,7 +8,7 @@ export). The six `c4` headings became the tabs; each `<img alt>` became a captio
 ## Site meta
 - **Name:** Stardust & Beyond
 - **Tagline:** A 1970s disco, and the friends who lived it
-- **Domain:** stardush.com _(placeholder — set `SITE.url` and add a `CNAME`)_
+- **Domain:** stardustandbeyond.com _(live — GitHub Pages custom domain)_
 - **Lead image (hero):** `the-stardust/image472` — the club, Durban 1975
 - **Logo / favicon:** `public/images/site/logo.jpg` _(to add)_
 - **Share card:** render `source/og-card.html` → `public/images/site/og-card.jpg` _(to add)_

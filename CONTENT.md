@@ -1,41 +1,40 @@
-# Stardush — Site Content
+# Stardust & Beyond — Site Content
 
-Human content manifest. Keep this in sync with `scripts/site-data.mjs` when content
-changes. This is a fresh scaffold — fill in the real content below.
+Human content manifest. Keep in sync with `scripts/site-data.mjs` when content changes.
+
+Imported from `source/Stardust and Beyond/StardustandBeyond.html` (a Google-Docs
+export). The six `c4` headings became the tabs; each `<img alt>` became a caption.
 
 ## Site meta
-- **Name:** Stardush _(placeholder — set `SITE.name`)_
-- **Role / tagline:** Painter & Photographer _(placeholder — set `SITE.role`)_
+- **Name:** Stardust & Beyond
+- **Tagline:** A 1970s disco, and the friends who lived it
 - **Domain:** stardush.com _(placeholder — set `SITE.url` and add a `CNAME`)_
-- **Logo / favicon:** `public/images/site/logo.jpg` _(add)_
-- **Portrait (About + JSON-LD):** `public/images/site/portrait.jpg` _(add)_
-- **Navigation:** Home · Paintings · Photography · Fashion · Interiors · For Sale · About
+- **Lead image (hero):** `the-stardust/image472` — the club, Durban 1975
+- **Logo / favicon:** `public/images/site/logo.jpg` _(to add)_
+- **Share card:** render `source/og-card.html` → `public/images/site/og-card.jpg` _(to add)_
+- **Navigation:** The Stardust · The Boudoir · Steven · 70's · 80's · 90's
 
 ## Social links
 - Instagram: _(set `SOCIAL.instagram`)_
 - Bluesky: _(set `SOCIAL.bluesky`)_
 
-## Pages
+## Sections
 
-### Home
-Landing: hero + section cards. Hero cover = first item of the first non-empty
-section. Cards driven by the `SECTIONS` registry in `build-pages.mjs`.
+| Tab | Slug / page | Photos | Notes |
+|-----|-------------|--------|-------|
+| The Stardust | `the-stardust` | 38 | The club, 1975. Leads with `image472` (the club). |
+| The Boudoir | `the-boudoir` | 19 | Steven Roche's back-room; "The Onion Ring". Opens with `BOUDOIR_TEXT`. |
+| Steven | `steven` | 24 | Steven Roche, aka Margot. |
+| 70's | `70s` | 82 | The decade it all began. |
+| 80's | `80s` | 198 | |
+| 90's | `90s` | 175 | The friends, years on. |
 
-### Paintings
-Gallery. Originals in `source/images/paintings/`. _(empty)_
+Captions live on each gallery item as `title` in `scripts/site-data.mjs`. Photos with
+no caption in the source are shown untitled.
 
-### Photography
-Gallery. Originals in `source/images/photography/`. _(empty)_
+## The Boudoir intro (`BOUDOIR_TEXT`)
 
-### Fashion
-Article-led gallery — first item is the editorial lead. Originals in
-`source/images/fashion/`. _(empty)_
-
-### Interiors
-Gallery. Originals in `source/images/interiors/`. _(empty)_
-
-### For Sale
-Works available to purchase, each with `title`, `meta`, `price`, `sold`. _(empty)_
-
-### About
-Biography paragraphs in `ABOUT_PARAS` + portrait. _(empty)_
+> The boudoir was the name given to Steven Roche's bedroom. It was an annex at the
+> back of the Roche family home where a group of very close knit friends used to
+> congregate and hang out all the time. This group was eventually nicknamed The
+> Onion Ring. …

@@ -11,7 +11,10 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import sharp from "sharp";
-import { SITE, SOCIAL, LEAD, SECTIONS, BOUDOIR_TEXT, GALLERIES } from "./site-data.mjs";
+import { SITE, SOCIAL, LEAD, SECTIONS, STARDUST_TEXT, BOUDOIR_TEXT, GALLERIES } from "./site-data.mjs";
+
+// Intro prose shown above a section's gallery, keyed by section slug.
+const SECTION_TEXT = { "the-stardust": STARDUST_TEXT, "the-boudoir": BOUDOIR_TEXT };
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = ROOT;
@@ -221,8 +224,9 @@ async function buildSection(sec) {
 `;
   }
 
-  const intro = sec.kind === "the-boudoir"
-    ? `    <div class="prose reveal">\n${BOUDOIR_TEXT.map((p) => `      <p>${esc(p)}</p>`).join("\n")}\n    </div>\n`
+  const paras = SECTION_TEXT[sec.kind];
+  const intro = paras && paras.length
+    ? `    <div class="prose reveal">\n${paras.map((p) => `      <p>${esc(p)}</p>`).join("\n")}\n    </div>\n`
     : "";
 
   const g = await gallery(sec.kind, items);

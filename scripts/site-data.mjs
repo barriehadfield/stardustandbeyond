@@ -32,6 +32,10 @@ export const SECTIONS = [
   { kind: "90s", label: "90's", href: "90s.html", unit: "photos", blurb: "The friends, years on." },
 ];
 
+export const STARDUST_TEXT = [
+  "The Stardust was the only Gay club in Durban. On the 3rd floor of a building down a dark alleyway between 2 of the main roads right in the centre of the city. Joan Dickman and I were taken there by Hilton Wolman and some other friends in early January 1975. It was a small nightclub with a dance floor and a bar but was a completely new and often shocking world to us. I then introduced the club to Patrick, Rory and Cindy and we had such fun on the dancefloor that we began going regularly. In April Joan and I went to our first drag competition Miss Natal 1975. The club was jam packed and going mad cheering on the contestants. We had never seen anything like it before. Joan suddenly realised that the queen who came third was in her maths class at university. The following Monday in her maths class she leant forward and tapped him on the shoulder and said “You looked fabulous on Friday night”. So began our friendship with Steven. From that moment onwards our lives would never be the same.",
+];
+
 export const BOUDOIR_TEXT = [
   "The boudoir was the name given to Steven Roche’s bedroom. It was an annex at the back of the Roche family home where a group of very close knit friends used to congregate and hang out all the time. This group was eventually nicknamed The Onion Ring. We used to turn up at the Roche home where the doors were always open and walk through the house greeting other members of the family until we got to Steven’s boudoir where we would spend hours sitting around chatting and drinking endless cups of tea. Occasionally these gatherings would turn into little parties with hysterical laughter and lots of fun and games."
 ];

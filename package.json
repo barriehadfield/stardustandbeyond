@@ -1,0 +1,16 @@
+{
+  "name": "stardush",
+  "version": "1.0.0",
+  "description": "Stardush — static site (GitHub Pages)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "optimize": "node scripts/optimize-images.mjs",
+    "build": "node scripts/build-pages.mjs",
+    "dev": "python3 scripts/dev-serve.py 8000 ."
+  },
+  "devDependencies": {
+    "photoswipe": "^5.4.4",
+    "sharp": "^0.33.5"
+  }
+}

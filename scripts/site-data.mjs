@@ -68,7 +68,7 @@ export const THE_STARDUST = [
   { file: "image523", title: "Kerry Bennett at The Stardust" },
   { file: "image452", title: "Lauren" },
   { file: "image481", title: "Ian Perry winning Miss South Africa" },
-  { file: "image233", title: "The first Miss South Africa competition. Lesley Wallace 2nd, Ian Perry 1st and Steven Roche 3rd." },
+  { file: "image233", title: "The first Miss South Africa competition. Lesley Wallace 2nd, Ian Perry 1st and Steven Roche 3rd. Gillian crowned and Peter Wheeler was the DJ." },
   { file: "image78" },
   { file: "image384", title: "Steven doing Martie the Martian" },
   { file: "image97", title: "Lauren" },

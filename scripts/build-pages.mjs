@@ -29,6 +29,9 @@ async function assetVersion(rel) {
 
 const NAV = SECTIONS.map((s) => ({ href: s.href, label: s.label }));
 
+// WhatsApp glyph (inline SVG, no external asset — CSP-clean).
+const WA_ICON = `<svg class="wa-ico" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.96-.94-.26-.1-.45-.14-.64.15-.19.29-.74.94-.9 1.13-.17.19-.33.21-.62.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.72-1.6-2.01-.17-.29-.02-.45.13-.59.13-.13.29-.34.43-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.64-1.56-.88-2.13-.23-.55-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 .98-1 2.39 0 1.41 1.03 2.78 1.17 2.97.14.19 2.02 3.08 4.89 4.32.68.29 1.22.47 1.63.6.69.22 1.31.19 1.8.11.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34zM12 2.06C6.55 2.06 2.11 6.5 2.11 11.95c0 1.75.46 3.46 1.33 4.97L2.03 22l5.2-1.36a9.86 9.86 0 0 0 4.77 1.22h.01c5.45 0 9.89-4.44 9.89-9.9 0-2.64-1.03-5.13-2.9-7A9.82 9.82 0 0 0 12 2.06zm0 18.06h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.09.81.82-3.01-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.53 3.69-8.21 8.22-8.21 2.2 0 4.26.86 5.81 2.41a8.16 8.16 0 0 1 2.41 5.81c0 4.53-3.69 8.21-8.22 8.21z"/></svg>`;
+
 /* ---------- helpers ---------- */
 function esc(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -134,7 +137,7 @@ function layout({ title, active, main, home, desc, image }) {
     <div class="hdr-inner">
       <a class="mark" href="index.html">Stardust<b> &amp; </b>Beyond</a>
       <nav class="nav" aria-label="Primary">
-        ${links}
+        ${links}${SOCIAL.whatsapp ? `\n        <a class="join" href="${SOCIAL.whatsapp}" target="_blank" rel="noopener">${WA_ICON}<span>Join the group</span></a>` : ""}
       </nav>
       <div class="hdr-tools">
         <button class="menu-btn" aria-label="Menu" aria-expanded="false">
@@ -154,6 +157,7 @@ ${main}
       <div class="social">
         ${SOCIAL.instagram ? `<a href="${SOCIAL.instagram}" target="_blank" rel="noopener">Instagram</a>` : ""}
         ${SOCIAL.bluesky ? `<a href="${SOCIAL.bluesky}" target="_blank" rel="noopener">Bluesky</a>` : ""}
+        ${SOCIAL.whatsapp ? `<a class="btn wa" href="${SOCIAL.whatsapp}" target="_blank" rel="noopener">${WA_ICON}<span>Join the WhatsApp group</span></a>` : ""}
       </div>
       <div class="cr">© 2026 ${esc(SITE.name)} · ${esc(SITE.role)}</div>
     </div>

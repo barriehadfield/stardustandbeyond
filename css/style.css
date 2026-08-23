@@ -264,6 +264,21 @@ main { min-height: 60vh; }
 .ftr .social a:hover { color: var(--accent); }
 .ftr .cr { width: 100%; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; color: var(--muted); margin-top: 0.3rem; }
 
+/* ---------------- WhatsApp join ---------------- */
+/* Nav item: subtle, in-theme gold with the glyph. */
+.nav a.join { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); border-bottom: 1.5px solid transparent; }
+.nav a.join:hover { color: var(--accent-ink); }
+.wa-ico { flex: none; width: 16px; height: 16px; }
+/* Footer button: WhatsApp green so it reads instantly as a clear call to action. */
+.ftr .social a.btn.wa {
+  font-family: var(--sans); text-transform: none; letter-spacing: 0.005em; font-size: 0.86rem;
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.15rem; border-radius: 100px;
+  background: #25d366; color: #04160c; border: none; box-shadow: var(--lift);
+  transition: background 0.2s, transform 0.2s;
+}
+.ftr .social a.btn.wa:hover { background: #2ee06f; color: #04160c; transform: translateY(-2px); }
+.ftr .social a.btn.wa .wa-ico { width: 18px; height: 18px; }
+
 /* ---------------- Mobile menu ---------------- */
 @media (max-width: 760px) {
   .menu-btn { display: inline-flex; }

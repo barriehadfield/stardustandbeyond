@@ -17,6 +17,7 @@ export const SITE = {
 export const SOCIAL = {
   instagram: "",
   bluesky: "",
+  whatsapp: "https://chat.whatsapp.com/FGV5V4qmuPYJjy2lxdZZcV?s=sw&p=a&mlu=4",
 };
 
 // The club photo that leads the site (from the "The Stardust" section).

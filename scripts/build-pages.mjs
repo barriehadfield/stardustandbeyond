@@ -180,10 +180,6 @@ async function buildHome() {
         <p class="eyebrow">Durban · 1975</p>
         <h1>Stardust<span class="amp"> &amp; </span>Beyond<span class="last">.</span></h1>
         <p class="tag">Durban's only gay club, found down a dark alleyway in 1975. A new and often shocking world, and the friendships that changed everything.</p>
-        <div class="hero-cta">
-          <a class="btn primary" href="${SECTIONS[0].href}">Step inside the club</a>
-          <a class="btn ghost" href="the-boudoir.html">The Boudoir</a>
-        </div>
       </div>
       <figure class="hero-fig">
         <picture>

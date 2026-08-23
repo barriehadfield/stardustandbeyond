@@ -48,11 +48,8 @@ export const THE_STARDUST = [
   { file: "image146", title: "An invitation to the Miss Sunshine at The Butterworth Hotel in Durban" },
   { file: "image79", title: "Rodney Symes, Eric Reeves, Carol and Barry. Eric and Barry were the owners of The Stardust." },
   { file: "image45", title: "Steven at Rocky Horror party" },
-  { file: "image196" },
   { file: "image432", title: "Miss Stardust 1977" },
   { file: "image20", title: "Lesley Wallace" },
-  { file: "image350" },
-  { file: "image125", title: "Gary" },
   { file: "image416", title: "Steven doing cabaret at The Stardust" },
   { file: "image188", title: "Darryl Rogers" },
   { file: "image526", title: "Darryl and Gillian" },
@@ -100,6 +97,9 @@ export const THE_BOUDOIR = [
   { file: "image487", title: "Henry" },
   { file: "image302", title: "Gavin, Illana Woolf and Henry" },
   { file: "image27", title: "Steven and Henry" },
+  { file: "image196", title: "Star Wars comp at the Zodiac" },
+  { file: "image350", title: "Star Wars comp at the Zodiac" },
+  { file: "image125", title: "Star Wars comp at the Zodiac" },
 ];
 
 export const STEVEN = [

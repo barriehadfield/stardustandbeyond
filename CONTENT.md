@@ -22,12 +22,13 @@ export). The six `c4` headings became the tabs; each `<img alt>` became a captio
 
 | Tab | Slug / page | Photos | Notes |
 |-----|-------------|--------|-------|
-| The Stardust | `the-stardust` | 38 | The club, 1975. Leads with `image472` (the club). |
-| The Boudoir | `the-boudoir` | 19 | Steven Roche's back-room; "The Onion Ring". Opens with `BOUDOIR_TEXT`. |
-| Steven | `steven` | 24 | Steven Roche, aka Margot. |
-| 70's | `70s` | 82 | The decade it all began. |
-| 80's | `80s` | 198 | |
-| 90's | `90s` | 175 | The friends, years on. |
+| The Stardust | `the-stardust` | 38 | The club, 1975. Leads with `image861` (the uncaptioned club photo). Opens with `STARDUST_TEXT`. |
+| The Boudoir | `the-boudoir` | 22 | Steven Roche's bedroom; "The Onion Ring". Opens with `BOUDOIR_TEXT`. |
+| Steven | `steven` | 29 | Steven Roche, aka Margot. |
+| 70's | `70s` | 119 | The decade it all began. |
+| 80's | `80s` | 288 | |
+| 90's | `90s` | 239 | The friends, years on. |
+| 2000 | `2000` | 168 | Into the new century. |
 
 Captions live on each gallery item as `title` in `scripts/site-data.mjs`. Photos with
 no caption in the source are shown untitled.

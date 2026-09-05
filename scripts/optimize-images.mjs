@@ -27,7 +27,7 @@ const THUMB_MAX = 800; // longest edge for gallery thumbnails
 const WEBP_QUALITY = 80;
 const JPEG_QUALITY = 82;
 
-const SUBDIRS = ["the-stardust", "the-boudoir", "steven", "70s", "80s", "90s", "site"];
+const SUBDIRS = ["the-stardust", "the-boudoir", "steven", "70s", "80s", "90s", "2000", "site"];
 const IMG_RE = /\.(jpe?g|png)$/i;
 
 async function processImage(srcPath, outDir, name) {

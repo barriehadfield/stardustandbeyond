@@ -13,11 +13,15 @@ serif display wordmark, image-first galleries on "raised" surfaces, and a full-s
 
 ## Content origin
 
-Everything was extracted from `source/Stardust and Beyond/StardustandBeyond.html`
-(a Google-Docs HTML export: 6 `c4` headings = the sections, `<img alt>` = the photo
-captions). The one-off importer lives in the session scratchpad; it copied each
-referenced original into `source/images/<slug>/` and generated `scripts/site-data.mjs`.
-The raw export folder is **gitignored** (redundant with `source/images/`).
+Everything was extracted from `source/Stardust and Beyond.docx` (a Google-Docs
+`.docx` export: seven `sz=52` headings = the sections/tabs, each image's `descr`
+alt-text = the photo caption, the first uncaptioned image under "The Stardust" =
+the club `LEAD`). The one-off importer lives in the session scratchpad; it copied
+each embedded image out of the `.docx` into `source/images/<slug>/` and generated
+`scripts/site-data.mjs`. The raw `.docx` (and any earlier HTML export folder) are
+**gitignored** (large and redundant with `source/images/`). To re-import after the
+doc changes: download the doc as `.docx` into `source/`, re-run the importer,
+`npm run optimize`, `npm run build`.
 
 ## Mental model
 
@@ -40,7 +44,7 @@ source/images/<slug>/*            npm run optimize       public/images/<slug>/*
 
 `index.html` (landing — club hero + section cards) and one page per tab:
 `the-stardust.html` · `the-boudoir.html` · `steven.html` · `70s.html` · `80s.html`
-· `90s.html`. Nav, home "rooms" grid, and page builders are all driven by the
+· `90s.html` · `2000.html`. Nav, home "rooms" grid, and page builders are all driven by the
 `SECTIONS` array. `LEAD` (`the-stardust/image472`, the club photo) is the site's
 hero on the home page and a glowing lead figure atop the Stardust page. The Boudoir
 page opens with `BOUDOIR_TEXT`.
@@ -66,7 +70,7 @@ Chrome enforces a ~500px minimum viewport — use `--window-size=600,…` for mo
 For every original in `source/images/<slug>/` it emits four files into the matching
 `public/images/<slug>/` folder: `<name>.webp` / `<name>.jpg` (full, max edge 2000px)
 and `<name>-thumb.webp` / `<name>-thumb.jpg` (max edge 800px). Section folders are the
-`SUBDIRS` array (the six slugs + `site`). EXIF orientation respected; originals never modified.
+`SUBDIRS` array (the seven slugs + `site`). EXIF orientation respected; originals never modified.
 
 ## Adding / changing content
 

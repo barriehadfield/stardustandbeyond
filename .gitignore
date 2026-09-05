@@ -2,7 +2,8 @@ node_modules/
 .DS_Store
 *.log
 
-# Raw Google-Docs export used as the import source. Its images are already
-# copied (organised) into source/images/, so this redundant ~343MB is not
-# committed. Kept on disk for reference.
+# Raw Google-Docs exports used as the import source (HTML export folder and the
+# .docx). Their images are already copied (organised) into source/images/, so
+# these large redundant files are not committed. Kept on disk for reference.
 source/Stardust and Beyond/
+*.docx

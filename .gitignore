@@ -1,6 +1,7 @@
 node_modules/
 .DS_Store
 *.log
+__pycache__/
 
 # Raw Google-Docs exports used as the import source (HTML export folder and the
 # .docx). Their images are already copied (organised) into source/images/, so

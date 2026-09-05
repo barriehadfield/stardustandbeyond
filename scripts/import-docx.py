@@ -31,12 +31,14 @@ SECTIONS = [                      # display name -> slug ; order = nav/site orde
     ("70’s",    "70s"),
     ("80’s",    "80s"),
     ("90’s",    "90s"),
-    ("2000",         "2000"),
+    ("2000’s",  "2000"),
 ]
-NAME2SLUG = {n: s for n, s in SECTIONS}
-SECTION_NAMES = set(NAME2SLUG)
-# Display label per slug when it differs from the docx heading text (the doc
-# heading is literally "2000"; we show it as "2000s").
+# Heading matching ignores apostrophe style ("2000's" vs "2000’s") and case, so a
+# re-styled heading in a later export still maps to the right tab.
+def norm_head(s):
+    return s.replace("’", "").replace("'", "").strip().lower()
+NORM2SLUG = {norm_head(n): s for n, s in SECTIONS}
+# Display label per slug when it should differ from the docx heading text.
 LABELS = {"2000": "2000s"}
 VARMAP = [("the-stardust", "THE_STARDUST"), ("the-boudoir", "THE_BOUDOIR"),
           ("steven", "STEVEN"), ("70s", "SEVENTIES"), ("80s", "EIGHTIES"),
@@ -87,18 +89,18 @@ def main():
     # section boundaries: <w:t> equal to a section name, preceded by sz=52
     heads, seen_h = [], set()
     for m in re.finditer(r'<w:t[^>]*>([^<]*)</w:t>', xml):
-        txt = html.unescape(m.group(1)).strip()
-        if txt in SECTION_NAMES and '<w:sz w:val="52"/>' in xml[max(0, m.start() - 240):m.start()]:
-            if txt not in seen_h:
-                seen_h.add(txt)
-                heads.append((m.start(), txt))
+        key = norm_head(html.unescape(m.group(1)))
+        if key in NORM2SLUG and '<w:sz w:val="52"/>' in xml[max(0, m.start() - 240):m.start()]:
+            if key not in seen_h:
+                seen_h.add(key)
+                heads.append((m.start(), NORM2SLUG[key]))   # store slug directly
     heads.sort()
 
     def section_at(pos):
         cur = None
-        for bpos, txt in heads:
+        for bpos, slug in heads:
             if bpos <= pos:
-                cur = txt
+                cur = slug
             else:
                 break
         return cur
@@ -108,7 +110,7 @@ def main():
     for m in re.finditer(r'<wp:docPr\b([^>]*)/>.*?<a:blip r:embed="([^"]+)"', xml, re.S):
         attrs, rid = m.group(1), m.group(2)
         media = rid2media.get(rid)
-        sec = NAME2SLUG.get(section_at(m.start()))
+        sec = section_at(m.start())
         if not media or not sec:
             continue
         descr = re.search(r'descr="([^"]*)"', attrs)
@@ -131,7 +133,7 @@ def main():
 
     # ---- report ----
     print(f"docx: {docx}")
-    print(f"media in doc: {len(rid2media)}   tabs: {[t for _, t in heads]}")
+    print(f"media in doc: {len(rid2media)}   tabs: {[s for _, s in heads]}")
     print(f"lead: {lead['base']}{lead['ext']} (media {lead['media']})")
     total = 0
     for name, slug in SECTIONS:

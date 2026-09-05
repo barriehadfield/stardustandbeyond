@@ -28,7 +28,7 @@ export const SECTIONS = [
   { kind: "70s", label: "70’s", href: "70s.html", unit: "photos", blurb: "The decade it all began." },
   { kind: "80s", label: "80’s", href: "80s.html", unit: "photos", blurb: "Bigger, brighter, bolder." },
   { kind: "90s", label: "90’s", href: "90s.html", unit: "photos", blurb: "The friends, years on." },
-  { kind: "2000", label: "2000", href: "2000.html", unit: "photos", blurb: "Into the new century." },
+  { kind: "2000", label: "2000s", href: "2000.html", unit: "photos", blurb: "Into the new century." },
 ];
 
 export const STARDUST_TEXT = [

@@ -35,6 +35,9 @@ SECTIONS = [                      # display name -> slug ; order = nav/site orde
 ]
 NAME2SLUG = {n: s for n, s in SECTIONS}
 SECTION_NAMES = set(NAME2SLUG)
+# Display label per slug when it differs from the docx heading text (the doc
+# heading is literally "2000"; we show it as "2000s").
+LABELS = {"2000": "2000s"}
 VARMAP = [("the-stardust", "THE_STARDUST"), ("the-boudoir", "THE_BOUDOIR"),
           ("steven", "STEVEN"), ("70s", "SEVENTIES"), ("80s", "EIGHTIES"),
           ("90s", "NINETIES"), ("2000", "TWOTHOUSANDS")]
@@ -179,7 +182,7 @@ def main():
         return "\n".join(out)
 
     sec_js = ",\n".join(
-        f'  {{ kind: "{slug}", label: "{name}", href: "{slug}.html", unit: "photos", blurb: {json.dumps(BLURB[slug], ensure_ascii=False)} }}'
+        f'  {{ kind: "{slug}", label: {json.dumps(LABELS.get(slug, name), ensure_ascii=False)}, href: "{slug}.html", unit: "photos", blurb: {json.dumps(BLURB[slug], ensure_ascii=False)} }}'
         for name, slug in SECTIONS)
     arrays = "\n\n".join(
         f'export const {var} = [\n{js_items(buckets[slug], skip=(lead["base"] if slug=="the-stardust" else None))}\n];'

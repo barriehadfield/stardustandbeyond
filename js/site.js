@@ -19,6 +19,39 @@ import PhotoSwipeLightbox from "./vendor/photoswipe/photoswipe-lightbox.esm.js";
   nav.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
 })();
 
+/* ---- Row-major masonry ----
+   The gallery is a CSS grid with a small row unit (grid-auto-rows: ROW). Each
+   tile spans however many rows its image needs, computed from the image's
+   intrinsic aspect ratio (width/height attributes → no wait for load). Grid fills
+   left-to-right, top-to-bottom, so the visual order matches document order while
+   keeping full, uncropped photos. DOM order is untouched, so the PhotoSwipe swipe
+   sequence stays correct. */
+(function () {
+  var grids = document.querySelectorAll(".grid");
+  if (!grids.length) return;
+  var ROW = 8; // px — must match grid-auto-rows in css/style.css
+
+  function layout() {
+    grids.forEach(function (grid) {
+      var gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
+      grid.querySelectorAll(".tile").forEach(function (tile) {
+        var img = tile.querySelector("img");
+        if (!img) return;
+        var iw = parseFloat(img.getAttribute("width")) || img.naturalWidth || 1;
+        var ih = parseFloat(img.getAttribute("height")) || img.naturalHeight || 1;
+        var h = tile.getBoundingClientRect().width * (ih / iw); // caption is absolute
+        tile.style.gridRowEnd = "span " + Math.max(1, Math.ceil((h + gap) / ROW));
+      });
+    });
+  }
+
+  var t;
+  function schedule() { clearTimeout(t); t = setTimeout(layout, 120); }
+  layout();
+  window.addEventListener("resize", schedule);
+  window.addEventListener("load", layout); // re-measure once everything settles
+})();
+
 /* ---- Reveal on scroll ---- */
 (function () {
   var reveals = document.querySelectorAll(".reveal");

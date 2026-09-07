@@ -187,12 +187,24 @@ main { min-height: 60vh; }
 .page-intro .count { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 
 /* ---------------- Gallery grid (masonry) ---------------- */
-.grid { columns: 4 300px; column-gap: var(--gap); padding-bottom: clamp(3rem, 6vw, 5rem); }
+/* Row-major masonry: CSS grid fills left-to-right, top-to-bottom, so the visual
+   reading order matches document order (the sequence from the source doc). Each
+   tile's row-span is set from its aspect ratio by masonry() in js/site.js. Using
+   CSS `columns` here instead would fill column-major and scramble the order. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: 8px;              /* row unit; must match ROW in js/site.js */
+  column-gap: var(--gap); row-gap: 0;
+  align-items: start;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+.grid .tile { grid-row-end: span 40; }   /* pre-JS fallback height; JS overrides */
 .tile {
-  display: block; width: 100%; margin: 0 0 var(--gap); padding: 0;
+  display: block; width: 100%; margin: 0; padding: 0;
   border: 1px solid var(--edge); border-top-color: var(--edge-top);
   box-shadow: var(--lift);
-  background: var(--card); cursor: zoom-in; overflow: hidden; break-inside: avoid;
+  background: var(--card); cursor: zoom-in; overflow: hidden;
   position: relative;
   transition: transform 0.38s cubic-bezier(0.2,0.7,0.3,1), box-shadow 0.38s ease;
 }

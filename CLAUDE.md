@@ -18,11 +18,11 @@ Content comes from a Google-Docs `.docx` export via **`scripts/import-docx.py`**
 `descr` alt-text = the photo caption, the first uncaptioned image under "The
 Stardust" = the club `LEAD`; a photo may appear in more than one tab, exact
 same-tab repeats are skipped; `Aydee`/`Adee` are normalised to `Adi`). **Image
-names are content-stable:** an image whose bytes already exist in `source/images/`
-keeps its current filename even when a fresh export renumbers everything, so
-file-keyed data (the people overrides) survives a re-import; only genuinely new
-photos get new names. It copies each embedded image into `source/images/<slug>/`
-and regenerates
+names are content-stable (see "Filename stability" below):** an image whose bytes
+already exist keeps its current filename even when a fresh export renumbers
+everything, so file-keyed data (the people overrides) survives a re-import; only
+genuinely new photos get new names. It copies each embedded image into
+`source/images/<slug>/` and regenerates
 `scripts/site-data.mjs` (preserving the hand-written `STARDUST_TEXT` /
 `BOUDOIR_TEXT` intros). The raw `.docx` (and any earlier HTML export folder) are
 **gitignored** (large, redundant with `source/images/`).
@@ -34,6 +34,26 @@ python3 scripts/import-docx.py "source/Stardust and Beyond.docx"          # dry-
 python3 scripts/import-docx.py "source/Stardust and Beyond.docx" --apply  # rewrites source/images + site-data.mjs
 npm run optimize && npm run build
 ```
+
+## Filename stability (why this matters for re-imports)
+
+A fresh Google-Docs export **renumbers every embedded image** (`image1`, `image2`, …
+in document order) - so the same photo comes back under a different name each export.
+Because the site keys data by filename (`GALLERIES` items, and especially the people
+**overrides** `Section | File`), a naive re-import would orphan all of it. Guard:
+
+- **`source/image-names.json`** - a committed **byte→name manifest** (`sha1(image
+  bytes) → base name`), the canonical record of every photo's stable filename. It is
+  the audit trail and survives even a wiped `source/images/`.
+- On import, `import-docx.py` builds a `hash → base` map (seeded from `source/images/`,
+  then the manifest wins), and gives each incoming image the **existing name for its
+  bytes**; only genuinely new photos get a fresh name. On `--apply` it re-writes the
+  manifest as a union (old ∪ this export), so names are never lost. Verified: a re-export
+  reused **1182/1182** names.
+- Consequence: unchanged photos keep their filenames across exports → overrides and any
+  file-keyed data stay valid. A photo whose **bytes change** (re-scan/re-crop) counts as
+  new and gets a new name; its old override then dangles (harmless - reported, re-tag it).
+- `image-names.json` is committed (not gitignored). Don't hand-edit it; the importer owns it.
 
 ## Mental model
 
@@ -103,6 +123,43 @@ against the photo captions by `scripts/people.mjs` during `npm run build`.
 - **Curation loop:** `npm run build`, read `scripts/people-report.md`, then resolve
   each ambiguous/unmatched case by editing `source/people.md` (add an override, set a
   `Primary`, add an alias, or add a missing person) and rebuild.
+
+### How a caption is matched to people (`computePeople`)
+
+The doc names people in free prose - full name on first mention, first name after,
+surname re-added when ambiguous - so matching is a pipeline, not a lookup:
+
+1. **Tokenise into mentions** (`mentions()`): split the caption on list connectors
+   **and sentence punctuation** (`, . ; : & / and with aka as`); from each fragment
+   take the leading run of Capitalised words, keeping lowercase **surname particles**
+   (`de van von du der di la le mc mac`) when a capitalised word follows (so
+   "Jean de Cruz" / "Michael van Rensburg" stay whole); strip a trailing possessive
+   and stray punctuation; drop leading/trailing **title/place stopwords** (`Miss Mr
+   The South Africa Natal Stardust …`). The sentence-punctuation split matters: without
+   it "Sandy Bay. Henry Davies" swallows the real name.
+2. **Resolve each mention** (`resolveMention`), longest-first:
+   exact **full name / alias** (up to 3 words) → **unique first name** → else it is a
+   **shared first name** (ambiguous, deferred) → else **unmatched** (not in the roster
+   → ignored by the allow-list, tallied in the report).
+3. **Overrides win:** a photo with an override row skips steps 1-2 and uses the listed
+   people verbatim (names resolved via the roster/aliases).
+4. **Resolve the ambiguous ones probabilistically** (pass 2): score each candidate by
+   how often it **co-occurs with the photo's confidently-resolved people, weighted to
+   the same section/decade** (3× same-section, 1× global); pick the top score, else the
+   `Primary`, else leave unresolved. Confident attributions (full names, unique firsts,
+   overrides) are the only training signal - so **overrides both fix a photo and teach
+   the resolver**.
+5. **Report** (`scripts/people-report.md`): co-occurrence resolutions (spot-check
+   these), still-unresolved, shared first names (how each resolved), **people without a
+   surname** + their top co-occurring people, and unmatched tokens (candidate new people
+   vs place/event noise).
+
+**On a further docx change:** filenames stay stable (manifest), so existing overrides
+and `Primary`/alias choices keep working. Re-import, `npm run build`, then read the
+report: add genuinely-new people to the roster (a name sharing a first name with an
+existing person is otherwise **absorbed** into them - watch for that), surname the
+surname-less, and let co-occurrence attribute the rest. `npm run editor` refreshes the
+corrections console over the new content.
 
 ### Corrections console (local tool)
 

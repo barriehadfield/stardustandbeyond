@@ -116,10 +116,17 @@ def main():
             for chunk in iter(lambda: f.read(1 << 20), b""):
                 h.update(chunk)
         return h.hexdigest()
+    # Persistent byte->name index (source/image-names.json): the canonical record
+    # that keeps a photo's filename stable across docx re-exports. Seed from the
+    # committed originals, then let the manifest win - it is the authority and also
+    # remembers names for photos that were absent from an intermediate export.
+    manifest_path = os.path.join(ROOT, "source", "image-names.json")
+    manifest = json.load(open(manifest_path, encoding="utf-8")) if os.path.exists(manifest_path) else {}
     hash2base = {}
     for p in glob.glob(os.path.join(ROOT, "source", "images", "*", "*")):
         if os.path.isfile(p):
             hash2base.setdefault(sha1_file(p), os.path.splitext(os.path.basename(p))[0])
+    hash2base.update(manifest)
 
     buckets = {s: [] for _, s in SECTIONS}
     seen_ms, dups, reused = set(), [], 0
@@ -147,7 +154,7 @@ def main():
         ob, k = base, 2
         while ob in existing:
             ob, k = f"{base}-{k}", k + 1
-        buckets[sec].append({"base": ob, "ext": ext, "cap": cap, "media": media})
+        buckets[sec].append({"base": ob, "ext": ext, "cap": cap, "media": media, "hash": h})
 
     stardust = buckets["the-stardust"]
     lead = next((it for it in stardust if not it["cap"]), stardust[0] if stardust else None)
@@ -185,6 +192,15 @@ def main():
                          os.path.join(ROOT, "source", "images", slug, it["base"] + it["ext"]))
             copied += 1
     print(f"copied {copied} images into source/images/")
+
+    # Update the persistent byte->name index (union: keep names for photos that
+    # may be absent from this export but could return in a later one).
+    manifest_out = dict(manifest)
+    for _, slug in SECTIONS:
+        for it in buckets[slug]:
+            manifest_out.setdefault(it["hash"], it["base"])
+    json.dump(manifest_out, open(manifest_path, "w", encoding="utf-8"), indent=0, sort_keys=True)
+    print(f"updated source/image-names.json ({len(manifest_out)} entries)")
 
     # preserve hand-written narrative blocks from the current site-data
     cur_path = os.path.join(ROOT, "scripts", "site-data.mjs")

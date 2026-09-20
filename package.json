@@ -8,6 +8,9 @@
     "optimize": "node scripts/optimize-images.mjs",
     "favicon": "node scripts/make-favicon.mjs",
     "build": "node scripts/build-pages.mjs",
+    "people:draft": "node scripts/people.mjs --draft",
+    "editor": "node scripts/build-editor.mjs",
+    "people:apply": "node scripts/apply-corrections.mjs",
     "dev": "python3 scripts/dev-serve.py 8000 ."
   },
   "devDependencies": {

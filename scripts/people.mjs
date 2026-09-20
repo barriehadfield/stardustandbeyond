@@ -1,0 +1,377 @@
+/**
+ * People index for the Stardust & Beyond archive.
+ *
+ * The photo captions in site-data.mjs name the people in each shot, in free
+ * prose. This module turns that into a browsable per-person index, driven by a
+ * hand-edited master index at source/people.md (see parsePeopleMd):
+ *
+ *   - a ROSTER (allow-list): only people listed there become links, so caption
+ *     noise - place/event names - is excluded for free. Aliases merge spelling
+ *     variants ("Stephen" -> Steven Roche); a Primary flag picks the default
+ *     owner of a first name shared by several people.
+ *   - per-photo OVERRIDES: the definitive people for a given photo, used to fix
+ *     ambiguous or mis-named shots. An override replaces auto-matching.
+ *
+ * computePeople() matches every caption against the roster + overrides and
+ * returns, per person, their photos grouped by section - plus a review report
+ * (unmatched candidate names, and every ambiguous bare-first-name photo) that
+ * drives the human curation loop.
+ *
+ * Pure data + string work; no filesystem or sharp here (the caller owns I/O).
+ */
+
+/* ---------- name tokenising ---------- */
+
+// Title/honorific and place/event words that can PREFIX a real name in a caption
+// (e.g. "Miss South Africa Ian ..."). Stripped from the front of a name run so we
+// find the actual name. Lowercased. Tunable - the roster allow-list is the real
+// noise filter; this only helps locate the leading name and tidy the report.
+const STOPWORDS = new Set([
+  "the", "a", "an", "at", "in", "on", "of", "and", "with", "as", "aka", "for",
+  "miss", "mr", "mrs", "ms", "mister", "sir", "dr", "dj",
+  "south", "africa", "african", "natal", "sunshine", "stardust", "boudoir",
+  "world", "universe", "gay", "sa", "rsa", "queen", "king",
+]);
+
+const CONNECTOR_RE = /\s*(?:,|&|\/|\band\b|\bwith\b|\baka\b|\bas\b|\bplus\b)\s*/gi;
+
+const isCapWord = (w) => /^[A-Z][a-zA-Z'’.-]*$/.test(w);
+
+// Trim a mention word to its bare name: drop a trailing possessive ('s / ’s) and
+// any leading/trailing punctuation, so "Steven's", "Basson." and "Louis'" match.
+const cleanWord = (w) => w.replace(/[’']s$/i, "").replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, "");
+
+/**
+ * Extract candidate name mentions from a caption. Splits on connectors, then
+ * from each fragment takes the leading run of Capitalised words with leading
+ * stopwords removed. Returns an array of word-arrays, e.g.
+ *   "Miss SA Ian, Gary Moore winning" -> [["Ian"], ["Gary","Moore"]]
+ */
+export function mentions(caption) {
+  const out = [];
+  for (const frag of String(caption).split(CONNECTOR_RE)) {
+    const words = frag.trim().split(/\s+/);
+    // leading run of capitalised words, trimmed to their bare name
+    const run = [];
+    for (const w of words) {
+      if (!isCapWord(w)) break;
+      const c = cleanWord(w);
+      if (c) run.push(c);
+    }
+    // drop leading stopwords (Miss / SA / South Africa ...)
+    while (run.length && STOPWORDS.has(run[0].toLowerCase())) run.shift();
+    // drop trailing stopwords too (rare, e.g. a stray "The")
+    while (run.length && STOPWORDS.has(run[run.length - 1].toLowerCase())) run.pop();
+    if (run.length) out.push(run);
+  }
+  return out;
+}
+
+export function slugify(name) {
+  return String(name)
+    .toLowerCase()
+    .replace(/['’.]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/* ---------- master index (source/people.md) parsing ---------- */
+
+// Parse the first GitHub-style markdown table found after a heading whose text
+// contains `heading` (case-insensitive). Returns array of row objects keyed by
+// lowercased column header. Tolerant of extra whitespace and a missing trailing
+// separator row.
+function parseTable(md, heading) {
+  const lines = md.split(/\r?\n/);
+  let i = 0;
+  // find the heading
+  const h = heading.toLowerCase();
+  for (; i < lines.length; i++) {
+    if (/^#{1,6}\s/.test(lines[i]) && lines[i].toLowerCase().includes(h)) { i++; break; }
+  }
+  if (i >= lines.length) return [];
+  // find the header row of the next table
+  for (; i < lines.length; i++) {
+    if (lines[i].trim().startsWith("|")) break;
+    if (/^#{1,6}\s/.test(lines[i])) return []; // hit the next heading first
+  }
+  if (i >= lines.length) return [];
+  const cells = (row) => row.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+  const headers = cells(lines[i]).map((c) => c.toLowerCase());
+  i++;
+  if (i < lines.length && /^[\s|:-]+$/.test(lines[i])) i++; // skip |---|---| separator
+  const rows = [];
+  for (; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line.trim().startsWith("|")) break;
+    const c = cells(line);
+    const row = {};
+    headers.forEach((hd, k) => { row[hd] = c[k] ?? ""; });
+    rows.push(row);
+  }
+  return rows;
+}
+
+const splitList = (s) => String(s || "").split(";").map((x) => x.trim()).filter(Boolean);
+
+/**
+ * Parse source/people.md into { roster, overrides }.
+ *   roster:    [ { display, first, surname, slug, aliases:[], primary:bool } ]
+ *   overrides: [ { section, file, people:[displayName] } ]
+ */
+export function parsePeopleMd(md) {
+  const peopleRows = parseTable(md, "roster");
+  const overrideRows = parseTable(md, "overrides");
+
+  const roster = peopleRows
+    .filter((r) => (r.name || "").trim())
+    .map((r) => {
+      const display = r.name.trim();
+      const parts = display.split(/\s+/);
+      return {
+        display,
+        first: parts[0],
+        surname: parts.slice(1).join(" "),
+        slug: slugify(display),
+        aliases: splitList(r.aliases),
+        primary: /^(y|yes|true|1|x|\*)$/i.test((r.primary || "").trim()),
+      };
+    });
+
+  const overrides = overrideRows
+    .filter((r) => (r.section || "").trim() && (r.file || "").trim())
+    .map((r) => ({
+      section: r.section.trim(),
+      file: r.file.trim(),
+      people: splitList(r.people),
+    }));
+
+  return { roster, overrides };
+}
+
+/* ---------- matching ---------- */
+
+function buildLookups(roster) {
+  const exact = new Map();       // lowercased full name / alias -> slug
+  const firstToSlugs = new Map(); // lowercased first name -> [slug]
+  const primaryByFirst = new Map(); // lowercased first name -> slug
+  const bySlug = new Map();      // slug -> person
+
+  for (const p of roster) {
+    bySlug.set(p.slug, p);
+    const add = (map, key, val) => {
+      const k = key.toLowerCase();
+      if (!map.has(k)) map.set(k, val);
+    };
+    add(exact, p.display, p.slug);
+    for (const a of p.aliases) add(exact, a, p.slug);
+
+    const fk = p.first.toLowerCase();
+    if (!firstToSlugs.has(fk)) firstToSlugs.set(fk, []);
+    if (!firstToSlugs.get(fk).includes(p.slug)) firstToSlugs.get(fk).push(p.slug);
+    // single-word aliases are also bare-first-name routes to this person
+    for (const a of p.aliases) {
+      if (!/\s/.test(a)) {
+        const ak = a.toLowerCase();
+        if (!firstToSlugs.has(ak)) firstToSlugs.set(ak, []);
+        if (!firstToSlugs.get(ak).includes(p.slug)) firstToSlugs.get(ak).push(p.slug);
+      }
+    }
+    if (p.primary) primaryByFirst.set(fk, p.slug);
+  }
+  return { exact, firstToSlugs, primaryByFirst, bySlug };
+}
+
+/**
+ * Resolve one mention (array of words) to a slug.
+ * Returns { slug } on a match, or { ambiguousFirst, candidates } when a bare
+ * first name is shared and has no Primary, or { unmatched: token } otherwise.
+ */
+function resolveMention(run, L) {
+  const { exact, firstToSlugs, primaryByFirst } = L;
+  // longest-first exact match (multi-word alias / full name / nickname)
+  for (let n = Math.min(run.length, 3); n >= 1; n--) {
+    const key = run.slice(0, n).join(" ").toLowerCase();
+    if (exact.has(key)) return { slug: exact.get(key) };
+  }
+  // bare first name
+  const fk = run[0].toLowerCase();
+  const slugs = firstToSlugs.get(fk);
+  if (!slugs) return { unmatched: run.join(" ") };
+  if (slugs.length === 1) return { slug: slugs[0] };
+  // shared first name
+  if (primaryByFirst.has(fk)) return { slug: primaryByFirst.get(fk), ambiguous: fk, candidates: slugs };
+  return { ambiguousFirst: fk, candidates: slugs };
+}
+
+/**
+ * Match all captions against the roster + overrides.
+ *
+ * @param {object} a
+ * @param {object} a.GALLERIES  - { <slug>: [ { file, title? } ] }
+ * @param {Array}  a.SECTIONS   - [ { kind, label, ... } ] in site order
+ * @param {object} a.LEAD       - { kind, file } (the uncaptioned club photo)
+ * @param {Array}  a.roster
+ * @param {Array}  a.overrides
+ * @returns {{ people, report }}
+ *   people: [ { display, first, slug, count, sections: { <slug>: [ {file,title} ] } } ]
+ *   report: { unmatched:[{token,count,examples}], ambiguous:[{...}], overridesUnknown:[] }
+ */
+export function computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides }) {
+  const L = buildLookups(roster);
+  const sectionOrder = SECTIONS.map((s) => s.kind);
+
+  const overrideMap = new Map(); // "section/file" -> [displayName]
+  const overridesUnknown = [];
+  for (const o of overrides) {
+    overrideMap.set(`${o.section}/${o.file}`, o.people);
+  }
+
+  // person slug -> { section -> [ {file, title} ] }
+  const acc = new Map();
+  const ensure = (slug) => {
+    if (!acc.has(slug)) acc.set(slug, new Map());
+    return acc.get(slug);
+  };
+  const place = (slug, section, item) => {
+    const secMap = ensure(slug);
+    if (!secMap.has(section)) secMap.set(section, []);
+    secMap.get(section).push(item);
+  };
+
+  const unmatched = new Map(); // token -> { count, examples:[{section,file,caption}] }
+  const ambiguous = [];
+
+  for (const section of sectionOrder) {
+    const items = GALLERIES[section] || [];
+    for (const it of items) {
+      // The LEAD photo is uncaptioned and sits outside its gallery array; skip.
+      const caption = it.title || "";
+      const key = `${section}/${it.file}`;
+      const item = { file: it.file, title: caption };
+
+      if (overrideMap.has(key)) {
+        for (const dn of overrideMap.get(key)) {
+          const slug = L.exact.get(dn.toLowerCase());
+          if (slug) place(slug, section, item);
+          else overridesUnknown.push({ section, file: it.file, name: dn });
+        }
+        continue;
+      }
+      if (!caption) continue;
+
+      const seen = new Set(); // dedupe people within one caption
+      for (const run of mentions(caption)) {
+        const res = resolveMention(run, L);
+        const names = (slugs) => slugs.map((s) => L.bySlug.get(s)?.display || s);
+        if (res.slug) {
+          if (!seen.has(res.slug)) { seen.add(res.slug); place(res.slug, section, item); }
+          if (res.ambiguous) {
+            ambiguous.push({
+              section, file: it.file, caption, first: res.ambiguous,
+              candidates: names(res.candidates), assigned: L.bySlug.get(res.slug)?.display || res.slug,
+            });
+          }
+        } else if (res.ambiguousFirst) {
+          ambiguous.push({
+            section, file: it.file, caption, first: res.ambiguousFirst,
+            candidates: names(res.candidates), assigned: null,
+          });
+        } else if (res.unmatched) {
+          const t = res.unmatched;
+          if (!unmatched.has(t)) unmatched.set(t, { count: 0, examples: [] });
+          const rec = unmatched.get(t);
+          rec.count++;
+          if (rec.examples.length < 3) rec.examples.push({ section, file: it.file, caption });
+        }
+      }
+    }
+  }
+
+  // assemble people list (only those with at least one photo)
+  const people = [];
+  for (const p of roster) {
+    const secMap = acc.get(p.slug);
+    if (!secMap) continue;
+    const sections = {};
+    let count = 0;
+    for (const section of sectionOrder) {
+      if (secMap.has(section)) {
+        sections[section] = secMap.get(section);
+        count += sections[section].length;
+      }
+    }
+    people.push({ display: p.display, first: p.first, slug: p.slug, count, sections });
+  }
+
+  // Summarise every first name shared by >1 roster person: who the candidates
+  // are, the current Primary (if any), and how many photos leant on that guess.
+  const sharedNames = [];
+  for (const [fk, slugs] of L.firstToSlugs) {
+    if (slugs.length < 2) continue;
+    const primarySlug = L.primaryByFirst.get(fk);
+    sharedNames.push({
+      first: fk,
+      candidates: slugs.map((s) => L.bySlug.get(s)?.display || s),
+      primary: primarySlug ? (L.bySlug.get(primarySlug)?.display || primarySlug) : null,
+      photos: ambiguous.filter((a) => a.first === fk).length,
+    });
+  }
+  sharedNames.sort((a, b) => b.photos - a.photos);
+
+  const report = {
+    unmatched: [...unmatched.entries()]
+      .map(([token, v]) => ({ token, count: v.count, examples: v.examples }))
+      .sort((a, b) => b.count - a.count),
+    ambiguous,                                    // every bare shared-name photo
+    unresolved: ambiguous.filter((a) => !a.assigned), // no Primary -> needs a decision
+    sharedNames,
+    overridesUnknown,
+  };
+
+  return { people, report };
+}
+
+/* ---------- draft roster generator (seeding source/people.md) ---------- */
+
+/**
+ * Scan captions and return candidate people to seed the roster: distinct first
+ * names with frequency and the surnames observed next to them. Printed by
+ * `node scripts/people.mjs --draft`.
+ */
+export function draftRoster(captions) {
+  const firsts = new Map(); // first -> { count, surnames: Map<surname,count> }
+  for (const c of captions) {
+    for (const run of mentions(c)) {
+      const first = run[0];
+      if (!firsts.has(first)) firsts.set(first, { count: 0, surnames: new Map() });
+      const rec = firsts.get(first);
+      rec.count++;
+      if (run.length >= 2) {
+        const sur = run[1];
+        rec.surnames.set(sur, (rec.surnames.get(sur) || 0) + 1);
+      }
+    }
+  }
+  return [...firsts.entries()]
+    .map(([first, v]) => ({
+      first,
+      count: v.count,
+      surnames: [...v.surnames.entries()].sort((a, b) => b[1] - a[1]),
+    }))
+    .sort((a, b) => b.count - a.count);
+}
+
+/* ---------- CLI: draft mode ---------- */
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const { GALLERIES, SECTIONS } = await import("./site-data.mjs");
+  const caps = [];
+  for (const s of SECTIONS) for (const it of GALLERIES[s.kind]) if (it.title) caps.push(it.title);
+  const draft = draftRoster(caps);
+  console.log(`# Draft roster candidates (${caps.length} captions, ${draft.length} distinct first names)\n`);
+  console.log(`freq  first        surnames seen (freq)`);
+  for (const d of draft) {
+    const surs = d.surnames.map(([s, n]) => `${s}(${n})`).join(", ");
+    console.log(`${String(d.count).padStart(4)}  ${d.first.padEnd(12)} ${surs}`);
+  }
+}

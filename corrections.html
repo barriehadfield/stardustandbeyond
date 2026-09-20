@@ -41,6 +41,14 @@
     .chip.new { border-color: var(--accent-2); color: var(--accent-ink); }
     .chip button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0 0.15rem; }
     .chip button:hover { color: var(--accent-2); }
+    .picks { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+    .picks-lbl { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-ink); margin-right: 0.2rem; }
+    .pick { font-family: var(--sans); font-size: 0.82rem; padding: 0.28rem 0.6rem; border-radius: 7px; border: 1px solid var(--accent); background: rgba(244,183,64,0.1); color: var(--ink); cursor: pointer; }
+    .pick:hover { background: var(--accent); color: #241300; }
+    .pick.bare { border-color: var(--accent-2); background: rgba(255,79,163,0.12); font-style: italic; }
+    .pick.bare:hover { background: var(--accent-2); color: #2a0016; }
+    .pick.none { border-color: var(--hair); background: transparent; color: var(--muted); }
+    .pick.none:hover { border-color: var(--accent-2); color: var(--accent-2); background: transparent; }
     .addrow { display: flex; gap: 0.4rem; }
     .add-input { flex: 1; }
     .note-input { width: 100%; background: transparent; border: none; border-top: 1px dashed var(--hair); color: var(--ink-2); font-style: italic; padding: 0.4rem 0 0; font-size: 0.85rem; font-family: var(--serif); }
@@ -56,7 +64,8 @@
     .prow.deleted { opacity: 0.45; }
     .prow .top { display: flex; gap: 0.5rem; align-items: center; }
     .name-input { flex: 1; }
-    .prow .cnt { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); white-space: nowrap; }
+    .prow .cnt { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); white-space: nowrap; text-decoration: none; }
+    .prow a.cnt:hover { color: var(--accent-2); }
     .prow .acts { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
     .prow select { background: var(--paper-2); color: var(--ink); border: 1px solid var(--hair); border-radius: 6px; padding: 0.3rem 0.4rem; font-size: 0.8rem; }
     .linkbtn { background: none; border: none; color: var(--accent-2); font-family: var(--mono); font-size: 0.72rem; cursor: pointer; }
@@ -91,6 +100,7 @@
     <main id="app"><p class="empty-state">Loading…</p></main>
   </div>
   <datalist id="roster-names"></datalist>
-  <script type="module" src="js/corrections.js"></script>
+  <!-- dynamic import with a unique query so the browser never serves a stale module -->
+  <script type="module">import("./js/corrections.js?v=" + Date.now());</script>
 </body>
 </html>

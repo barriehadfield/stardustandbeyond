@@ -376,5 +376,21 @@ html.pswp-open .hdr { visibility: hidden !important; backdrop-filter: none !impo
   margin-bottom: 1rem; display: flex; align-items: baseline; gap: 0.6rem;
 }
 .person-group h2.label .n { color: var(--accent); }
+
+/* "Also seen with" - cross-navigation links at the foot of a person page */
+.also-seen {
+  margin-top: clamp(2.4rem, 6vw, 4rem); padding-top: 1.6rem;
+  margin-bottom: clamp(3rem, 8vw, 6rem); border-top: 1px solid var(--hair);
+}
+.also-seen h2.label {
+  font-family: var(--mono); font-weight: 400; font-size: 0.72rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem;
+}
+.also-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; }
+.also-links a {
+  font-family: var(--serif); font-size: 1.08rem; color: var(--ink); text-decoration: none;
+  transition: color 0.2s ease;
+}
+.also-links a:hover { color: var(--accent-2); }
 .page-intro .eyebrow a { color: inherit; text-decoration: none; }
 .page-intro .eyebrow a:hover { color: var(--accent-2); }

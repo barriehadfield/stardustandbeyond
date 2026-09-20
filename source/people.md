@@ -37,22 +37,22 @@ replaces whatever the caption auto-matched for that photo.
 | Henri Davies | Henry Davies; Henry |  |
 | Patrick Brill | Patrick Brilland | yes |
 | Michael Crouch |  |  |
-| Michael Hunter Smith | Michael Hunter | yes |
-| Mark Griffin |  | yes |
+| Michael Hunter Smith | Michael Hunter |  |
+| Mark Griffin |  |  |
 | Mark Lowe |  |  |
 | Mark Davis |  |  |
 | Mark Cioli |  |  |
-| Sally Fisher | Sally Fiisher | yes |
+| Sally Fisher | Sally Fiisher |  |
 | Sally Chance |  |  |
-| Lauren Shipton |  | yes |
+| Lauren Shipton |  |  |
 | Lauren Estagarribia | Lauren Estagaribia |  |
-| Rene Kent |  | yes |
-| Gillian Lenton |  | yes |
+| Rene Kent |  |  |
+| Gillian Lenton |  |  |
 | Seyton Machattie | Seaton |  |
-| Barrie Hadfield | Barrie Hdafield; Barrie Hdfield | yes |
-| Garth Gething |  | yes |
+| Barrie Hadfield | Barrie Hdafield; Barrie Hdfield |  |
+| Garth Gething |  |  |
 | Garth Marquard |  |  |
-| Peter Moffat | Peter Moffatt; Petal | yes |
+| Peter Moffat | Peter Moffatt; Petal |  |
 | Peter White |  |  |
 | Peter Wishart |  |  |
 | Peter Wheeler |  |  |
@@ -61,145 +61,145 @@ replaces whatever the caption auto-matched for that photo.
 | Peter Amsden |  |  |
 | Kevin Rogers |  |  |
 | Kevin Botha |  |  |
-| Kevin MacInnes | Kevin McInnes; Kevin Mac; Kevin Mc | yes |
-| Louis Card |  | yes |
-| Neil Starr |  | yes |
+| Kevin MacInnes | Kevin McInnes; Kevin Mac; Kevin Mc |  |
+| Louis Card |  |  |
+| Neil Starr |  |  |
 | Neil Dundas |  |  |
 | Neil Farrelly |  |  |
-| Ian Perry |  | yes |
+| Ian Perry |  |  |
 | Ian Swan |  |  |
-| Cindy West |  | yes |
-| Kerry Bennett |  | yes |
-| Jackie Bryant |  | yes |
-| Trevor Norris |  | yes |
-| Karen Ward |  | yes |
-| David Goudge |  | yes |
+| Cindy West |  |  |
+| Kerry Bennett |  |  |
+| Jackie Bryant |  |  |
+| Trevor Norris |  |  |
+| Karen Ward |  |  |
+| David Goudge |  |  |
 | David Davies |  |  |
 | David Ralphs |  |  |
 | David Ross |  |  |
 | David Wannamaker |  |  |
-| Douglas |  |  |
-| Richard Rufus Ellis | Rufus Ellis | yes |
+| Douglas Austin | Douglas |  |
+| Richard Rufus Ellis | Rufus Ellis |  |
 | Richard Lawton |  |  |
 | Richard Yell |  |  |
 | Arthur Garrod | Arthur |  |
-| Cheryl Johnson | Cheryl Johhnson | yes |
+| Cheryl Johnson | Cheryl Johhnson |  |
 | Cheryl Schultz |  |  |
 | Jenna |  |  |
-| Brettlee | Bretlee |  |
-| Joan Dickman |  | yes |
-| Darryl Rogers |  | yes |
-| Illana Woolf | Illana Woolfe | yes |
-| Rory West |  | yes |
-| Spencer Pillay |  | yes |
-| Stephen Pritchard |  | yes |
+| Brettlee Walker | Bretlee; Brettlee |  |
+| Joan Dickman |  |  |
+| Darryl Rogers |  |  |
+| Illana Woolf | Illana Woolfe |  |
+| Rory West |  |  |
+| Spencer Pillay |  |  |
+| Stephen Pritchard |  |  |
 | Stephen Doubell |  |  |
-| Colin Hutt |  | yes |
-| Gary Halfpenny |  | yes |
+| Colin Hutt |  |  |
+| Gary Halfpenny |  |  |
 | Gary Moore |  |  |
 | Gary Searle |  |  |
 | Treva Norris | Treva |  |
-| Noel Osborne |  | yes |
-| Leigh Downing |  | yes |
-| Alan Whitehead |  | yes |
+| Noel Osborne |  |  |
+| Leigh Downing |  |  |
+| Alan Whitehead |  |  |
 | Alan Horn |  |  |
 | Alan Morrison |  |  |
 | Alan Froneman | Alice |  |
 | Alan Watt |  |  |
-| Maxi Spazzoli |  | yes |
+| Maxi Spazzoli |  |  |
 | Leonardo Lupini | Leonardo |  |
-| Gavin Woolf | Gavin Woolfe | yes |
-| Marcel Wishura |  | yes |
-| Mathew Kelly |  | yes |
-| Heather Roche |  | yes |
-| Luke Davies |  | yes |
+| Gavin Woolf | Gavin Woolfe |  |
+| Marcel Wishura |  |  |
+| Mathew Kelly |  |  |
+| Heather Roche |  |  |
+| Luke Davies |  |  |
 | Rowan |  |  |
-| Keith Schultz |  | yes |
+| Keith Schultz |  |  |
 | Dale Schultz | Dale Shultz |  |
-| Craig Peetz |  | yes |
-| Graham Moore |  | yes |
-| Tom Collins |  | yes |
-| Murray Scannell | Murray Scanell | yes |
+| Craig Peetz |  |  |
+| Graham Moore |  |  |
+| Tom Collins |  |  |
+| Murray Scannell | Murray Scanell |  |
 | Carolyn de Beyer | Carolyn |  |
-| Penny Brill | Pennay | yes |
+| Penny Brill | Pennay |  |
 | Penny Rey |  |  |
-| Frank Melman |  | yes |
+| Frank Melman |  |  |
 | Tanya van Agthoven | Tanya |  |
-| Lisa Owen |  | yes |
-| Rodney Symes |  | yes |
+| Lisa Owen |  |  |
+| Rodney Symes |  |  |
 | Vanessa |  |  |
-| Pam Harmse |  | yes |
-| Sophie Symes |  | yes |
+| Pam Harmse |  |  |
+| Sophie Symes |  |  |
 | Thelma |  |  |
 | Tony Gois | Toni Gois |  |
 | Wally Hayward | Wally Haywood; Wally Hatward |  |
 | Janet Doby | Janet Dobey |  |
-| Bernard Hatch |  | yes |
-| Linda Basson |  | yes |
-| Adele Shandel |  | yes |
+| Bernard Hatch |  |  |
+| Linda Basson |  |  |
+| Adele Shandel |  |  |
 | Duncan Good | Duncan |  |
-| Liz Good |  | yes |
+| Liz Good |  |  |
 | Liz Staniford |  |  |
-| Rafe Brown |  | yes |
-| Neville Letard |  | yes |
-| Glenda Holmes |  | yes |
-| Herb Klein |  | yes |
+| Rafe Brown |  |  |
+| Neville Letard |  |  |
+| Glenda Holmes |  |  |
+| Herb Klein |  |  |
 | Stephane |  |  |
 | Francois |  |  |
-| James Moffat | James Moffatt | yes |
-| Chloe Rolfes |  | yes |
-| Guy Woods |  | yes |
-| Eric Reeves |  | yes |
+| James Moffat | James Moffatt |  |
+| Chloe Rolfes |  |  |
+| Guy Woods |  |  |
+| Eric Reeves |  |  |
 | Lesley Wallace | Leslie Wallace; Leslie |  |
-| Ronnie Botha |  | yes |
-| Elaine Welsh |  | yes |
-| Mario Rodrigues |  | yes |
+| Ronnie Botha |  |  |
+| Elaine Welsh |  |  |
+| Mario Rodrigues |  |  |
 | Sharon Coetsee |  |  |
 | Sharon Spradbury |  |  |
-| Gail Butler | Gael Butler | yes |
-| Lianne Basson |  | yes |
-| Myra Cowell |  | yes |
+| Gail Butler | Gael Butler |  |
+| Lianne Basson |  |  |
+| Myra Cowell |  |  |
 | Cecil Sagorin |  |  |
 | Cecil Lyons |  |  |
-| Lee Fine |  | yes |
-| Christine Popoff |  | yes |
-| Jonathan Arun |  | yes |
-| Priscilla Blackie |  | yes |
-| Nicola Blackie |  | yes |
-| Megan Blackie |  | yes |
-| Ruben Singer |  | yes |
-| Roy Weir |  | yes |
-| Dickie Conradie |  | yes |
+| Lee Fine |  |  |
+| Christine Popoff |  |  |
+| Jonathan Arun |  |  |
+| Priscilla Blackie |  |  |
+| Nicola Blackie |  |  |
+| Megan Blackie |  |  |
+| Ruben Singer |  |  |
+| Roy Weir |  |  |
+| Dickie Conradie |  |  |
 | Margaret Mott Adams | Margaret Mott |  |
 | Conrad Coward | Conrad |  |
-| Lawrence Potgieter |  | yes |
-| Mirco Broggian |  | yes |
-| Tamar Marquard | Tamar Marqaud | yes |
-| Wayne Kobusch |  | yes |
-| Jenny Bear |  | yes |
-| Bryan Brett |  | yes |
-| Albert Eloff |  | yes |
-| Barbara Lindsey |  | yes |
-| Terry Scott |  | yes |
-| Jeffery Sanker |  | yes |
-| Phillip Schaffer |  | yes |
-| Andries Botha |  | yes |
-| Derek Lavarack | Derek Lavarak | yes |
-| Anina Cummings |  | yes |
-| Boyd Ferguson |  | yes |
-| Carl Isaacs |  | yes |
-| Carmen Laurier |  | yes |
-| Greg Davies |  | yes |
-| Oliver Ellis |  | yes |
-| Sean Keegan |  | yes |
-| Robbie Pfister |  | yes |
-| June Schmarmen |  | yes |
-| John Truex |  | yes |
-| Gregory Pierrotti |  | yes |
-| Chris Weir |  | yes |
-| Carla Thompson |  | yes |
-| Robert Johnson |  | yes |
-| Chin Soon |  | yes |
+| Lawrence Potgieter |  |  |
+| Mirco Broggian |  |  |
+| Tamar Marquard | Tamar Marqaud |  |
+| Wayne Kobusch |  |  |
+| Jenny Bear |  |  |
+| Bryan Brett |  |  |
+| Albert Eloff |  |  |
+| Barbara Lindsey |  |  |
+| Terry Scott |  |  |
+| Jeffery Sanker |  |  |
+| Phillip Schaffer |  |  |
+| Andries Botha |  |  |
+| Derek Lavarack | Derek Lavarak |  |
+| Anina Cummings |  |  |
+| Boyd Ferguson |  |  |
+| Carl Isaacs |  |  |
+| Carmen Laurier |  |  |
+| Greg Davies |  |  |
+| Oliver Ellis |  |  |
+| Sean Keegan |  |  |
+| Robbie Pfister |  |  |
+| June Schmarmen |  |  |
+| John Truex |  |  |
+| Gregory Pierrotti |  |  |
+| Chris Weir |  |  |
+| Carla Thompson |  |  |
+| Robert Johnson |  |  |
+| Chin Soon |  |  |
 | Bruce Walsh |  |  |
 | Grant Patterson |  |  |
 | Jeanette Roche |  |  |
@@ -330,6 +330,13 @@ replaces whatever the caption auto-matched for that photo.
 | Brian Louis |  |  |
 | Alfie Saville |  |  |
 | Alfie Bosman |  |  |
+| Karen |  |  |
+| Marc Watson |  |  |
+| Greg Hammond |  |  |
+| Cyril Shevitz |  |  |
+| John Simpson |  |  |
+| Lee |  |  |
+| Lyn van Wildenrath |  |  |
 
 ## Overrides
 
@@ -475,3 +482,110 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image410 | Trevor Norris; Michael Hunter Smith |
 | 80s | image707 | Trevor Norris; Michael Hunter Smith; Mark Griffin |
 | 80s | image286 | Louis Card; Louis de Araujo |
+| 2000 | image18 | Graham Moore; Marc Watson; James Moffat; Peter Moffat |
+| the-stardust | image348 | Lauren Shipton |
+| the-stardust | image659 | Henri Davies; Darryl Rogers |
+| the-stardust | image902 | Ian Perry; Lauren Shipton |
+| the-stardust | image550 | Lauren Shipton |
+| the-stardust | image759 | Peter Pienaar; Ian Perry |
+| the-boudoir | image302 | Steven Roche; Jackie Bryant; Mark Griffin |
+| the-boudoir | image909 | Margaret Mott Adams; Patrick Brill; Steven Roche; Joan Johnson |
+| 70s | image910 | Michael Hunter Smith |
+| 70s | image462 | Trevor Norris; Sally Fisher |
+| 70s | image607 | Richard Rufus Ellis; Steven Roche; Sally Fisher |
+| 70s | image683 | Karen; Sally Fisher |
+| 70s | image242 | Michael Hunter Smith |
+| 70s | image718 | Lauren Shipton |
+| 70s | image763 | Lauren Shipton |
+| 70s | image403 | Darryl Rogers |
+| 70s | image1106 | Craig Peetz; Greg Reichman; Ian Perry; Noel von Wildenrath |
+| 70s | image975 | Ian Perry; Noel von Wildenrath |
+| 70s | image356-2 | Craig Peetz; Greg Reichman; Noel von Wildenrath |
+| 80s | image606 | Steven Roche; Lauren Shipton |
+| 80s | image65 | Ian Perry; Steven Roche |
+| 80s | image872 | Lauren Shipton |
+| 80s | image776 | Patrick Brill; Garth Gething |
+| 80s | image461 | David Goudge |
+| 80s | image273 | Rene Kent; Spencer Pillay; Lauren Shipton |
+| 80s | image489 | Patrick Brill; Greg Hammond |
+| 80s | image309 | Peter Moffat |
+| 80s | image124 | Michael Hunter Smith; Cyril Shevitz |
+| 80s | image322 | Stephen Pritchard |
+| 80s | image58 | Gillian Lenton; Stephen Pritchard |
+| 80s | image864 | Garth Gething |
+| 80s | image63 | Steven Roche; Lauren Shipton |
+| 80s | image754-2 | Patrick Brill; Lauren Shipton |
+| 80s | image435 | Mark Griffin |
+| 80s | image712 | Mark Griffin |
+| 80s | image190 | Mark Griffin |
+| 80s | image669 | Mark Griffin |
+| 80s | image711 | Peter Moffat |
+| 80s | image524 | Lauren Shipton; Sally Fisher |
+| 80s | image519 | Steven Roche; Lauren Shipton |
+| 80s | image520 | Ian Perry |
+| 80s | image546 | Ian Perry |
+| 80s | image305 | Mark Griffin |
+| 80s | image124-2 | Lauren Shipton; Ian Perry |
+| 80s | image1090 | Eddie Da Lima; Garth Gething; Tanya van Agthoven; Mark Dingley |
+| 80s | image199 | Graham Moore; John Simpson |
+| 80s | image2 | Rene Kent; Noel von Wildenrath |
+| 90s | image250 | Steven Roche; Michael Hunter Smith |
+| 90s | image275 | Neil Dundas; Michael Hunter Smith |
+| 90s | image321 | Steven Roche; Sally Fisher |
+| 90s | image205 | Karen Ward; Richard Rufus Ellis |
+| 90s | image311 | Deanne Halfon; Michelle Barfoot; Sally Chance; Mark Dingley |
+| 90s | image232 | Carmen Laurier; Carrie; Rafe Brown; Mark Dingley |
+| 90s | image874 | Patrick Brill; Steven Roche; Michael Hunter Smith |
+| 90s | image231 | Robert Johnson; Cheryl Johnson |
+| 90s | image113 | Steven Roche; Jackie Bryant |
+| 90s | image696 | Choo; Michael Hunter Smith; Steven Roche; Kevin MacInnes |
+| 90s | image813 | Steven Roche; Sally Fisher |
+| 90s | image534 | Sally Fisher; Patrick Brill; Kevin MacInnes |
+| 90s | image717 | Steven Roche; Kevin MacInnes |
+| 90s | image691 | Michael Hunter Smith |
+| 90s | image599 | Peter Amsden; Lauren Shipton |
+| 90s | image722 | Louis de Araujo |
+| 90s | image628 | Louis de Araujo |
+| 90s | image468 | Michael Hunter Smith |
+| 90s | image680-2 | Michael Hunter Smith |
+| 90s | image390 | Patrick Brill; Michael Hunter Smith |
+| 90s | image119 | Sally Fisher |
+| 90s | image42 | Michael Hunter Smith; Patrick Brill; Neil Dundas |
+| 90s | image721 | Michael Hunter Smith |
+| 90s | image414 | Gillian Lenton; Michael Hunter Smith |
+| 90s | image471 | Lisa Owen; Sally Fisher; Lee |
+| 90s | image760 | Louis de Araujo |
+| 90s | image241 | Louis de Araujo |
+| 90s | image496 | Louis de Araujo |
+| 90s | image826 | Patrick Brill; Louis de Araujo |
+| 90s | image674 | Michael Hunter Smith |
+| 90s | image2 | Rene Kent; Noel von Wildenrath |
+| 90s | image76 | Noel von Wildenrath; Lyn van Wildenrath |
+| 90s | image543 | Spencer Pillay; Michael Hunter Smith |
+| 90s | image34 | Keith Schultz; Neil Dundas; Sally Fisher |
+| 90s | image900 | Kevin MacInnes |
+| 90s | image488 | Kevin MacInnes |
+| 90s | image637 | Steven Roche; Sally Fisher; Richard Rufus Ellis |
+| 90s | image531 | Peter Wishart; Garth Gething |
+| 90s | image917 | Peter Wishart |
+| 90s | image577 | Rafe Brown; Garth Gething |
+| 90s | image417 | Adi Coetzee; Joan Dickman; Karen; Pam Harmse; Trevor Norris; Ian Perry; Peter Moffat; Sally Fisher; Jeanette Roche |
+| 90s | image706 | Sean Keegan; Peter Moffat |
+| 90s | image512 | Patrick Brill; Steven Roche; Kevin MacInnes |
+| 90s | image723 | Todd Barry; Garth Gething |
+| 90s | image343 | Steven Roche; Kevin MacInnes |
+| 90s | image690 | Patrick Brill; Cheryl Johnson |
+| 90s | image259 | Michael Hunter Smith; Neil Dundas; Arthur |
+| 90s | image206 | Alan Whitehead; Choo; Colin Hutt |
+| 90s | image207 | Mark Dingley |
+| 90s | image511 | Jackie Bryant |
+| 90s | image395 | Jackie Bryant |
+| 90s | image551 | Michael van Rensburg |
+| 90s | image123 | Robbie Pfister; Michael van Rensburg |
+| 90s | image753 | Michael van Rensburg |
+| 90s | image248 | Jackie Bryant |
+| 90s | image923 | Neil Dundas |
+| 90s | image237 | Ian Perry |
+| 2000 | image495 | Garth Gething |
+| 2000 | image626 | Michael Hunter Smith; Seyton Machattie; Noel von Wildenrath |
+| 70s | image201-2 | Danny; Alan Whitehead |

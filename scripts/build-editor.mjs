@@ -21,7 +21,18 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export async function buildEditorData() {
   const md = await readFile(join(ROOT, "source", "people.md"), "utf-8");
   const { roster, overrides } = parsePeopleMd(md);
-  const { people } = computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides });
+  const { people, report } = computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides });
+
+  // Photos whose bare-name attribution was a guess (Primary fallback) or is
+  // unresolved - i.e. need a human to pick from the candidates. Keyed section/file.
+  const needs = new Map();      // key -> Set of candidate display names
+  const needsBare = new Map();  // key -> Set of bare first names ("just Kevin", surname unknown)
+  for (const r of report.unresolved) {
+    const k = `${r.section}/${r.file}`;
+    if (!needs.has(k)) { needs.set(k, new Set()); needsBare.set(k, new Set()); }
+    r.candidates.forEach((c) => needs.get(k).add(c));
+    needsBare.get(k).add(r.candidates[0] ? r.candidates[0].split(" ")[0] : r.first);
+  }
 
   // Invert person -> photos into photo -> [display], and note which photos an
   // explicit override already covers (so the tool can flag them).
@@ -43,6 +54,8 @@ export async function buildEditorData() {
         section: s.kind, file: it.file, caption: it.title || "",
         people: (byPhoto.get(k) || []).slice().sort(),
         overridden: overridden.has(k),
+        needs: needs.has(k) ? [...needs.get(k)] : undefined,
+        needsBare: needsBare.has(k) ? [...needsBare.get(k)] : undefined,
       });
     }
 

@@ -165,9 +165,11 @@ function buildLookups(roster) {
   const firstToSlugs = new Map(); // lowercased first name -> [slug]
   const primaryByFirst = new Map(); // lowercased first name -> slug
   const bySlug = new Map();      // slug -> person
+  const surnameless = new Set(); // slugs of people known only by a first name
 
   for (const p of roster) {
     bySlug.set(p.slug, p);
+    if (!/\s/.test(p.display)) surnameless.add(p.slug);
     const add = (map, key, val) => {
       const k = key.toLowerCase();
       if (!map.has(k)) map.set(k, val);
@@ -188,7 +190,7 @@ function buildLookups(roster) {
     }
     if (p.primary) primaryByFirst.set(fk, p.slug);
   }
-  return { exact, firstToSlugs, primaryByFirst, bySlug };
+  return { exact, firstToSlugs, primaryByFirst, bySlug, surnameless };
 }
 
 /**
@@ -208,7 +210,12 @@ function resolveMention(run, L) {
   const slugs = firstToSlugs.get(fk);
   if (!slugs) return { unmatched: run.join(" ") };
   if (slugs.length === 1) return { slug: slugs[0] };
-  // shared first name - left for the co-occurrence resolver (pass 2)
+  // doc-grounded: the doc now writes a surname when it means a surnamed person, so
+  // a bare first name belongs to the person known ONLY by that first name. If
+  // exactly one candidate is surname-less, it's them (confident).
+  const bare = slugs.filter((s) => L.surnameless.has(s));
+  if (bare.length === 1) return { slug: bare[0] };
+  // otherwise genuinely shared - left for the co-occurrence resolver (pass 2)
   return { ambiguous: { first: fk, candidates: slugs, primary: primaryByFirst.get(fk) || null } };
 }
 
@@ -300,6 +307,7 @@ export function computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides }) 
   // ---- pass 2: resolve ambiguous bare names ----
   const unresolved = [];               // no signal and no primary
   const resolvedByCooccurrence = [];   // for the report
+  const resolvedByPrimary = [];        // fell back to the Primary default (a guess)
   const priByFirst = {}, cooByFirst = {}, unresByFirst = {};
   for (const p of photos) {
     for (const amb of p.ambiguous) {
@@ -321,7 +329,10 @@ export function computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides }) 
         if (method === "cooccurrence") {
           cooByFirst[amb.first] = (cooByFirst[amb.first] || 0) + 1;
           resolvedByCooccurrence.push({ section: p.section, file: p.file, first: amb.first, chosen: disp(chosen), candidates: amb.candidates.map(disp), caption: p.caption });
-        } else priByFirst[amb.first] = (priByFirst[amb.first] || 0) + 1;
+        } else {
+          priByFirst[amb.first] = (priByFirst[amb.first] || 0) + 1;
+          resolvedByPrimary.push({ section: p.section, file: p.file, first: amb.first, chosen: disp(chosen), candidates: amb.candidates.map(disp), caption: p.caption });
+        }
       } else {
         unresByFirst[amb.first] = (unresByFirst[amb.first] || 0) + 1;
         unresolved.push({ section: p.section, file: p.file, first: amb.first, candidates: amb.candidates.map(disp), caption: p.caption, assigned: null });
@@ -347,6 +358,29 @@ export function computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides }) 
     people.push({ display: pr.display, first: pr.first, slug: pr.slug, count, sections });
   }
   const bySlugCount = new Map(people.map((p) => [p.slug, p.count]));
+  const pageSlugs = new Set(people.map((p) => p.slug));
+
+  // "Also seen with" - co-occurrence from the FINAL attributions (includes the
+  // ambiguous names resolved in pass 2), for cross-navigation on each person page.
+  const coSeen = new Map(); // slug -> Map(slug -> count)
+  for (const p of photos) {
+    const ppl = [...p.confident];
+    for (let i = 0; i < ppl.length; i++) for (let j = 0; j < ppl.length; j++) {
+      if (i === j) continue;
+      if (!coSeen.has(ppl[i])) coSeen.set(ppl[i], new Map());
+      const mm = coSeen.get(ppl[i]);
+      mm.set(ppl[j], (mm.get(ppl[j]) || 0) + 1);
+    }
+  }
+  for (const person of people) {
+    const mm = coSeen.get(person.slug);
+    person.alsoWith = mm
+      ? [...mm.entries()].filter(([s]) => pageSlugs.has(s))
+          .sort((a, b) => b[1] - a[1] || disp(a[0]).localeCompare(disp(b[0])))
+          .slice(0, 60)
+          .map(([s, n]) => ({ slug: s, display: disp(s), count: n }))
+      : [];
+  }
 
   // shared first names, with how each was resolved
   const sharedNames = [];
@@ -382,6 +416,7 @@ export function computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides }) 
     unmatched: [...unmatched.entries()].map(([token, v]) => ({ token, count: v.count, examples: v.examples })).sort((a, b) => b.count - a.count),
     unresolved,
     resolvedByCooccurrence,
+    resolvedByPrimary,
     sharedNames,
     surnameless,
     overridesUnknown,

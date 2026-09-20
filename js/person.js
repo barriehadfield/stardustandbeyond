@@ -49,6 +49,14 @@ function render(data, slug) {
       "</section>";
   }
 
+  if (person.alsoWith && person.alsoWith.length) {
+    html += '<section class="also-seen"><h2 class="label">Seen with</h2><div class="also-links">' +
+      person.alsoWith.map(function (a) {
+        return '<a href="person.html?p=' + encodeURIComponent(a.slug) + '">' + esc(a.display) + "</a>";
+      }).join("") +
+      "</div></section>";
+  }
+
   main.innerHTML = html;
   initMasonry();
   initLightbox();

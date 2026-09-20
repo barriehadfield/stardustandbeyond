@@ -275,7 +275,7 @@ async function buildPeopleData(people) {
       sections[kind] = [];
       for (const it of list) sections[kind].push({ file: it.file, title: it.title || "", ...(await dimsFor(kind, it.file)) });
     }
-    out.people[p.slug] = { display: p.display, count: p.count, sections };
+    out.people[p.slug] = { display: p.display, count: p.count, sections, alsoWith: p.alsoWith || [] };
   }
   return out;
 }

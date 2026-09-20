@@ -95,6 +95,7 @@ function photosTab() {
       <input type="search" id="f-q" placeholder="Search caption or person…" value="${esc(photoFilter.q)}">
       <div class="chip-filter">
         <button data-chip="all">All</button>
+        <button data-chip="needs">Needs a name</button>
         <button data-chip="untagged">No people</button>
         <button data-chip="changed">Edited</button>
       </div>
@@ -118,6 +119,7 @@ function filteredPhotos() {
     const key = pkey(p);
     if (photoFilter.chip === "untagged" && currentPeople(key).length) return false;
     if (photoFilter.chip === "changed" && !photoChanged(key)) return false;
+    if (photoFilter.chip === "needs" && !(p.needs && !photoChanged(key))) return false;
     if (q) {
       const hay = (p.caption + " " + currentPeople(key).join(" ")).toLowerCase();
       if (!hay.includes(q)) return false;
@@ -134,12 +136,20 @@ function cardHTML(p) {
   ).join("");
   const note = photoNote(key);
   const changed = photoChanged(key);
+  // one-click candidate buttons for ambiguous "needs a name" photos
+  const picks = (p.needs && !changed)
+    ? '<div class="picks"><span class="picks-lbl">which one?</span>' +
+      (p.needsBare || []).map((n) => `<button class="pick bare" data-act="pick" data-name="${esc(n)}">just ${esc(n)}</button>`).join("") +
+      p.needs.map((n) => `<button class="pick" data-act="pick" data-name="${esc(n)}">${esc(n)}</button>`).join("") +
+      '<button class="pick none" data-act="picknone">nobody</button></div>'
+    : "";
   return `<div class="card${changed ? " changed" : ""}" data-key="${esc(key)}">
     <img loading="lazy" src="public/images/${p.section}/${p.file}-thumb.jpg" alt="" data-full="public/images/${p.section}/${p.file}.jpg">
     <div class="body">
       <div class="meta"><span>${esc(SECTION_LABEL[p.section] || p.section)} · ${esc(p.file)}</span>${p.overridden ? '<span class="tag-ovr">override</span>' : ""}</div>
       <div class="cap${p.caption ? "" : " empty"}">${p.caption ? esc(p.caption) : "(no caption)"}</div>
       <div class="chips">${chips || '<span class="was">nobody yet</span>'}</div>
+      ${picks}
       <div class="addrow">
         <input class="add-input" list="roster-names" placeholder="+ add person" data-act="addfield">
       </div>
@@ -173,6 +183,15 @@ function wireCardEvents(box) {
     if (e.target.tagName === "IMG") { window.open(e.target.dataset.full, "_blank"); return; }
     if (act === "rm") { removePersonFrom(key, e.target.dataset.name); refreshCard(key); }
     else if (act === "reset") { resetPhoto(key); refreshCard(key); }
+    else if (act === "pick" || act === "picknone") {
+      // resolve an ambiguous photo: drop the candidate names, then add the chosen one
+      const ph0 = PHOTO_INDEX.get(key);
+      const cands = [...(ph0.needs || []), ...(ph0.needsBare || [])].map((c) => c.toLowerCase());
+      const ph = ensurePhoto(key);
+      ph.people = ph.people.filter((n) => !cands.includes(n.toLowerCase()));
+      if (act === "pick") ph.people.push(e.target.dataset.name);
+      save(); refreshCard(key);
+    }
   });
   box.addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
@@ -228,7 +247,7 @@ function prowHTML(p) {
   return `<div class="${cls}" data-name="${esc(p.display)}">
     <div class="top">
       <input class="name-input" data-act="rename" value="${esc(r.rename || p.display)}" ${r.del ? "disabled" : ""}>
-      <span class="cnt">${p.count} photo${p.count === 1 ? "" : "s"}</span>
+      ${p.count ? `<a class="cnt" href="person.html?p=${encodeURIComponent(p.slug)}" target="_blank" title="see this person's photos">${p.count} photo${p.count === 1 ? "" : "s"} ↗</a>` : '<span class="cnt">0 photos</span>'}
     </div>
     <div class="acts">
       <label class="was">merge into:</label>

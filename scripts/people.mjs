@@ -33,9 +33,16 @@ const STOPWORDS = new Set([
   "world", "universe", "gay", "sa", "rsa", "queen", "king",
 ]);
 
-const CONNECTOR_RE = /\s*(?:,|&|\/|\band\b|\bwith\b|\baka\b|\bas\b|\bplus\b)\s*/gi;
+// Split on list connectors AND sentence punctuation (. ; :) - captions often put
+// a place/context sentence right before the people ("Sandy Bay. Henry Davies, ..."),
+// and without the period split the leading place name swallows the real name.
+const CONNECTOR_RE = /\s*(?:[,.;:&\/]|\band\b|\bwith\b|\baka\b|\bas\b|\bplus\b)\s*/gi;
 
 const isCapWord = (w) => /^[A-Z][a-zA-Z'’.-]*$/.test(w);
+
+// Lowercase surname particles - kept inside a name run when followed by a
+// capitalised word, so "Jean de Cruz" / "Michael van Rensburg" stay whole.
+const PARTICLES = new Set(["de", "du", "da", "van", "von", "der", "den", "di", "del", "la", "le", "mc", "mac"]);
 
 // Trim a mention word to its bare name: drop a trailing possessive ('s / ’s) and
 // any leading/trailing punctuation, so "Steven's", "Basson." and "Louis'" match.
@@ -51,12 +58,14 @@ export function mentions(caption) {
   const out = [];
   for (const frag of String(caption).split(CONNECTOR_RE)) {
     const words = frag.trim().split(/\s+/);
-    // leading run of capitalised words, trimmed to their bare name
+    // leading run of capitalised words (through surname particles), trimmed to bare name
     const run = [];
-    for (const w of words) {
-      if (!isCapWord(w)) break;
-      const c = cleanWord(w);
-      if (c) run.push(c);
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i];
+      if (isCapWord(w)) { const c = cleanWord(w); if (c) run.push(c); continue; }
+      const lw = w.toLowerCase().replace(/[^a-z]/g, "");
+      if (run.length && PARTICLES.has(lw) && words[i + 1] && isCapWord(words[i + 1])) { run.push(lw); continue; }
+      break;
     }
     // drop leading stopwords (Miss / SA / South Africa ...)
     while (run.length && STOPWORDS.has(run[0].toLowerCase())) run.shift();
@@ -199,9 +208,8 @@ function resolveMention(run, L) {
   const slugs = firstToSlugs.get(fk);
   if (!slugs) return { unmatched: run.join(" ") };
   if (slugs.length === 1) return { slug: slugs[0] };
-  // shared first name
-  if (primaryByFirst.has(fk)) return { slug: primaryByFirst.get(fk), ambiguous: fk, candidates: slugs };
-  return { ambiguousFirst: fk, candidates: slugs };
+  // shared first name - left for the co-occurrence resolver (pass 2)
+  return { ambiguous: { first: fk, candidates: slugs, primary: primaryByFirst.get(fk) || null } };
 }
 
 /**
@@ -215,117 +223,167 @@ function resolveMention(run, L) {
  * @param {Array}  a.overrides
  * @returns {{ people, report }}
  *   people: [ { display, first, slug, count, sections: { <slug>: [ {file,title} ] } } ]
- *   report: { unmatched:[{token,count,examples}], ambiguous:[{...}], overridesUnknown:[] }
+ *
+ * A bare first name shared by several roster people is resolved probabilistically:
+ * from the people confidently identified in the same photo (full names, unique
+ * first names, and overrides), we pick the candidate who most often co-occurs with
+ * those same people **within the same section (timeframe)**. Overrides therefore
+ * act as training signal. If there's no co-occurrence signal we fall back to the
+ * roster `Primary`, and only then leave it unresolved.
  */
 export function computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides }) {
   const L = buildLookups(roster);
   const sectionOrder = SECTIONS.map((s) => s.kind);
+  const disp = (slug) => L.bySlug.get(slug)?.display || slug;
 
-  const overrideMap = new Map(); // "section/file" -> [displayName]
+  const overrideMap = new Map(overrides.map((o) => [`${o.section}/${o.file}`, o.people]));
   const overridesUnknown = [];
-  for (const o of overrides) {
-    overrideMap.set(`${o.section}/${o.file}`, o.people);
-  }
+  const unmatched = new Map(); // token -> { count, examples }
 
-  // person slug -> { section -> [ {file, title} ] }
-  const acc = new Map();
-  const ensure = (slug) => {
-    if (!acc.has(slug)) acc.set(slug, new Map());
-    return acc.get(slug);
-  };
-  const place = (slug, section, item) => {
-    const secMap = ensure(slug);
-    if (!secMap.has(section)) secMap.set(section, []);
-    secMap.get(section).push(item);
-  };
-
-  const unmatched = new Map(); // token -> { count, examples:[{section,file,caption}] }
-  const ambiguous = [];
-
+  // ---- classify every photo: confident people + any ambiguous bare names ----
+  const photos = []; // { section, file, item, caption, confident:Set<slug>, ambiguous:[{first,candidates,primary}] }
   for (const section of sectionOrder) {
-    const items = GALLERIES[section] || [];
-    for (const it of items) {
-      // The LEAD photo is uncaptioned and sits outside its gallery array; skip.
+    for (const it of (GALLERIES[section] || [])) {
       const caption = it.title || "";
+      const rec = { section, file: it.file, item: { file: it.file, title: caption }, caption, confident: new Set(), ambiguous: [] };
       const key = `${section}/${it.file}`;
-      const item = { file: it.file, title: caption };
-
       if (overrideMap.has(key)) {
         for (const dn of overrideMap.get(key)) {
           const slug = L.exact.get(dn.toLowerCase());
-          if (slug) place(slug, section, item);
+          if (slug) rec.confident.add(slug);
           else overridesUnknown.push({ section, file: it.file, name: dn });
         }
-        continue;
-      }
-      if (!caption) continue;
-
-      const seen = new Set(); // dedupe people within one caption
-      for (const run of mentions(caption)) {
-        const res = resolveMention(run, L);
-        const names = (slugs) => slugs.map((s) => L.bySlug.get(s)?.display || s);
-        if (res.slug) {
-          if (!seen.has(res.slug)) { seen.add(res.slug); place(res.slug, section, item); }
-          if (res.ambiguous) {
-            ambiguous.push({
-              section, file: it.file, caption, first: res.ambiguous,
-              candidates: names(res.candidates), assigned: L.bySlug.get(res.slug)?.display || res.slug,
-            });
+      } else if (caption) {
+        for (const run of mentions(caption)) {
+          const res = resolveMention(run, L);
+          if (res.slug) rec.confident.add(res.slug);
+          else if (res.ambiguous) rec.ambiguous.push(res.ambiguous);
+          else if (res.unmatched) {
+            const t = res.unmatched;
+            if (!unmatched.has(t)) unmatched.set(t, { count: 0, examples: [] });
+            const u = unmatched.get(t);
+            u.count++;
+            if (u.examples.length < 3) u.examples.push({ section, file: it.file, caption });
           }
-        } else if (res.ambiguousFirst) {
-          ambiguous.push({
-            section, file: it.file, caption, first: res.ambiguousFirst,
-            candidates: names(res.candidates), assigned: null,
-          });
-        } else if (res.unmatched) {
-          const t = res.unmatched;
-          if (!unmatched.has(t)) unmatched.set(t, { count: 0, examples: [] });
-          const rec = unmatched.get(t);
-          rec.count++;
-          if (rec.examples.length < 3) rec.examples.push({ section, file: it.file, caption });
         }
+      }
+      photos.push(rec);
+    }
+  }
+
+  // ---- pass 1: co-occurrence stats from confident attributions ----
+  const bump = (map, a, b) => { if (!map.has(a)) map.set(a, new Map()); const m = map.get(a); m.set(b, (m.get(b) || 0) + 1); };
+  const cooc = new Map();        // slug -> slug -> count (all sections)
+  const coocSec = new Map();     // section -> (slug -> slug -> count)
+  const presenceSec = new Map(); // section -> slug -> count
+  for (const p of photos) {
+    const ppl = [...p.confident];
+    if (!coocSec.has(p.section)) coocSec.set(p.section, new Map());
+    if (!presenceSec.has(p.section)) presenceSec.set(p.section, new Map());
+    const ps = presenceSec.get(p.section), cs = coocSec.get(p.section);
+    for (const x of ppl) ps.set(x, (ps.get(x) || 0) + 1);
+    for (let i = 0; i < ppl.length; i++) for (let j = 0; j < ppl.length; j++) {
+      if (i === j) continue;
+      bump(cooc, ppl[i], ppl[j]);
+      bump(cs, ppl[i], ppl[j]);
+    }
+  }
+  // score a candidate for a photo: co-occurrence with the photo's confident people,
+  // weighting same-section (timeframe) co-occurrence over global.
+  const scoreCand = (cand, section, coPresent) => {
+    const cs = coocSec.get(section)?.get(cand), g = cooc.get(cand);
+    let s = 0;
+    for (const y of coPresent) { if (cs) s += 3 * (cs.get(y) || 0); if (g) s += (g.get(y) || 0); }
+    return s;
+  };
+
+  // ---- pass 2: resolve ambiguous bare names ----
+  const unresolved = [];               // no signal and no primary
+  const resolvedByCooccurrence = [];   // for the report
+  const priByFirst = {}, cooByFirst = {}, unresByFirst = {};
+  for (const p of photos) {
+    for (const amb of p.ambiguous) {
+      const coPresent = [...p.confident];
+      let best = null, bestScore = 0, tie = [];
+      for (const cand of amb.candidates) {
+        const sc = scoreCand(cand, p.section, coPresent);
+        if (sc > bestScore) { bestScore = sc; best = cand; tie = [cand]; }
+        else if (sc === bestScore && sc > 0) tie.push(cand);
+      }
+      let chosen = null, method = null;
+      if (bestScore > 0) {
+        chosen = tie.length === 1 ? best
+          : tie.sort((a, b) => (presenceSec.get(p.section)?.get(b) || 0) - (presenceSec.get(p.section)?.get(a) || 0))[0];
+        method = "cooccurrence";
+      } else if (amb.primary) { chosen = amb.primary; method = "primary"; }
+      if (chosen) {
+        p.confident.add(chosen);
+        if (method === "cooccurrence") {
+          cooByFirst[amb.first] = (cooByFirst[amb.first] || 0) + 1;
+          resolvedByCooccurrence.push({ section: p.section, file: p.file, first: amb.first, chosen: disp(chosen), candidates: amb.candidates.map(disp), caption: p.caption });
+        } else priByFirst[amb.first] = (priByFirst[amb.first] || 0) + 1;
+      } else {
+        unresByFirst[amb.first] = (unresByFirst[amb.first] || 0) + 1;
+        unresolved.push({ section: p.section, file: p.file, first: amb.first, candidates: amb.candidates.map(disp), caption: p.caption, assigned: null });
       }
     }
   }
 
-  // assemble people list (only those with at least one photo)
+  // ---- place photos onto people (gallery order preserved) ----
+  const acc = new Map();
+  for (const p of photos) for (const slug of p.confident) {
+    if (!acc.has(slug)) acc.set(slug, new Map());
+    const secMap = acc.get(slug);
+    if (!secMap.has(p.section)) secMap.set(p.section, []);
+    secMap.get(p.section).push(p.item);
+  }
   const people = [];
-  for (const p of roster) {
-    const secMap = acc.get(p.slug);
+  for (const pr of roster) {
+    const secMap = acc.get(pr.slug);
     if (!secMap) continue;
     const sections = {};
     let count = 0;
-    for (const section of sectionOrder) {
-      if (secMap.has(section)) {
-        sections[section] = secMap.get(section);
-        count += sections[section].length;
-      }
-    }
-    people.push({ display: p.display, first: p.first, slug: p.slug, count, sections });
+    for (const section of sectionOrder) if (secMap.has(section)) { sections[section] = secMap.get(section); count += sections[section].length; }
+    people.push({ display: pr.display, first: pr.first, slug: pr.slug, count, sections });
   }
+  const bySlugCount = new Map(people.map((p) => [p.slug, p.count]));
 
-  // Summarise every first name shared by >1 roster person: who the candidates
-  // are, the current Primary (if any), and how many photos leant on that guess.
+  // shared first names, with how each was resolved
   const sharedNames = [];
   for (const [fk, slugs] of L.firstToSlugs) {
     if (slugs.length < 2) continue;
     const primarySlug = L.primaryByFirst.get(fk);
     sharedNames.push({
       first: fk,
-      candidates: slugs.map((s) => L.bySlug.get(s)?.display || s),
-      primary: primarySlug ? (L.bySlug.get(primarySlug)?.display || primarySlug) : null,
-      photos: ambiguous.filter((a) => a.first === fk).length,
+      candidates: slugs.map(disp),
+      primary: primarySlug ? disp(primarySlug) : null,
+      byCooccurrence: cooByFirst[fk] || 0,
+      byPrimary: priByFirst[fk] || 0,
+      unresolved: unresByFirst[fk] || 0,
     });
   }
-  sharedNames.sort((a, b) => b.photos - a.photos);
+  sharedNames.sort((a, b) => (b.byCooccurrence + b.byPrimary + b.unresolved) - (a.byCooccurrence + a.byPrimary + a.unresolved));
+
+  // people carried in the roster without a surname (single-word display) that
+  // appear in photos - listed with their top co-occurring people to help identify
+  // and surname them.
+  const surnameless = [];
+  for (const pr of roster) {
+    if (/\s/.test(pr.display)) continue;
+    const count = bySlugCount.get(pr.slug);
+    if (!count) continue;
+    const g = cooc.get(pr.slug);
+    const top = g ? [...g.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([s, n]) => `${disp(s)} (${n})`) : [];
+    surnameless.push({ display: pr.display, count, topCooc: top });
+  }
+  surnameless.sort((a, b) => b.count - a.count);
 
   const report = {
-    unmatched: [...unmatched.entries()]
-      .map(([token, v]) => ({ token, count: v.count, examples: v.examples }))
-      .sort((a, b) => b.count - a.count),
-    ambiguous,                                    // every bare shared-name photo
-    unresolved: ambiguous.filter((a) => !a.assigned), // no Primary -> needs a decision
+    unmatched: [...unmatched.entries()].map(([token, v]) => ({ token, count: v.count, examples: v.examples })).sort((a, b) => b.count - a.count),
+    unresolved,
+    resolvedByCooccurrence,
     sharedNames,
+    surnameless,
     overridesUnknown,
   };
 

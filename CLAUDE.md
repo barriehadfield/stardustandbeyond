@@ -17,8 +17,12 @@ Content comes from a Google-Docs `.docx` export via **`scripts/import-docx.py`**
 (a `.docx` is a zip: seven `sz=52` headings = the sections/tabs, each image's
 `descr` alt-text = the photo caption, the first uncaptioned image under "The
 Stardust" = the club `LEAD`; a photo may appear in more than one tab, exact
-same-tab repeats are skipped; `Aydee`/`Adee` are normalised to `Adi`). It copies
-each embedded image into `source/images/<slug>/` and regenerates
+same-tab repeats are skipped; `Aydee`/`Adee` are normalised to `Adi`). **Image
+names are content-stable:** an image whose bytes already exist in `source/images/`
+keeps its current filename even when a fresh export renumbers everything, so
+file-keyed data (the people overrides) survives a re-import; only genuinely new
+photos get new names. It copies each embedded image into `source/images/<slug>/`
+and regenerates
 `scripts/site-data.mjs` (preserving the hand-written `STARDUST_TEXT` /
 `BOUDOIR_TEXT` intros). The raw `.docx` (and any earlier HTML export folder) are
 **gitignored** (large, redundant with `source/images/`).
@@ -81,6 +85,13 @@ against the photo captions by `scripts/people.mjs` during `npm run build`.
   the default person for a first name shared by several people. An override row gives
   the definitive people for one photo (replaces auto-matching). **The importer never
   rewrites this file**, so corrections survive a re-import.
+- **Ambiguous bare names are resolved probabilistically.** When a caption's bare first
+  name is shared by several roster people, `computePeople` picks the candidate who most
+  co-occurs with the photo's *confidently* identified people (full names, unique first
+  names, overrides) **within the same section/decade** (overrides act as training
+  signal); it falls back to `Primary`, then leaves it unresolved. The report lists every
+  co-occurrence resolution to spot-check, plus **people without a surname** and who they
+  are most often pictured with, to help identify and surname them.
 - **`scripts/people.mjs`** — `parsePeopleMd()` + `computePeople()` (the matcher) +
   a `--draft` mode (`npm run people:draft`) that lists candidate names from captions
   to seed the roster.

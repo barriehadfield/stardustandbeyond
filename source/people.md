@@ -35,24 +35,24 @@ replaces whatever the caption auto-matched for that photo.
 | Steven Kent |  |  |
 | Adi Coetzee | Aydee; Adee; Adi |  |
 | Henri Davies | Henry Davies; Henry |  |
-| Patrick Brill |  | yes |
+| Patrick Brill | Patrick Brilland | yes |
 | Michael Crouch |  |  |
 | Michael Hunter Smith | Michael Hunter | yes |
 | Mark Griffin |  | yes |
 | Mark Lowe |  |  |
 | Mark Davis |  |  |
 | Mark Cioli |  |  |
-| Sally Fisher |  | yes |
+| Sally Fisher | Sally Fiisher | yes |
 | Sally Chance |  |  |
 | Lauren Shipton |  | yes |
-| Lauren Estagarribia |  |  |
+| Lauren Estagarribia | Lauren Estagaribia |  |
 | Rene Kent |  | yes |
 | Gillian Lenton |  | yes |
 | Seyton Machattie | Seaton |  |
-| Barrie Hadfield |  | yes |
+| Barrie Hadfield | Barrie Hdafield; Barrie Hdfield | yes |
 | Garth Gething |  | yes |
 | Garth Marquard |  |  |
-| Peter Moffat |  | yes |
+| Peter Moffat | Peter Moffatt; Petal | yes |
 | Peter White |  |  |
 | Peter Wishart |  |  |
 | Peter Wheeler |  |  |
@@ -82,14 +82,14 @@ replaces whatever the caption auto-matched for that photo.
 | Richard Rufus Ellis | Rufus Ellis | yes |
 | Richard Lawton |  |  |
 | Richard Yell |  |  |
-| Arthur |  |  |
+| Arthur Garrod | Arthur |  |
 | Cheryl Johnson | Cheryl Johhnson | yes |
 | Cheryl Schultz |  |  |
 | Jenna |  |  |
 | Brettlee | Bretlee |  |
 | Joan Dickman |  | yes |
 | Darryl Rogers |  | yes |
-| Illana Woolf |  | yes |
+| Illana Woolf | Illana Woolfe | yes |
 | Rory West |  | yes |
 | Spencer Pillay |  | yes |
 | Stephen Pritchard |  | yes |
@@ -104,24 +104,23 @@ replaces whatever the caption auto-matched for that photo.
 | Alan Whitehead |  | yes |
 | Alan Horn |  |  |
 | Alan Morrison |  |  |
-| Alan Froneman |  |  |
+| Alan Froneman | Alice |  |
 | Alan Watt |  |  |
 | Maxi Spazzoli |  | yes |
 | Leonardo Lupini | Leonardo |  |
-| Gavin Woolf |  | yes |
+| Gavin Woolf | Gavin Woolfe | yes |
 | Marcel Wishura |  | yes |
 | Mathew Kelly |  | yes |
 | Heather Roche |  | yes |
 | Luke Davies |  | yes |
 | Rowan |  |  |
-| Jamie |  |  |
 | Keith Schultz |  | yes |
 | Dale Schultz | Dale Shultz |  |
 | Craig Peetz |  | yes |
 | Graham Moore |  | yes |
 | Tom Collins |  | yes |
-| Murray Scannell |  | yes |
-| Carolyn |  |  |
+| Murray Scannell | Murray Scanell | yes |
+| Carolyn de Beyer | Carolyn |  |
 | Penny Brill | Pennay | yes |
 | Penny Rey |  |  |
 | Frank Melman |  | yes |
@@ -133,7 +132,7 @@ replaces whatever the caption auto-matched for that photo.
 | Sophie Symes |  | yes |
 | Thelma |  |  |
 | Tony Gois | Toni Gois |  |
-| Wally Hayward | Wally Haywood |  |
+| Wally Hayward | Wally Haywood; Wally Hatward |  |
 | Janet Doby | Janet Dobey |  |
 | Bernard Hatch |  | yes |
 | Linda Basson |  | yes |
@@ -147,19 +146,17 @@ replaces whatever the caption auto-matched for that photo.
 | Herb Klein |  | yes |
 | Stephane |  |  |
 | Francois |  |  |
-| James Moffat |  | yes |
+| James Moffat | James Moffatt | yes |
 | Chloe Rolfes |  | yes |
 | Guy Woods |  | yes |
 | Eric Reeves |  | yes |
-| Lesley Wallace | Leslie Wallace |  |
+| Lesley Wallace | Leslie Wallace; Leslie |  |
 | Ronnie Botha |  | yes |
 | Elaine Welsh |  | yes |
 | Mario Rodrigues |  | yes |
 | Sharon Coetsee |  |  |
 | Sharon Spradbury |  |  |
-| Gail Butler |  | yes |
-| Alfie Saville |  |  |
-| Alfie Bosman |  |  |
+| Gail Butler | Gael Butler | yes |
 | Lianne Basson |  | yes |
 | Myra Cowell |  | yes |
 | Cecil Sagorin |  |  |
@@ -177,7 +174,7 @@ replaces whatever the caption auto-matched for that photo.
 | Conrad Coward | Conrad |  |
 | Lawrence Potgieter |  | yes |
 | Mirco Broggian |  | yes |
-| Tamar Marquard |  | yes |
+| Tamar Marquard | Tamar Marqaud | yes |
 | Wayne Kobusch |  | yes |
 | Jenny Bear |  | yes |
 | Bryan Brett |  | yes |
@@ -187,7 +184,7 @@ replaces whatever the caption auto-matched for that photo.
 | Jeffery Sanker |  | yes |
 | Phillip Schaffer |  | yes |
 | Andries Botha |  | yes |
-| Derek Lavarack |  | yes |
+| Derek Lavarack | Derek Lavarak | yes |
 | Anina Cummings |  | yes |
 | Boyd Ferguson |  | yes |
 | Carl Isaacs |  | yes |
@@ -213,8 +210,8 @@ replaces whatever the caption auto-matched for that photo.
 | Rocky Farren |  |  |
 | Louis de Araujo |  |  |
 | Michael van Rensburg |  |  |
-| Steve Lawrence |  |  |
-| Chi Chi La Rue |  |  |
+| Steve Lawrence | Steven Lawrence; Steven Lawrences |  |
+| Chi Chi La Rue | Chi Chi |  |
 | Mark Dingley |  |  |
 | Grace Jones |  |  |
 | Neville Ward |  |  |
@@ -224,13 +221,115 @@ replaces whatever the caption auto-matched for that photo.
 | Marcus |  |  |
 | Sandra Scott |  |  |
 | Elsa Pretorius |  |  |
-| Eddie Da Lima |  |  |
+| Eddie Da Lima | Eddy de Lima |  |
 | Bruce Patterson |  |  |
 | Jenny Jarvis |  |  |
 | Jackie Woolf |  |  |
 | Noel von Wildenrath |  |  |
 | Alex Botha |  |  |
 | Lynton Lefevre |  |  |
+| Michael Cheze | Micheal Cheze |  |
+| Kim Prue | Kim Pru; Kim |  |
+| Patrick Talmadge | Doris |  |
+| Michael McCann | Michael Mc Cann |  |
+| Colin McGree | Colin Mc Gree |  |
+| Jamie & Alfie | Jamie; Alfie |  |
+| Greg Reichman |  |  |
+| Peter Cole |  |  |
+| Joan Johnson |  |  |
+| Graham Doubell |  |  |
+| Karen Hollister |  |  |
+| Nicola Pritchard |  |  |
+| Graham Simpson |  |  |
+| Anthony Harris |  |  |
+| Richard Plank |  |  |
+| Wayne Gates |  |  |
+| Derek Butler |  |  |
+| Peter Wasp |  |  |
+| Peter Shanley |  |  |
+| Mark Estagaribia |  |  |
+| Gary Williams |  |  |
+| Michael Rhodes |  |  |
+| John Bekker |  |  |
+| Chris Levin |  |  |
+| Wayne Saville |  |  |
+| Jackie Woolfe |  |  |
+| Garth Falkner |  |  |
+| Kevin Halcut |  |  |
+| Darryl Roffey |  |  |
+| Jeremy Taylor |  |  |
+| Hilton Davis |  |  |
+| Brian Haddock |  |  |
+| Aubrey Walsh |  |  |
+| Butch Loggenberg |  |  |
+| Blane Mackintosh |  |  |
+| Peet Coetzee |  |  |
+| Dudu Mkhize |  |  |
+| Brian Hirst |  |  |
+| Dudley Manicom |  |  |
+| Eddy Palland |  |  |
+| Leanne Basson |  |  |
+| Warwick May |  |  |
+| Charlie Brown |  |  |
+| Ivan Kruger |  |  |
+| Simon Trace |  |  |
+| Rod Gallagher |  |  |
+| Fred Prior |  |  |
+| Philip Lee |  |  |
+| Andre Naude |  |  |
+| Granny Lee |  |  |
+| Carol Doubell |  |  |
+| Michelle Barfoot |  |  |
+| Deanne Halfon |  |  |
+| Denise Britz |  |  |
+| Gordon Seaman |  |  |
+| Daniel Woolfe |  |  |
+| Josef Talotta |  |  |
+| Andrew Irving |  |  |
+| Martie Malan |  |  |
+| Elsie Davies |  |  |
+| Todd Barry |  |  |
+| Jean de Cruz |  |  |
+| Paul du Plessis |  |  |
+| Chantal de Vries |  |  |
+| Tony de Klerk |  |  |
+| Choo |  |  |
+| Danny |  |  |
+| Alwyn |  |  |
+| Horst |  |  |
+| Casper |  |  |
+| Karl |  |  |
+| Suzie |  |  |
+| Shaun |  |  |
+| Johann |  |  |
+| Ricky |  |  |
+| Albie |  |  |
+| Miguel |  |  |
+| Simone |  |  |
+| Lindi |  |  |
+| Susie |  |  |
+| Cristina |  |  |
+| Hayley |  |  |
+| Jayshree |  |  |
+| Spiro |  |  |
+| Nicky |  |  |
+| Caroline |  |  |
+| Breda |  |  |
+| Dada |  |  |
+| Shlommie |  |  |
+| Brad |  |  |
+| Nicole |  |  |
+| Allen |  |  |
+| Jessie |  |  |
+| Janiece |  |  |
+| Didier |  |  |
+| Jeneanne |  |  |
+| Stephan |  |  |
+| Barry |  |  |
+| Carol |  |  |
+| Brian Louis |  |  |
+| Alfie Saville |  |  |
+| Alfie Bosman |  |  |
 
 ## Overrides
 

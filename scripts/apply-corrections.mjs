@@ -100,6 +100,14 @@ async function main() {
     roster.splice(i, 1);
     log.push(`delete: ${display}`);
   }
+  // 3b) alias additions onto a person (variant spellings that aren't their own rows);
+  // creates the target person if it doesn't exist yet.
+  for (const { name, alias } of corr.roster?.aliasAdd || []) {
+    let i = findIdx(name);
+    if (i < 0) { roster.push({ display: name, aliases: [], primary: false }); i = roster.length - 1; log.push(`add (for alias): ${name}`); }
+    roster[i].aliases = uniq([...(roster[i].aliases || []), alias]).filter((a) => lc(a) !== lc(roster[i].display));
+    log.push(`alias: ${alias} -> ${name}`);
+  }
   // 4) adds
   for (const display of corr.roster?.add || []) {
     if (findIdx(display) >= 0) { log.push(`skip add (exists): ${display}`); continue; }

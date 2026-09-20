@@ -20,7 +20,7 @@ Usage:
 
 After --apply:  npm run optimize  &&  npm run build
 """
-import re, os, sys, html, shutil, json, zipfile, tempfile
+import re, os, sys, html, shutil, json, zipfile, tempfile, hashlib, glob
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -105,8 +105,24 @@ def main():
                 break
         return cur
 
+    # Content-stable naming: a fresh Google-Docs export renumbers every image
+    # (docPr names change), which would orphan file-keyed data like the people
+    # overrides. So map each existing original's bytes -> its current base name,
+    # and reuse that name for any incoming image with identical bytes. Unchanged
+    # photos keep their filenames across re-imports; only new photos get new names.
+    def sha1_file(p):
+        h = hashlib.sha1()
+        with open(p, "rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    hash2base = {}
+    for p in glob.glob(os.path.join(ROOT, "source", "images", "*", "*")):
+        if os.path.isfile(p):
+            hash2base.setdefault(sha1_file(p), os.path.splitext(os.path.basename(p))[0])
+
     buckets = {s: [] for _, s in SECTIONS}
-    seen_ms, dups = set(), []
+    seen_ms, dups, reused = set(), [], 0
     for m in re.finditer(r'<wp:docPr\b([^>]*)/>.*?<a:blip r:embed="([^"]+)"', xml, re.S):
         attrs, rid = m.group(1), m.group(2)
         media = rid2media.get(rid)
@@ -120,7 +136,12 @@ def main():
             dups.append((sec, media, cap))
             continue
         seen_ms.add((sec, media))
-        base = os.path.splitext(name.group(1))[0] if name else os.path.splitext(media)[0]
+        h = sha1_file(os.path.join(word, "media", media))
+        if h in hash2base:                     # same bytes as an existing photo -> keep its name
+            base = hash2base[h]
+            reused += 1
+        else:
+            base = os.path.splitext(name.group(1))[0] if name else os.path.splitext(media)[0]
         ext = os.path.splitext(media)[1].lower()
         existing = {b["base"] for b in buckets[sec]}
         ob, k = base, 2
@@ -143,6 +164,7 @@ def main():
         note = " (incl. lead)" if slug == "the-stardust" else ""
         print(f"  {slug:14} {len(items):3} imgs, {capped:3} captioned{note}")
     print(f"TOTAL placed: {total}   same-tab duplicates skipped: {len(dups)}")
+    print(f"content-stable names reused from existing images: {reused}")
 
     if not apply:
         print("\nDRY RUN. Re-run with --apply to copy images and write site-data.mjs.")

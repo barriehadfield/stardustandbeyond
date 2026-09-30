@@ -101,17 +101,22 @@ against the photo captions by `scripts/people.mjs` during `npm run build`.
   a **Roster** (`Name | Aliases | Primary`) and per-photo **Overrides**
   (`Section | File | People`). It is an **allow-list** — only rostered people become
   links, so caption noise (place/event names) is ignored automatically. `Aliases`
-  (`;`-separated) merge spelling variants/nicknames into one person; `Primary` picks
-  the default person for a first name shared by several people. An override row gives
-  the definitive people for one photo (replaces auto-matching). **The importer never
-  rewrites this file**, so corrections survive a re-import.
-- **Ambiguous bare names are resolved probabilistically.** When a caption's bare first
-  name is shared by several roster people, `computePeople` picks the candidate who most
-  co-occurs with the photo's *confidently* identified people (full names, unique first
-  names, overrides) **within the same section/decade** (overrides act as training
-  signal); it falls back to `Primary`, then leaves it unresolved. The report lists every
-  co-occurrence resolution to spot-check, plus **people without a surname** and who they
-  are most often pictured with, to help identify and surname them.
+  (`;`-separated) merge spelling variants/nicknames into one person. `Primary` marks a
+  **deliberate** default person for a shared first name — used **sparingly** (currently
+  only the two central figures **Steven Roche** and **Patrick Brill**, whom a lone
+  "Steven"/"Patrick" always means); leave it blank for everyone else so bare mentions
+  resolve by evidence, not a guess (see matching below). An override row gives the
+  definitive people for one photo (replaces auto-matching). **The importer never rewrites
+  this file**, so corrections survive a re-import.
+- **Bare names resolve by evidence, not guessing** (the doc now carries surnames, so a
+  bare first name is meaningful). For a shared first name `computePeople`: (a) prefers a
+  **surname-less** roster person (someone known *only* by that first name — bare "Karen");
+  else (b) picks the candidate who most **co-occurs with the photo's confidently-identified
+  people, within the same section/decade** (overrides are the training signal); else (c)
+  the deliberate `Primary`; else (d) leaves it **unresolved** rather than mis-attributing.
+  The report lists every co-occurrence resolution to spot-check, everything still
+  unresolved, and **people without a surname** with who they co-occur with (to help
+  surname them).
 - **`scripts/people.mjs`** — `parsePeopleMd()` + `computePeople()` (the matcher) +
   a `--draft` mode (`npm run people:draft`) that lists candidate names from captions
   to seed the roster.
@@ -121,8 +126,9 @@ against the photo captions by `scripts/people.mjs` during `npm run build`.
   and `scripts/people-report.md` (**gitignored, review-only**) listing unresolved
   ambiguous photos (with live image URLs), shared first names, and unmatched tokens.
 - **Curation loop:** `npm run build`, read `scripts/people-report.md`, then resolve
-  each ambiguous/unmatched case by editing `source/people.md` (add an override, set a
-  `Primary`, add an alias, or add a missing person) and rebuild.
+  each ambiguous/unmatched case by editing `source/people.md` (add an override, add an
+  alias, or add a missing person) and rebuild — or, far faster, use the **corrections
+  console → "Needs a name"** filter (below) and apply its export.
 
 ### How a caption is matched to people (`computePeople`)
 
@@ -138,28 +144,35 @@ surname re-added when ambiguous - so matching is a pipeline, not a lookup:
    The South Africa Natal Stardust …`). The sentence-punctuation split matters: without
    it "Sandy Bay. Henry Davies" swallows the real name.
 2. **Resolve each mention** (`resolveMention`), longest-first:
-   exact **full name / alias** (up to 3 words) → **unique first name** → else it is a
-   **shared first name** (ambiguous, deferred) → else **unmatched** (not in the roster
-   → ignored by the allow-list, tallied in the report).
+   exact **full name / alias** (up to 3 words) → **unique first name** → a shared first
+   name with exactly one **surname-less** candidate → that person → else it is an
+   **ambiguous shared first name** (deferred to pass 2) → else **unmatched** (not in the
+   roster → ignored by the allow-list, tallied in the report).
 3. **Overrides win:** a photo with an override row skips steps 1-2 and uses the listed
    people verbatim (names resolved via the roster/aliases).
-4. **Resolve the ambiguous ones probabilistically** (pass 2): score each candidate by
-   how often it **co-occurs with the photo's confidently-resolved people, weighted to
-   the same section/decade** (3× same-section, 1× global); pick the top score, else the
-   `Primary`, else leave unresolved. Confident attributions (full names, unique firsts,
-   overrides) are the only training signal - so **overrides both fix a photo and teach
-   the resolver**.
+4. **Resolve the ambiguous ones by evidence** (pass 2): score each candidate by how often
+   it **co-occurs with the photo's confidently-resolved people, weighted to the same
+   section/decade** (3× same-section, 1× global); pick the top score; else the deliberate
+   `Primary` (kept only for Steven Roche / Patrick Brill); else **leave it unresolved**
+   (do not guess). Confident attributions (full names, unique firsts, overrides) are the
+   only training signal - so **overrides both fix a photo and teach the resolver**.
 5. **Report** (`scripts/people-report.md`): co-occurrence resolutions (spot-check
    these), still-unresolved, shared first names (how each resolved), **people without a
    surname** + their top co-occurring people, and unmatched tokens (candidate new people
    vs place/event noise).
 
-**On a further docx change:** filenames stay stable (manifest), so existing overrides
-and `Primary`/alias choices keep working. Re-import, `npm run build`, then read the
-report: add genuinely-new people to the roster (a name sharing a first name with an
-existing person is otherwise **absorbed** into them - watch for that), surname the
-surname-less, and let co-occurrence attribute the rest. `npm run editor` refreshes the
-corrections console over the new content.
+**On a further docx change (the standard workflow):**
+1. Drop the new `.docx` in `source/`, then `import-docx.py --apply` → `npm run optimize`
+   → `npm run build`. Filenames stay stable (manifest), so existing overrides and
+   `Primary`/alias choices keep working; only genuinely-new photos get new names.
+2. Read `scripts/people-report.md`. **Add genuinely-new people** to the roster — a new
+   person who shares a first name with an existing one is otherwise **absorbed** into
+   them (watch the "unmatched" and co-occurrence lists for this), and **surname the
+   surname-less** where the doc now reveals a surname (rename, e.g. `Arthur` →
+   `Arthur Garrod`, which keeps their photos and auto-aliases the bare name).
+3. Resolve the leftover ambiguous photos via the **corrections console → "Needs a name"**
+   filter (below), then apply its export with `apply-corrections.mjs`. Aim for **0
+   unresolved** in the report.
 
 ### Corrections console (local tool)
 
@@ -167,16 +180,24 @@ A browser tool for gathering fixes without hand-editing markdown. It's local-onl
 (`corrections.html` carries `noindex`, isn't linked from the site, and its data file
 is gitignored).
 
-- `corrections.html` + `js/corrections.js` — the UI: **Photos** tab edits who's in each
-  shot (→ overrides), **People & names** tab renames / merges / removes / adds roster
-  entries (e.g. add a missing surname), **Export** tab produces a corrections file.
-  Work persists in `localStorage`.
-- `public/editor-data.json` — the tool's data (photo→people, roster, sections), written
-  by `scripts/build-editor.mjs` on every `npm run build` (or `npm run editor`). Gitignored.
+- `corrections.html` + `js/corrections.js` — the UI. **Photos** tab: browse/edit who's
+  in each shot (→ overrides), with filters incl. **"Needs a name"** (the ambiguous/
+  unresolved photos) that shows each thumbnail with one-click candidate buttons — the
+  surnamed options **plus a "just \<First\>" button** to file someone under their bare
+  first name when the surname is unknown, plus **nobody**. **People & names** tab: rename
+  / merge / remove / add roster entries (each links to that person's photos). **Export**
+  tab: produces the corrections JSON. Work persists in `localStorage` (⚠ incognito clears
+  it on close — Export before closing). The page dynamically imports its script with a
+  cache-busting query so a stale module can't mask changes.
+- `public/editor-data.json` — the tool's data (photo→people incl. `needs` candidates,
+  roster, sections), written by `scripts/build-editor.mjs` on every `npm run build` (or
+  `npm run editor`). Gitignored.
 - **Round trip:** open `http://localhost:8000/corrections.html` (after `npm run dev`),
-  make fixes, Export → **Copy** or **Download** `stardust-corrections.json`. Apply it with
+  make fixes, Export → **Copy** or **Download** `stardust-corrections.json`. Apply with
   `node scripts/apply-corrections.mjs <file>` (dry-run) then `--apply` — it rewrites the
-  Roster + Overrides tables in `source/people.md` in place. Then `npm run build`.
+  Roster + Overrides tables in `source/people.md` in place, handling `overrides` and
+  roster `rename` / `merge` / `delete` / `add` / `aliasAdd`. Then `npm run build`. The
+  exported `source/stardust-corrections*.json` files are gitignored (transient).
 
 ## Commands
 
@@ -185,6 +206,8 @@ npm install        # once — installs sharp (build-time only, a devDependency)
 npm run optimize   # source/images/**  ->  public/images/**  (after adding/replacing originals)
 npm run build      # regenerate all root *.html + the People index from build-pages.mjs
 npm run people:draft # print candidate names from captions (to seed source/people.md)
+npm run editor     # (re)write public/editor-data.json for the corrections console
+npm run people:apply # node scripts/apply-corrections.mjs — apply an exported corrections file
 npm run favicon    # source/images/site/favicon.svg -> public/images/site/{favicon.svg,icon-32,icon-180}
 npm run dev        # no-cache static server at http://localhost:8000
 ```

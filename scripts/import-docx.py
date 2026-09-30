@@ -86,15 +86,20 @@ def main():
     rid2media = {m.group(1): m.group(2) for m in
                  re.finditer(r'<Relationship Id="([^"]+)"[^>]*Target="media/([^"]+)"', rels)}
 
-    # section boundaries: <w:t> equal to a section name, preceded by sz=52
+    # Section boundaries: a <w:t> run whose text is exactly a section name. We match
+    # on the title TEXT alone (not font size) - Google's exports change the heading
+    # size between versions (was sz=52, later sz=36/40), but the distinctive titles
+    # ("The Stardust", "The Boudoir", "70's".."2000's", "Steven") only ever appear as
+    # their own run at a heading, never mid-prose. First occurrence per section wins.
     heads, seen_h = [], set()
     for m in re.finditer(r'<w:t[^>]*>([^<]*)</w:t>', xml):
         key = norm_head(html.unescape(m.group(1)))
-        if key in NORM2SLUG and '<w:sz w:val="52"/>' in xml[max(0, m.start() - 240):m.start()]:
-            if key not in seen_h:
-                seen_h.add(key)
-                heads.append((m.start(), NORM2SLUG[key]))   # store slug directly
+        if key in NORM2SLUG and key not in seen_h:
+            seen_h.add(key)
+            heads.append((m.start(), NORM2SLUG[key]))   # store slug directly
     heads.sort()
+    if len(heads) != len(SECTIONS):
+        print(f"WARNING: found {len(heads)} of {len(SECTIONS)} section headings: {[s for _, s in heads]}")
 
     def section_at(pos):
         cur = None

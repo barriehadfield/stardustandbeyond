@@ -337,6 +337,19 @@ replaces whatever the caption auto-matched for that photo.
 | John Simpson |  |  |
 | Lee |  |  |
 | Lyn van Wildenrath |  |  |
+| Sue Purvis | Su Purvis |  |
+| William Wong |  |  |
+| Dennis Purvis |  |  |
+| Glen Brown |  |  |
+| Phillipa Kethrow |  |  |
+| Bill Waite |  |  |
+| Cherese Swann |  |  |
+| Damian Thomas |  |  |
+| Louella McKuen |  |  |
+| Marjorie Chase |  |  |
+| Michael Louis |  |  |
+| Karen Pickard |  |  |
+| Cheryl Schmidt |  |  |
 
 ## Overrides
 

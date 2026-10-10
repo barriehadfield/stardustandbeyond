@@ -198,7 +198,7 @@ replaces whatever the caption auto-matched for that photo.
 | Gregory Pierrotti |  |  |
 | Chris Weir |  |  |
 | Carla Thompson |  |  |
-| Robert Johnson |  |  |
+| Robert Johnson | Rob Johnson |  |
 | Chin Soon |  |  |
 | Bruce Walsh |  |  |
 | Grant Patterson |  |  |
@@ -350,6 +350,13 @@ replaces whatever the caption auto-matched for that photo.
 | Michael Louis |  |  |
 | Karen Pickard |  |  |
 | Cheryl Schmidt |  |  |
+| Deborah Good |  |  |
+| Daleen Pretorius |  |  |
+| Khanya Dhlomo |  |  |
+| Andy Machlup |  |  |
+| Melanie Wolman |  |  |
+| Hilton Wolman |  |  |
+| John Ottard |  |  |
 
 ## Overrides
 
@@ -602,3 +609,4 @@ replaces whatever the caption auto-matched for that photo.
 | 2000 | image495 | Garth Gething |
 | 2000 | image626 | Michael Hunter Smith; Seyton Machattie; Noel von Wildenrath |
 | 70s | image201-2 | Danny; Alan Whitehead |
+| 90s | image644-2 | Hilton Wolman; Melanie Wolman |

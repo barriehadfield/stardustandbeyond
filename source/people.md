@@ -357,6 +357,9 @@ replaces whatever the caption auto-matched for that photo.
 | Melanie Wolman |  |  |
 | Hilton Wolman |  |  |
 | John Ottard |  |  |
+| Wayne Jones |  |  |
+| Kevin Wilson |  |  |
+| Warwick |  |  |
 
 ## Overrides
 

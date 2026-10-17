@@ -238,6 +238,9 @@ and `<name>-thumb.webp` / `<name>-thumb.jpg` (max edge 800px). Section folders a
   (The home hero tagline is in `buildHome()` in `build-pages.mjs`.)
 - **People (names, merges, who's in a photo):** edit `source/people.md`, `npm run
   build`. See **People index** above.
+- **Videos:** edit `source/videos.md` — a markdown table (`YouTube link or id | Title`),
+  top = first — then `npm run build`. Generates `videos.html` (embedded players) and a
+  home "Videos" room card. Editable on GitHub; untouched by the importer.
 - **New section (tab):** add a slug folder under `source/images/`, add it to
   `SUBDIRS` in `optimize-images.mjs`, add an entry to `SECTIONS` + a gallery array +
   a `GALLERIES` key in `site-data.mjs` (also to `VARMAP`/`BLURB` in

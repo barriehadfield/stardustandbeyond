@@ -30,7 +30,7 @@ async function assetVersion(rel) {
 }
 
 // Nav: the photo sections plus the People index.
-const NAV = [...SECTIONS.map((s) => ({ href: s.href, label: s.label })), { href: "people.html", label: "People" }];
+const NAV = [...SECTIONS.map((s) => ({ href: s.href, label: s.label })), { href: "videos.html", label: "Videos" }, { href: "people.html", label: "People" }];
 
 // WhatsApp glyph (inline SVG, no external asset — CSP-clean).
 const WA_ICON = `<svg class="wa-ico" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.96-.94-.26-.1-.45-.14-.64.15-.19.29-.74.94-.9 1.13-.17.19-.33.21-.62.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.72-1.6-2.01-.17-.29-.02-.45.13-.59.13-.13.29-.34.43-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.64-1.56-.88-2.13-.23-.55-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 .98-1 2.39 0 1.41 1.03 2.78 1.17 2.97.14.19 2.02 3.08 4.89 4.32.68.29 1.22.47 1.63.6.69.22 1.31.19 1.8.11.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34zM12 2.06C6.55 2.06 2.11 6.5 2.11 11.95c0 1.75.46 3.46 1.33 4.97L2.03 22l5.2-1.36a9.86 9.86 0 0 0 4.77 1.22h.01c5.45 0 9.89-4.44 9.89-9.9 0-2.64-1.03-5.13-2.9-7A9.82 9.82 0 0 0 12 2.06zm0 18.06h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.09.81.82-3.01-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.53 3.69-8.21 8.22-8.21 2.2 0 4.26.86 5.81 2.41a8.16 8.16 0 0 1 2.41 5.81c0 4.53-3.69 8.21-8.22 8.21z"/></svg>`;
@@ -99,7 +99,7 @@ function layout({ title, active, navActive, main, home, desc, image, extraScript
   const pageTitle = home ? `${SITE.name}` : `${title} · ${SITE.name}`;
   const description = desc || DEFAULT_DESC;
   const canonical = `${SITE_URL}/${active === "index.html" ? "" : active}`;
-  const ogImage = `${SITE_URL}/${image || DEFAULT_OG_IMAGE}`;
+  const ogImage = image && /^https?:\/\//.test(image) ? image : `${SITE_URL}/${image || DEFAULT_OG_IMAGE}`;
 
   const jsonLd = home
     ? `\n  <script type="application/ld+json">${JSON.stringify({
@@ -174,7 +174,7 @@ ${main}
 }
 
 /* ---------- pages ---------- */
-async function buildHome() {
+async function buildHome(videos = []) {
   const d = await dims(LEAD.kind, LEAD.file);
   const leadBase = `public/images/${LEAD.kind}/${LEAD.file}`;
   const rooms = await Promise.all(
@@ -183,6 +183,7 @@ async function buildHome() {
       return roomCard(s.kind, cover, s.label, `${totalPhotos(s.kind)} ${s.unit}`, s.href, s.blurb);
     })
   );
+  if (videos.length) rooms.push(videoRoomCard(videos[0], videos.length));
   const main = `    <section class="hero reveal">
       <div class="hero-copy">
         <p class="eyebrow">Durban · 1975</p>
@@ -320,6 +321,62 @@ ${secs}`;
   });
 }
 
+/* ---------- Videos ---------- */
+// Extract an 11-char YouTube id from a full link or a bare id.
+function ytId(s) {
+  const m = String(s).match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/)
+    || String(s).trim().match(/^([A-Za-z0-9_-]{11})$/);
+  return m ? m[1] : null;
+}
+// Parse the markdown table in source/videos.md into [{ id, title }] (display order).
+function parseVideos(md) {
+  const out = [];
+  for (const line of String(md).split(/\r?\n/)) {
+    if (!line.trim().startsWith("|")) continue;
+    const c = line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((x) => x.trim());
+    if (/^[-:\s|]+$/.test(c.join("|"))) continue;   // separator row
+    const id = ytId(c[0]);                            // header row ("YouTube…") has no id -> skipped
+    if (id) out.push({ id, title: c[1] || "" });
+  }
+  return out;
+}
+
+function buildVideos(videos) {
+  const items = videos.map((v) => `      <figure class="video reveal">
+        <div class="video-frame">
+          <iframe src="https://www.youtube-nocookie.com/embed/${v.id}" title="${esc(v.title || "Video")}" loading="lazy"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>${v.title ? `\n        <figcaption>${esc(v.title)}</figcaption>` : ""}
+      </figure>`).join("\n");
+  const main = `    <div class="page-intro reveal">
+      <div>
+        <p class="eyebrow">The archive</p>
+        <h1>Videos</h1>
+        <p class="sub">Moving pictures from the years since.</p>
+      </div>
+      <span class="count">${videos.length} ${videos.length === 1 ? "video" : "videos"}</span>
+    </div>
+    <div class="videos">
+${items || '      <p class="sub">No videos yet.</p>'}
+    </div>`;
+  return layout({
+    title: "Videos", active: "videos.html", main,
+    desc: "Videos from the Stardust & Beyond archive.",
+    image: videos[0] ? `https://img.youtube.com/vi/${videos[0].id}/hqdefault.jpg` : undefined,
+  });
+}
+
+// Home "rooms" card for the Videos section, using the first video's thumbnail.
+function videoRoomCard(video, count) {
+  return `      <a class="room" href="videos.html">
+        <picture>
+          <img src="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" alt="Videos" loading="lazy" width="480" height="360">
+        </picture>
+        <span class="cap"><span class="t">Videos</span><span class="b">Moving pictures from the years since.</span><span class="n">${count} ${count === 1 ? "video" : "videos"}</span></span>
+      </a>`;
+}
+
 // The detail page is a static shell filled client-side by js/person.js (?p=slug).
 function buildPersonPage() {
   const main = `    <div class="page-intro">
@@ -394,8 +451,13 @@ async function run() {
   const ed = await buildEditorData(); // data for the local corrections console
   console.log(`  wrote public/editor-data.json (${ed.photos} photos, ${ed.people} people)`);
 
-  const pages = [["index.html", await buildHome()]];
+  // Videos (source/videos.md; optional - absent/empty is fine).
+  const videosMd = await readFile(join(ROOT, "source", "videos.md"), "utf-8").catch(() => "");
+  const videos = parseVideos(videosMd);
+
+  const pages = [["index.html", await buildHome(videos)]];
   for (const sec of SECTIONS) pages.push([sec.href, await buildSection(sec)]);
+  pages.push(["videos.html", buildVideos(videos)]);
   pages.push(["people.html", buildPeopleIndex(people)]);
   await writeFile(join(OUT, "person.html"), buildPersonPage(), "utf-8"); // JS shell, kept out of sitemap
   console.log("  wrote person.html");

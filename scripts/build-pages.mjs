@@ -344,7 +344,7 @@ function parseVideos(md) {
 function buildVideos(videos) {
   const items = videos.map((v) => `      <figure class="video reveal">
         <div class="video-frame">
-          <iframe src="https://www.youtube-nocookie.com/embed/${v.id}" title="${esc(v.title || "Video")}" loading="lazy"
+          <iframe src="https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1" title="${esc(v.title || "Video")}" loading="lazy"
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>${v.title ? `\n        <figcaption>${esc(v.title)}</figcaption>` : ""}

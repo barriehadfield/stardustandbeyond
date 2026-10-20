@@ -64,6 +64,17 @@ function layoutConstellation(person) {
   ctr.style.left = cx + "px"; ctr.style.top = cy + "px";
   ctr.innerHTML = esc(person.display);
   stage.appendChild(ctr);
+
+  // list anyone the star couldn't fit, as links beneath it
+  var more = document.getElementById("seen-more");
+  if (more) {
+    var rest = (person.alsoWith || []).slice(links.length);
+    more.innerHTML = rest.length
+      ? '<span class="lbl">Also seen with</span> ' + rest.map(function (a) {
+          return '<a class="seen-link" data-slug="' + a.slug + '" href="person.html?p=' + encodeURIComponent(a.slug) + '">' + esc(a.display) + "</a>";
+        }).join(", ")
+      : "";
+  }
 }
 
 function render(slug) {
@@ -101,7 +112,8 @@ function render(slug) {
 
   if (friends) {
     html += '<section class="also-seen"><h2 class="label">Seen with <span class="n">' + friends + "</span></h2>" +
-      '<div class="constellation" id="constellation"><svg aria-hidden="true"></svg><span class="hint">tap a name to travel</span></div></section>';
+      '<div class="constellation" id="constellation"><svg aria-hidden="true"></svg><span class="hint">tap a name to travel</span></div>' +
+      '<p class="seen-more" id="seen-more"></p></section>';
   }
 
   main.innerHTML = html;
@@ -118,7 +130,7 @@ function navigate(slug) {
 
 /* travel when a constellation node is clicked (but let modified clicks open a tab) */
 document.querySelector("main").addEventListener("click", function (e) {
-  var a = e.target.closest("a.cnode");
+  var a = e.target.closest("a[data-slug]");  // constellation nodes and the overflow list
   if (!a) return;
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
   e.preventDefault();

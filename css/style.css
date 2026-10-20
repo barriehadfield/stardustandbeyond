@@ -456,6 +456,11 @@ html.pswp-open .hdr { visibility: hidden !important; backdrop-filter: none !impo
 .cnode.center { background: var(--accent); color: #241300; font-weight: 640; font-size: 1.04rem; border-color: var(--accent); box-shadow: var(--glow); cursor: default; }
 .cnode .c { font-family: var(--mono); font-size: 0.6rem; opacity: 0.75; margin-left: 0.45rem; }
 @keyframes cnodein { from { opacity: 0 } to { opacity: 1 } }
+.seen-more { margin: 1.1rem 0 0; color: var(--ink-2); font-family: var(--serif); font-size: 1.02rem; line-height: 1.8; }
+.seen-more:empty { display: none; }
+.seen-more .lbl { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-right: 0.35rem; }
+.seen-more a { color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; }
+.seen-more a:hover { color: var(--accent-2); border-bottom-color: currentColor; }
 @media (max-width: 560px){ .person-head { flex-direction: column; text-align: center; align-items: center; } }
 
 /* ---------------- Search ---------------- */

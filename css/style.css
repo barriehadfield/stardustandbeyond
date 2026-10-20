@@ -219,30 +219,33 @@ main { min-height: 60vh; }
 }
 .grid .tile { grid-row-end: span 40; }   /* pre-JS fallback height; JS overrides */
 .tile {
-  display: block; width: 100%; margin: 0; padding: 0;
+  display: flex; flex-direction: column; width: 100%; margin: 0; padding: 0;
   border: 1px solid var(--edge); border-top-color: var(--edge-top);
-  box-shadow: var(--lift);
-  background: var(--card); cursor: zoom-in; overflow: hidden;
-  position: relative;
+  box-shadow: var(--lift); background: var(--card); overflow: hidden;
   transition: transform 0.38s cubic-bezier(0.2,0.7,0.3,1), box-shadow 0.38s ease;
 }
-.tile picture { display: block; overflow: hidden }
+.tile .shot { display: block; overflow: hidden; cursor: zoom-in; }
+.tile picture { display: block; }
 .tile img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.2,0.7,0.3,1), opacity 0.4s; }
 .tile:hover { transform: translateY(-4px); box-shadow: var(--lift-hi); border-top-color: var(--era); }
 .tile:hover img { transform: scale(1.035); }
 /* Caption as a readable label beneath the photograph (not a hover overlay), so the
-   names stay legible at a glance and on touch devices. */
+   names stay legible at a glance and on touch devices; recognised names link out. */
 .tile .cap {
-  display: block; padding: 0.68rem 0.85rem 0.78rem;
+  display: block; margin: 0; padding: 0.68rem 0.85rem 0.78rem;
   border-top: 1px solid var(--hair);
   color: var(--ink-2); font-family: var(--serif); font-style: italic;
   font-size: 0.95rem; line-height: 1.42; text-wrap: pretty;
 }
-.tile .cap b, .tile .cap a { color: var(--ink); font-style: normal; font-weight: 600; }
+.tile .cap .who {
+  color: var(--ink); font-style: normal; font-weight: 600; text-decoration: none;
+  border-bottom: 1px solid transparent; transition: color 0.2s ease, border-color 0.2s ease;
+}
+.tile .cap .who:hover { color: var(--era); border-bottom-color: currentColor; }
 
 /* ---------------- Section lead (the club) ---------------- */
 .lead { max-width: 440px; margin: 0 auto clamp(2rem, 4vw, 3rem); text-align: center; }
-.lead .tile { background: var(--card); cursor: zoom-in; box-shadow: var(--lift), var(--glow); }
+.lead .shot { display: block; background: var(--card); cursor: zoom-in; box-shadow: var(--lift), var(--glow); overflow: hidden; }
 .lead figcaption {
   font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--accent); margin-top: 0.9rem;

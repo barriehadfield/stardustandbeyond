@@ -14,10 +14,10 @@ function hilite(text, q) {
 }
 function tile(p, q) {
   var base = "public/images/" + p.k + "/" + p.f;
-  return '<a class="tile" href="' + base + '.jpg" data-pswp-width="' + p.fw + '" data-pswp-height="' + p.fh + '" data-title="' + esc(p.c) + '">' +
+  return '<figure class="tile"><a class="shot" href="' + base + '.jpg" data-pswp-width="' + p.fw + '" data-pswp-height="' + p.fh + '" data-title="' + esc(p.c) + '">' +
     "<picture><source srcset=\"" + base + "-thumb.webp\" type=\"image/webp\">" +
     '<img src="' + base + '-thumb.jpg" alt="' + esc(p.c) + '" loading="lazy" width="' + p.w + '" height="' + p.h + '"></picture>' +
-    '<span class="cap">' + hilite(p.c, q) + "</span></a>";
+    "</a><figcaption class=\"cap\">" + hilite(p.c, q) + "</figcaption></figure>";
 }
 
 var peopleBox = document.getElementById("people-results");

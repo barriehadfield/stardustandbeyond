@@ -16,11 +16,11 @@ function tile(kind, ph) {
   var title = ph.title || "";
   var alt = title ? esc(title) : "Photograph from Stardust & Beyond";
   var dataTitle = title ? ' data-title="' + esc(title) + '"' : "";
-  var cap = title ? '<span class="cap">' + esc(title) + "</span>" : "";
-  return '<a class="tile" href="' + base + '.jpg" data-pswp-width="' + ph.fw + '" data-pswp-height="' + ph.fh + '"' + dataTitle + ">" +
+  var cap = title ? '<figcaption class="cap">' + esc(title) + "</figcaption>" : "";
+  return '<figure class="tile"><a class="shot" href="' + base + '.jpg" data-pswp-width="' + ph.fw + '" data-pswp-height="' + ph.fh + '"' + dataTitle + ">" +
     "<picture><source srcset=\"" + base + "-thumb.webp\" type=\"image/webp\">" +
     '<img src="' + base + '-thumb.jpg" alt="' + alt + '" loading="lazy" width="' + ph.w + '" height="' + ph.h + '"></picture>' +
-    cap + "</a>";
+    "</a>" + cap + "</figure>";
 }
 
 function firstPhoto(person) {

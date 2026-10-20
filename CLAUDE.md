@@ -87,7 +87,10 @@ source/images/<slug>/*            npm run optimize       public/images/<slug>/*
 constellation), `videos.html`, and `search.html` (client-side search over
 `public/search.json`, driven by `js/search.js`). Section pages carry a per-decade
 **era accent** (`--era`, set from `data-era` on `<body>`); captions render as readable
-text beneath each photo (not a hover overlay); a faint film-grain overlay sits site-wide.
+text beneath each photo (not a hover overlay), with recognised names linked to their person
+pages (`linkCaption` in `build-pages.mjs`; a bare first name isn't linked when followed by a
+different surname). Each gallery item is a `figure.tile` with an `a.shot` photo link (the
+PhotoSwipe trigger) and a `figcaption.cap`; a faint film-grain overlay sits site-wide.
 Nav, home "rooms" grid, and page builders are all
 driven by the `SECTIONS` array (People is appended to the nav separately; it is not
 a photo section). `LEAD` (`the-stardust/image861`, the uncaptioned club photo) is

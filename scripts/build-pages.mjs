@@ -40,6 +40,54 @@ function esc(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+// Per-photo attributed people ("kind/file" -> [{slug,display,first,aliases}]), used to
+// turn names in a caption into links to that person's page.
+let PHOTO_PEOPLE = new Map();
+
+function findWord(hay, term) {
+  const h = hay.toLowerCase(), t = term.toLowerCase();
+  let from = 0, idx;
+  while ((idx = h.indexOf(t, from)) >= 0) {
+    const before = idx === 0 ? "" : h[idx - 1];
+    const after = idx + t.length >= h.length ? "" : h[idx + t.length];
+    if (!/[a-z0-9]/.test(before) && !/[a-z0-9]/.test(after)) return idx;
+    from = idx + 1;
+  }
+  return -1;
+}
+// Escape a caption and wrap each recognised person's name in a link to their page.
+function linkCaption(caption, people) {
+  if (!people || !people.length) return esc(caption);
+  const ranges = [];
+  for (const p of people) {
+    // full name / alias: always safe to link
+    const fullTerms = [p.display, ...(p.aliases || [])].filter(Boolean).sort((a, b) => b.length - a.length);
+    let hit = null;
+    for (const term of fullTerms) { const idx = findWord(caption, term); if (idx >= 0) { hit = { start: idx, end: idx + term.length }; break; } }
+    // fall back to the bare first name, but not when it's followed by another
+    // capitalised word (that's a *different* full name, e.g. "Lawrence Atkinson")
+    if (!hit && p.first) {
+      const idx = findWord(caption, p.first);
+      if (idx >= 0) {
+        const after = caption.slice(idx + p.first.length);
+        const looksLikeOtherSurname = /\s/.test(p.display) && /^\s+[A-Z]/.test(after);
+        if (!looksLikeOtherSurname) hit = { start: idx, end: idx + p.first.length };
+      }
+    }
+    if (hit) ranges.push({ start: hit.start, end: hit.end, slug: p.slug });
+  }
+  ranges.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+  const chosen = []; let lastEnd = -1;
+  for (const r of ranges) if (r.start >= lastEnd) { chosen.push(r); lastEnd = r.end; }
+  let out = "", pos = 0;
+  for (const r of chosen) {
+    out += esc(caption.slice(pos, r.start));
+    out += `<a class="who" href="person.html?p=${r.slug}">${esc(caption.slice(r.start, r.end))}</a>`;
+    pos = r.end;
+  }
+  return out + esc(caption.slice(pos));
+}
+
 async function dims(kind, file) {
   const m = await sharp(join(ROOT, "public", "images", kind, `${file}-thumb.jpg`)).metadata();
   return { w: m.width, h: m.height };
@@ -56,14 +104,16 @@ async function tile(kind, item, eager) {
   const title = item.title || "";
   const alt = title ? esc(title) : `Photograph from ${SITE.name}`;
   const dataTitle = title ? ` data-title="${esc(title)}"` : "";
-  const cap = title ? `\n      <span class="cap">${esc(title)}</span>` : "";
+  const cap = title ? `\n      <figcaption class="cap">${linkCaption(title, PHOTO_PEOPLE.get(`${kind}/${item.file}`))}</figcaption>` : "";
   const load = eager ? "eager" : "lazy";
-  return `    <a class="tile" href="${base}.jpg" data-pswp-width="${f.w}" data-pswp-height="${f.h}"${dataTitle}>
-      <picture>
-        <source srcset="${base}-thumb.webp" type="image/webp">
-        <img src="${base}-thumb.jpg" alt="${alt}" loading="${load}" width="${w}" height="${h}">
-      </picture>${cap}
-    </a>`;
+  return `    <figure class="tile">
+      <a class="shot" href="${base}.jpg" data-pswp-width="${f.w}" data-pswp-height="${f.h}"${dataTitle}>
+        <picture>
+          <source srcset="${base}-thumb.webp" type="image/webp">
+          <img src="${base}-thumb.jpg" alt="${alt}" loading="${load}" width="${w}" height="${h}">
+        </picture>
+      </a>${cap}
+    </figure>`;
 }
 
 async function gallery(kind, items) {
@@ -218,7 +268,7 @@ async function buildSection(sec) {
     const lf = await fullDims(LEAD.kind, LEAD.file);
     const b = `public/images/${LEAD.kind}/${LEAD.file}`;
     hero = `    <figure class="lead reveal">
-      <a class="tile" href="${b}.jpg" data-pswp-width="${lf.w}" data-pswp-height="${lf.h}" data-title="The Stardust, 1975">
+      <a class="shot" href="${b}.jpg" data-pswp-width="${lf.w}" data-pswp-height="${lf.h}" data-title="The Stardust, 1975">
         <picture>
           <source srcset="${b}.webp" type="image/webp">
           <img src="${b}.jpg" alt="The Stardust club, 1975" width="${w}" height="${h}">
@@ -491,6 +541,19 @@ async function run() {
   const peopleMd = await readFile(join(ROOT, "source", "people.md"), "utf-8");
   const { roster, overrides } = parsePeopleMd(peopleMd);
   const { people, report } = computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides });
+  // Map each photo to its attributed people (with aliases) so captions can link names.
+  const rosterBySlug = new Map(roster.map((r) => [r.slug, r]));
+  PHOTO_PEOPLE = new Map();
+  for (const p of people) {
+    const r = rosterBySlug.get(p.slug) || {};
+    const info = { slug: p.slug, display: p.display, first: p.first, aliases: r.aliases || [] };
+    for (const kind of Object.keys(p.sections))
+      for (const it of p.sections[kind]) {
+        const k = `${kind}/${it.file}`;
+        if (!PHOTO_PEOPLE.has(k)) PHOTO_PEOPLE.set(k, []);
+        PHOTO_PEOPLE.get(k).push(info);
+      }
+  }
   const peopleData = await buildPeopleData(people);
   await writeFile(join(ROOT, "public", "people.json"), JSON.stringify(peopleData), "utf-8");
   console.log("  wrote public/people.json");

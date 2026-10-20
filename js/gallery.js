@@ -44,11 +44,11 @@ export function initMasonry() {
 
 /* ---- Lightbox (PhotoSwipe) ---- */
 export function initLightbox() {
-  if (!document.querySelector("main a.tile[data-pswp-width]")) return;
+  if (!document.querySelector("main a.shot[data-pswp-width]")) return;
 
   var lightbox = new PhotoSwipeLightbox({
     gallery: "main",
-    children: "a.tile",
+    children: "a.shot",
     pswpModule: function () { return import("./vendor/photoswipe/photoswipe.esm.js"); },
     bgOpacity: 1,
     wheelToZoom: true,          // desktop: scroll to zoom

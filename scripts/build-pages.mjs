@@ -324,7 +324,11 @@ async function buildPeopleData(people) {
       const list = p.sections[kind];
       if (!list) continue;
       sections[kind] = [];
-      for (const it of list) sections[kind].push({ file: it.file, title: it.title || "", ...(await dimsFor(kind, it.file)) });
+      for (const it of list) sections[kind].push({
+        file: it.file, title: it.title || "",
+        html: it.title ? linkCaption(it.title, PHOTO_PEOPLE.get(`${kind}/${it.file}`)) : "",
+        ...(await dimsFor(kind, it.file)),
+      });
     }
     out.people[p.slug] = { display: p.display, count: p.count, sections, alsoWith: p.alsoWith || [] };
   }
@@ -443,7 +447,7 @@ async function buildSearchIndex(people) {
   for (const s of SECTIONS)
     for (const it of GALLERIES[s.kind]) {
       if (!it.title) continue;
-      photos.push({ k: s.kind, s: label[s.kind], f: it.file, c: it.title, ...(await dimsFor(s.kind, it.file)) });
+      photos.push({ k: s.kind, s: label[s.kind], f: it.file, c: it.title, html: linkCaption(it.title, PHOTO_PEOPLE.get(`${s.kind}/${it.file}`)), ...(await dimsFor(s.kind, it.file)) });
     }
   const peopleOut = people.map((p) => ({ slug: p.slug, display: p.display, count: p.count }));
   return { people: peopleOut, photos };

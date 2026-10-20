@@ -12,12 +12,20 @@ function hilite(text, q) {
   var re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
   return esc(text).replace(re, "<mark>$1</mark>");
 }
+// highlight the query in already-built caption HTML, but only in text (never inside tags,
+// so hrefs and class names are untouched)
+function markHtml(html, q) {
+  var re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+  return html.replace(/(<[^>]+>)|([^<]+)/g, function (m, tag, text) {
+    return tag ? tag : text.replace(re, "<mark>$1</mark>");
+  });
+}
 function tile(p, q) {
   var base = "public/images/" + p.k + "/" + p.f;
   return '<figure class="tile"><a class="shot" href="' + base + '.jpg" data-pswp-width="' + p.fw + '" data-pswp-height="' + p.fh + '" data-title="' + esc(p.c) + '">' +
     "<picture><source srcset=\"" + base + "-thumb.webp\" type=\"image/webp\">" +
     '<img src="' + base + '-thumb.jpg" alt="' + esc(p.c) + '" loading="lazy" width="' + p.w + '" height="' + p.h + '"></picture>' +
-    "</a><figcaption class=\"cap\">" + hilite(p.c, q) + "</figcaption></figure>";
+    "</a><figcaption class=\"cap\">" + markHtml(p.html || esc(p.c), q) + "</figcaption></figure>";
 }
 
 var peopleBox = document.getElementById("people-results");

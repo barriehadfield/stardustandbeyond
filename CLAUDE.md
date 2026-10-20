@@ -74,9 +74,11 @@ source/images/<slug>/*            npm run optimize       public/images/<slug>/*
 - **`source/people.md`** — the **People** master index (hand-edited, allow-list +
   per-photo overrides). Single source of truth for the People tab; the importer
   never touches it. See **People index** below.
-- **`css/style.css`, `js/site.js`, `js/gallery.js`, `js/person.js`** — hand-written,
-  the real site assets. `js/gallery.js` holds the shared masonry + PhotoSwipe init
-  used by both `site.js` (section pages) and `js/person.js` (the People detail page).
+- **`css/style.css`, `js/site.js`, `js/gallery.js`, `js/person.js`, `js/search.js`** —
+  hand-written, the real site assets. `js/gallery.js` holds the shared masonry +
+  PhotoSwipe init used by `site.js` (section pages), `js/person.js` (the People detail
+  page) and `js/search.js` (search results). Gallery items are `figure.tile` with an
+  `a.shot` photo link (the lightbox trigger) and a `figcaption.cap`; photos are rounded.
 
 ## Pages & sections
 
@@ -128,11 +130,18 @@ against the photo captions by `scripts/people.mjs` during `npm run build`.
 - **`scripts/people.mjs`** — `parsePeopleMd()` + `computePeople()` (the matcher) +
   a `--draft` mode (`npm run people:draft`) that lists candidate names from captions
   to seed the roster.
-- **Build outputs:** `public/people.json` (per-person photos + dims, consumed by
-  `js/person.js`), `people.html` (static A-Z index by first name), `person.html`
-  (JS shell; `person.html?p=<slug>` shows one person's photos grouped by section),
-  and `scripts/people-report.md` (**gitignored, review-only**) listing unresolved
-  ambiguous photos (with live image URLs), shared first names, and unmatched tokens.
+- **Build outputs:** `public/people.json` (per-person photos + dims + linked-caption
+  HTML + an `alsoWith` co-occurrence list, consumed by `js/person.js`), `people.html`
+  (static A-Z index by first name), `person.html` (JS shell; `person.html?p=<slug>`
+  shows a **portrait header**, the photos grouped by section, and a **"Seen with"
+  social-web constellation** built from `alsoWith` — tap a node to travel in place;
+  anyone the star can't fit is listed as pills below it), and `scripts/people-report.md`
+  (**gitignored, review-only**) listing co-occurrence resolutions, unresolved photos
+  (with live image URLs), shared first names, surname-less people, and unmatched tokens.
+- **Caption name links:** `linkCaption` (build-pages) wraps each photo's attributed
+  people in links to their pages, in room galleries and (via the linked HTML stored in
+  `people.json`/`search.json`) on person pages and search too; a bare first name isn't
+  linked when followed by a different surname.
 - **Curation loop:** `npm run build`, read `scripts/people-report.md`, then resolve
   each ambiguous/unmatched case by editing `source/people.md` (add an override, add an
   alias, or add a missing person) and rebuild — or, far faster, use the **corrections

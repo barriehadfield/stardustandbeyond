@@ -161,7 +161,7 @@ h1, h2, h3 { margin: 0; font-weight: 640; letter-spacing: -0.03em; text-wrap: ba
 .btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
 .hero-fig { position: relative; }
 .hero-fig img {
-  width: 100%; height: auto;
+  width: 100%; height: auto; border-radius: 14px;
   border: 1px solid var(--edge); border-top-color: var(--edge-top); box-shadow: var(--lift);
 }
 .hero-fig figcaption {
@@ -178,7 +178,7 @@ h1, h2, h3 { margin: 0; font-weight: 640; letter-spacing: -0.03em; text-wrap: ba
 .rooms h2.label { font-family: var(--mono); font-weight: 400; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
 .room-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
 .room {
-  position: relative; overflow: hidden; background: var(--card); aspect-ratio: 4 / 5; display: block;
+  position: relative; overflow: hidden; background: var(--card); aspect-ratio: 4 / 5; display: block; border-radius: 12px;
   border: 1px solid var(--edge); border-top-color: var(--edge-top); box-shadow: var(--lift);
   transition: transform 0.38s cubic-bezier(0.2,0.7,0.3,1), box-shadow 0.38s ease;
 }
@@ -221,7 +221,7 @@ main { min-height: 60vh; }
 .tile {
   display: flex; flex-direction: column; width: 100%; margin: 0; padding: 0;
   border: 1px solid var(--edge); border-top-color: var(--edge-top);
-  box-shadow: var(--lift); background: var(--card); overflow: hidden;
+  box-shadow: var(--lift); background: var(--card); overflow: hidden; border-radius: 12px;
   transition: transform 0.38s cubic-bezier(0.2,0.7,0.3,1), box-shadow 0.38s ease;
 }
 .tile .shot { display: block; overflow: hidden; cursor: zoom-in; }
@@ -245,7 +245,7 @@ main { min-height: 60vh; }
 
 /* ---------------- Section lead (the club) ---------------- */
 .lead { max-width: 440px; margin: 0 auto clamp(2rem, 4vw, 3rem); text-align: center; }
-.lead .shot { display: block; background: var(--card); cursor: zoom-in; box-shadow: var(--lift), var(--glow); overflow: hidden; }
+.lead .shot { display: block; background: var(--card); cursor: zoom-in; box-shadow: var(--lift), var(--glow); overflow: hidden; border-radius: 14px; }
 .lead figcaption {
   font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--accent); margin-top: 0.9rem;

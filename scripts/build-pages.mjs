@@ -328,7 +328,7 @@ function ytId(s) {
     || String(s).trim().match(/^([A-Za-z0-9_-]{11})$/);
   return m ? m[1] : null;
 }
-// Parse the markdown table in source/videos.md into [{ id, title }] (display order).
+// Parse the markdown table in source/videos.md into [{ id, title, desc }] (display order).
 function parseVideos(md) {
   const out = [];
   for (const line of String(md).split(/\r?\n/)) {
@@ -336,7 +336,7 @@ function parseVideos(md) {
     const c = line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((x) => x.trim());
     if (/^[-:\s|]+$/.test(c.join("|"))) continue;   // separator row
     const id = ytId(c[0]);                            // header row ("YouTube…") has no id -> skipped
-    if (id) out.push({ id, title: c[1] || "" });
+    if (id) out.push({ id, title: c[1] || "", desc: c[2] || "" });
   }
   return out;
 }
@@ -347,7 +347,8 @@ function buildVideos(videos) {
           <iframe src="https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1" title="${esc(v.title || "Video")}" loading="lazy"
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>${v.title ? `\n        <figcaption>${esc(v.title)}</figcaption>` : ""}
+        </div>
+        <figcaption>${v.title ? `<span class="v-title">${esc(v.title)}</span>` : ""}${v.desc ? `<span class="v-desc">${esc(v.desc)}</span>` : ""}</figcaption>
       </figure>`).join("\n");
   const main = `    <div class="page-intro reveal">
       <div>

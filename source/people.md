@@ -34,7 +34,7 @@ replaces whatever the caption auto-matched for that photo.
 | Steven Roche | Margot | yes |
 | Steven Kent |  |  |
 | Adi Coetzee | Aydee; Adee; Adi |  |
-| Henri Davies | Henry Davies; Henry |  |
+| Henri Davies | Henry Davies; Henry; Henr Davies |  |
 | Patrick Brill | Patrick Brilland | yes |
 | Michael Crouch |  |  |
 | Michael Hunter Smith | Michael Hunter |  |
@@ -225,13 +225,13 @@ replaces whatever the caption auto-matched for that photo.
 | Bruce Patterson |  |  |
 | Jenny Jarvis |  |  |
 | Jackie Woolf |  |  |
-| Noel von Wildenrath |  |  |
+| Noel von Wildenrath | Noel van Wildenrath |  |
 | Alex Botha |  |  |
 | Lynton Lefevre |  |  |
 | Michael Cheze | Micheal Cheze |  |
 | Kim Prue | Kim Pru; Kim |  |
 | Patrick Talmadge | Doris |  |
-| Michael McCann | Michael Mc Cann |  |
+| Michael McCann | Michael Mc Cann; Mike McCann |  |
 | Colin McGree | Colin Mc Gree |  |
 | Jamie & Alfie | Jamie; Alfie |  |
 | Greg Reichman |  |  |
@@ -336,7 +336,7 @@ replaces whatever the caption auto-matched for that photo.
 | Cyril Shevitz |  |  |
 | John Simpson |  |  |
 | Lee |  |  |
-| Lyn van Wildenrath |  |  |
+| Lyn van Wildenrath | Lynn van Wildenrath |  |
 | Sue Purvis | Su Purvis |  |
 | William Wong |  |  |
 | Dennis Purvis |  |  |
@@ -360,6 +360,9 @@ replaces whatever the caption auto-matched for that photo.
 | Wayne Jones |  |  |
 | Kevin Wilson |  |  |
 | Warwick |  |  |
+| Colin Hawyes | Drussilla Hawyes |  |
+| Victor Lilyfeld |  |  |
+| Andrea Stelzer |  |  |
 
 ## Overrides
 

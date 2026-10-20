@@ -62,7 +62,7 @@ replaces whatever the caption auto-matched for that photo.
 | Kevin Rogers |  |  |
 | Kevin Botha |  |  |
 | Kevin MacInnes | Kevin McInnes; Kevin Mac; Kevin Mc |  |
-| Louis Card |  |  |
+| Louis |  |  |
 | Neil Starr |  |  |
 | Neil Dundas |  |  |
 | Neil Farrelly |  |  |
@@ -507,7 +507,7 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image478 | Treva Norris |
 | 80s | image410 | Trevor Norris; Michael Hunter Smith |
 | 80s | image707 | Trevor Norris; Michael Hunter Smith; Mark Griffin |
-| 80s | image286 | Louis Card; Louis de Araujo |
+| 80s | image286 | Louis; Louis de Araujo |
 | 2000 | image18 | Graham Moore; Marc Watson; James Moffat; Peter Moffat |
 | the-stardust | image348 | Lauren Shipton |
 | the-stardust | image659 | Henri Davies; Darryl Rogers |

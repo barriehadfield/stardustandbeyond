@@ -354,7 +354,7 @@ function buildVideos(videos) {
       <div>
         <p class="eyebrow">The archive</p>
         <h1>Videos</h1>
-        <p class="sub">Moving pictures from the years since.</p>
+        <p class="sub">Set to music, they take you right back, to the wonderful energy of the time.</p>
       </div>
       <span class="count">${videos.length} ${videos.length === 1 ? "video" : "videos"}</span>
     </div>
@@ -374,7 +374,7 @@ function videoRoomCard(video, count) {
         <picture>
           <img src="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" alt="Videos" loading="lazy" width="480" height="360">
         </picture>
-        <span class="cap"><span class="t">Videos</span><span class="b">Moving pictures from the years since.</span><span class="n">${count} ${count === 1 ? "video" : "videos"}</span></span>
+        <span class="cap"><span class="t">Videos</span><span class="b">The music takes you right back.</span><span class="n">${count} ${count === 1 ? "video" : "videos"}</span></span>
       </a>`;
 }
 

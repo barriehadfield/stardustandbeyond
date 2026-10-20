@@ -23,14 +23,14 @@ const OUT = ROOT;
 const SITE_URL = SITE.url;
 
 // content-hashed asset versions so browsers always fetch fresh css/js on change.
-const ASSET = { css: "1", js: "1", person: "1" };
+const ASSET = { css: "1", js: "1", person: "1", search: "1" };
 async function assetVersion(rel) {
   try { return createHash("sha1").update(await readFile(join(ROOT, rel))).digest("hex").slice(0, 8); }
   catch { return "1"; }
 }
 
 // Nav: the photo sections plus the People index.
-const NAV = [...SECTIONS.map((s) => ({ href: s.href, label: s.label })), { href: "videos.html", label: "Videos" }, { href: "people.html", label: "People" }];
+const NAV = [...SECTIONS.map((s) => ({ href: s.href, label: s.label })), { href: "videos.html", label: "Videos" }, { href: "people.html", label: "People" }, { href: "search.html", label: "Search" }];
 
 // WhatsApp glyph (inline SVG, no external asset — CSP-clean).
 const WA_ICON = `<svg class="wa-ico" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.96-.94-.26-.1-.45-.14-.64.15-.19.29-.74.94-.9 1.13-.17.19-.33.21-.62.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.72-1.6-2.01-.17-.29-.02-.45.13-.59.13-.13.29-.34.43-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.64-1.56-.88-2.13-.23-.55-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 .98-1 2.39 0 1.41 1.03 2.78 1.17 2.97.14.19 2.02 3.08 4.89 4.32.68.29 1.22.47 1.63.6.69.22 1.31.19 1.8.11.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34zM12 2.06C6.55 2.06 2.11 6.5 2.11 11.95c0 1.75.46 3.46 1.33 4.97L2.03 22l5.2-1.36a9.86 9.86 0 0 0 4.77 1.22h.01c5.45 0 9.89-4.44 9.89-9.9 0-2.64-1.03-5.13-2.9-7A9.82 9.82 0 0 0 12 2.06zm0 18.06h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.09.81.82-3.01-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.53 3.69-8.21 8.22-8.21 2.2 0 4.26.86 5.81 2.41a8.16 8.16 0 0 1 2.41 5.81c0 4.53-3.69 8.21-8.22 8.21z"/></svg>`;
@@ -90,7 +90,7 @@ function totalPhotos(kind) {
   return GALLERIES[kind].length + (kind === LEAD.kind ? 1 : 0);
 }
 
-function layout({ title, active, navActive, main, home, desc, image, extraScript }) {
+function layout({ title, active, navActive, main, home, desc, image, extraScript, era }) {
   const navCur = navActive || active;
   const links = NAV.map((n) => {
     const cur = n.href === navCur ? ' aria-current="page"' : "";
@@ -136,7 +136,7 @@ function layout({ title, active, navActive, main, home, desc, image, extraScript
   <link rel="stylesheet" href="js/vendor/photoswipe/photoswipe.css">
   <link rel="stylesheet" href="css/style.css?v=${ASSET.css}">${jsonLd}
 </head>
-<body>
+<body${era ? ` data-era="${era}"` : ""}>
   <header class="hdr">
     <div class="hdr-inner">
       <a class="mark" href="index.html">Stardust<b> &amp; </b>Beyond</a>
@@ -247,7 +247,7 @@ ${intro}${hero}${g}`;
 
   const cover = isLead ? LEAD.file : (items[0] || {}).file;
   return layout({
-    title: sec.label, active: sec.href, main,
+    title: sec.label, active: sec.href, main, era: sec.kind,
     desc: `${sec.label} - ${sec.blurb} From the Stardust & Beyond archive.`,
     image: cover ? `public/images/${sec.kind}/${cover}.jpg` : undefined,
   });
@@ -378,6 +378,52 @@ function videoRoomCard(video, count) {
       </a>`;
 }
 
+/* ---------- Search ---------- */
+// A compact index of every captioned photo (+ dims for the lightbox) and the
+// people, written to public/search.json and filtered client-side by js/search.js.
+async function buildSearchIndex(people) {
+  const cache = new Map();
+  const dimsFor = async (kind, file) => {
+    const k = `${kind}/${file}`;
+    if (!cache.has(k)) { const t = await dims(kind, file); const f = await fullDims(kind, file); cache.set(k, { w: t.w, h: t.h, fw: f.w, fh: f.h }); }
+    return cache.get(k);
+  };
+  const label = Object.fromEntries(SECTIONS.map((s) => [s.kind, s.label]));
+  const photos = [];
+  for (const s of SECTIONS)
+    for (const it of GALLERIES[s.kind]) {
+      if (!it.title) continue;
+      photos.push({ k: s.kind, s: label[s.kind], f: it.file, c: it.title, ...(await dimsFor(s.kind, it.file)) });
+    }
+  const peopleOut = people.map((p) => ({ slug: p.slug, display: p.display, count: p.count }));
+  return { people: peopleOut, photos };
+}
+
+function buildSearchPage() {
+  const main = `    <div class="page-intro reveal">
+      <div>
+        <p class="eyebrow">The archive</p>
+        <h1>Search</h1>
+        <p class="sub">Find a name, a place, a night.</p>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <input id="q" type="search" placeholder="Search the archive…" autocomplete="off" spellcheck="false" aria-label="Search the archive">
+      <div class="chips" id="suggest">
+        <button type="button" data-q="Mallorca">Mallorca</button><button type="button" data-q="Miss Stardust">Miss Stardust</button><button type="button" data-q="Onion Ring">Onion Ring</button><button type="button" data-q="Boudoir">Boudoir</button><button type="button" data-q="London">London</button>
+      </div>
+      <p class="rcount" id="rcount">Type a name, place or occasion, or pick a suggestion.</p>
+      <div id="people-results"></div>
+      <div id="photo-results"></div>
+    </div>`;
+  return layout({
+    title: "Search", active: "search.html", main,
+    desc: "Search the Stardust & Beyond archive by name, place or occasion.",
+    image: `public/images/${LEAD.kind}/${LEAD.file}.jpg`,
+    extraScript: `\n  <script type="module" src="js/search.js?v=${ASSET.search}"></script>`,
+  });
+}
+
 // The detail page is a static shell filled client-side by js/person.js (?p=slug).
 function buildPersonPage() {
   const main = `    <div class="page-intro">
@@ -439,6 +485,7 @@ async function run() {
   ASSET.css = await assetVersion("css/style.css");
   ASSET.js = await assetVersion("js/site.js");
   ASSET.person = await assetVersion("js/person.js");
+  ASSET.search = await assetVersion("js/search.js");
 
   // People index: match captions against the master index (source/people.md).
   const peopleMd = await readFile(join(ROOT, "source", "people.md"), "utf-8");
@@ -456,10 +503,15 @@ async function run() {
   const videosMd = await readFile(join(ROOT, "source", "videos.md"), "utf-8").catch(() => "");
   const videos = parseVideos(videosMd);
 
+  const searchData = await buildSearchIndex(people);
+  await writeFile(join(ROOT, "public", "search.json"), JSON.stringify(searchData), "utf-8");
+  console.log(`  wrote public/search.json (${searchData.photos.length} captioned photos)`);
+
   const pages = [["index.html", await buildHome(videos)]];
   for (const sec of SECTIONS) pages.push([sec.href, await buildSection(sec)]);
   pages.push(["videos.html", buildVideos(videos)]);
   pages.push(["people.html", buildPeopleIndex(people)]);
+  pages.push(["search.html", buildSearchPage()]);
   await writeFile(join(OUT, "person.html"), buildPersonPage(), "utf-8"); // JS shell, kept out of sitemap
   console.log("  wrote person.html");
 

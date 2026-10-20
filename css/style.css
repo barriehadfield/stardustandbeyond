@@ -66,9 +66,27 @@ body {
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
-    radial-gradient(60% 45% at 12% 0%, rgba(255, 79, 163, 0.14), transparent 70%),
+    radial-gradient(60% 45% at 12% 0%, color-mix(in srgb, var(--era, var(--accent-2)) 16%, transparent), transparent 70%),
     radial-gradient(55% 45% at 100% 100%, rgba(244, 183, 64, 0.12), transparent 70%);
 }
+/* Film grain over the whole page — the texture of the film these were shot on.
+   Fixed, faint, never over the lightbox. */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.045;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.pswp-open body::after { display: none; }
+
+/* Era accent — each section carries a colour for its decade; the brand gold is the
+   default everywhere else. Used for eyebrows, counts, the lead glow and tile hover. */
+:root { --era: var(--accent); }
+body[data-era="the-stardust"] { --era: #f4b740; }
+body[data-era="the-boudoir"]  { --era: #ff9d3c; }
+body[data-era="steven"]       { --era: #ff6fb3; }
+body[data-era="70s"]          { --era: #ff9d3c; }
+body[data-era="80s"]          { --era: #ff4fa3; }
+body[data-era="90s"]          { --era: #53d4de; }
+body[data-era="2000"]         { --era: #b483ff; }
 
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
@@ -182,9 +200,9 @@ h1, h2, h3 { margin: 0; font-weight: 640; letter-spacing: -0.03em; text-wrap: ba
 main { min-height: 60vh; }
 .page-intro { padding: clamp(2.2rem, 5vw, 4rem) 0 clamp(1.4rem, 2.5vw, 2rem); display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
 .page-intro h1 { font-size: clamp(2.1rem, 5vw, 3.6rem); line-height: 1; }
-.page-intro .eyebrow { margin-bottom: 0.9rem; }
+.page-intro .eyebrow { margin-bottom: 0.9rem; color: var(--era); }
 .page-intro .sub { font-family: var(--serif); font-style: italic; color: var(--ink-2); max-width: 40ch; margin: 0.3rem 0 0; }
-.page-intro .count { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.page-intro .count { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--era); white-space: nowrap; }
 
 /* ---------------- Gallery grid (masonry) ---------------- */
 /* Row-major masonry: CSS grid fills left-to-right, top-to-bottom, so the visual
@@ -208,16 +226,19 @@ main { min-height: 60vh; }
   position: relative;
   transition: transform 0.38s cubic-bezier(0.2,0.7,0.3,1), box-shadow 0.38s ease;
 }
-.tile img { width: 100%; height: auto; transition: transform 0.6s cubic-bezier(0.2,0.7,0.3,1), opacity 0.4s; }
-.tile:hover { transform: translateY(-4px); box-shadow: var(--lift-hi); }
+.tile picture { display: block; overflow: hidden }
+.tile img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.2,0.7,0.3,1), opacity 0.4s; }
+.tile:hover { transform: translateY(-4px); box-shadow: var(--lift-hi); border-top-color: var(--era); }
 .tile:hover img { transform: scale(1.035); }
+/* Caption as a readable label beneath the photograph (not a hover overlay), so the
+   names stay legible at a glance and on touch devices. */
 .tile .cap {
-  position: absolute; inset: auto 0 0 0; padding: 1.4rem 0.9rem 0.75rem;
-  background: linear-gradient(to top, rgba(10,10,14,0.66), transparent);
-  color: #fff; font-family: var(--serif); font-style: italic; font-size: 0.9rem;
-  opacity: 0; transform: translateY(6px); transition: opacity 0.3s, transform 0.3s;
+  display: block; padding: 0.68rem 0.85rem 0.78rem;
+  border-top: 1px solid var(--hair);
+  color: var(--ink-2); font-family: var(--serif); font-style: italic;
+  font-size: 0.95rem; line-height: 1.42; text-wrap: pretty;
 }
-.tile:hover .cap { opacity: 1; transform: none; }
+.tile .cap b, .tile .cap a { color: var(--ink); font-style: normal; font-weight: 600; }
 
 /* ---------------- Section lead (the club) ---------------- */
 .lead { max-width: 440px; margin: 0 auto clamp(2rem, 4vw, 3rem); text-align: center; }
@@ -381,6 +402,17 @@ html.pswp-open .hdr { visibility: hidden !important; backdrop-filter: none !impo
 }
 
 /* ---------------- Person detail (grouped by section) ---------------- */
+/* Portrait-led person header */
+.person-head { display: flex; align-items: center; gap: clamp(1rem, 3vw, 1.8rem); padding: clamp(2rem, 5vw, 3.6rem) 0 clamp(1.2rem, 2.5vw, 1.8rem); }
+.portrait {
+  width: clamp(88px, 16vw, 128px); height: clamp(88px, 16vw, 128px); flex: none;
+  border-radius: 50%; object-fit: cover; object-position: center top;
+  border: 1px solid var(--edge-top); box-shadow: var(--lift), var(--glow); background: var(--card);
+}
+.person-head-txt h1 { font-size: clamp(2.1rem, 5.5vw, 3.6rem); line-height: 1; }
+.person-head-txt .eyebrow { margin-bottom: 0.7rem; color: var(--accent); }
+.phead-meta { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0.75rem 0 0; }
+
 .person-group { margin-top: clamp(1.6rem, 4vw, 2.8rem); }
 .person-group h2.label {
   font-family: var(--mono); font-weight: 400; font-size: 0.72rem;
@@ -389,20 +421,63 @@ html.pswp-open .hdr { visibility: hidden !important; backdrop-filter: none !impo
 }
 .person-group h2.label .n { color: var(--accent); }
 
-/* "Also seen with" - cross-navigation links at the foot of a person page */
+/* "Seen with" - the social-web constellation at the foot of a person page */
 .also-seen {
   margin-top: clamp(2.4rem, 6vw, 4rem); padding-top: 1.6rem;
-  margin-bottom: clamp(3rem, 8vw, 6rem); border-top: 1px solid var(--hair);
+  margin-bottom: clamp(2rem, 5vw, 4rem); border-top: 1px solid var(--hair);
 }
 .also-seen h2.label {
   font-family: var(--mono); font-weight: 400; font-size: 0.72rem;
   letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem;
+  display: flex; align-items: baseline; gap: 0.6rem;
 }
-.also-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; }
-.also-links a {
-  font-family: var(--serif); font-size: 1.08rem; color: var(--ink); text-decoration: none;
-  transition: color 0.2s ease;
+.also-seen h2.label .n { color: var(--accent); }
+.constellation {
+  position: relative; width: 100%; height: clamp(360px, 52vw, 460px);
+  background: radial-gradient(80% 80% at 50% 50%, #1d1233, #120817);
+  border: 1px solid var(--hair); border-radius: 14px; overflow: hidden;
 }
-.also-links a:hover { color: var(--accent-2); }
+.constellation svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.constellation .hint {
+  position: absolute; left: 12px; bottom: 10px; z-index: 2;
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.cnode {
+  position: absolute; transform: translate(-50%, -50%);
+  border: 1px solid var(--hair); background: var(--card); color: var(--ink);
+  font-family: var(--serif); font-size: 0.92rem; padding: 0.4rem 0.75rem; border-radius: 999px;
+  white-space: nowrap; cursor: pointer; box-shadow: 0 6px 16px -8px rgba(0,0,0,.7);
+  animation: cnodein 0.4s ease both;
+}
+.cnode:hover { border-color: var(--accent-2); color: #fff; }
+.cnode.center { background: var(--accent); color: #241300; font-weight: 640; font-size: 1.04rem; border-color: var(--accent); box-shadow: var(--glow); cursor: default; }
+.cnode .c { font-family: var(--mono); font-size: 0.6rem; opacity: 0.75; margin-left: 0.45rem; }
+@keyframes cnodein { from { opacity: 0 } to { opacity: 1 } }
+@media (max-width: 560px){ .person-head { flex-direction: column; text-align: center; align-items: center; } }
+
+/* ---------------- Search ---------------- */
+.search-wrap { padding-bottom: clamp(3rem, 6vw, 5rem); }
+.search-wrap input {
+  width: 100%; background: #0d0716; border: 1px solid var(--hair); color: var(--ink);
+  font-family: var(--sans); font-size: 1.15rem; padding: 0.9rem 1.1rem; border-radius: 12px;
+}
+.search-wrap input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.search-wrap .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.8rem 0 0; }
+.search-wrap .chips button {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-2); background: transparent; border: 1px solid var(--hair); border-radius: 999px; padding: 0.34rem 0.7rem; cursor: pointer;
+}
+.search-wrap .chips button:hover { border-color: var(--accent); color: var(--accent-ink); }
+.rcount { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0.9rem 0 0; }
+.sr-label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin: 1.8rem 0 1rem; display: flex; gap: 0.6rem; align-items: baseline; }
+.sr-label .n { color: var(--accent); }
+.people-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.people-chips a {
+  display: inline-flex; align-items: baseline; gap: 0.4rem; font-family: var(--serif); font-size: 1.02rem;
+  color: var(--ink); background: var(--card); border: 1px solid var(--hair); border-radius: 999px; padding: 0.4rem 0.85rem;
+}
+.people-chips a:hover { border-color: var(--accent-2); color: #fff; }
+.people-chips a .c { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); }
+.search-wrap mark, .tile .cap mark { background: rgba(255,79,163,0.3); color: #fff; border-radius: 3px; padding: 0 0.12em; }
 .page-intro .eyebrow a { color: inherit; text-decoration: none; }
 .page-intro .eyebrow a:hover { color: var(--accent-2); }

@@ -22,7 +22,10 @@ function layout() {
       if (!img) return;
       var iw = parseFloat(img.getAttribute("width")) || img.naturalWidth || 1;
       var ih = parseFloat(img.getAttribute("height")) || img.naturalHeight || 1;
-      var h = tile.getBoundingClientRect().width * (ih / iw); // caption is absolute
+      var imgH = tile.getBoundingClientRect().width * (ih / iw);
+      var cap = tile.querySelector(".cap");         // caption now sits in-flow below the image
+      var capH = cap ? cap.getBoundingClientRect().height : 0;
+      var h = imgH + capH;
       tile.style.gridRowEnd = "span " + Math.max(1, Math.ceil((h + gap) / ROW));
     });
   });

@@ -70,9 +70,9 @@ function layoutConstellation(person) {
   if (more) {
     var rest = (person.alsoWith || []).slice(links.length);
     more.innerHTML = rest.length
-      ? '<span class="lbl">Also seen with</span> ' + rest.map(function (a) {
-          return '<a class="seen-link" data-slug="' + a.slug + '" href="person.html?p=' + encodeURIComponent(a.slug) + '">' + esc(a.display) + "</a>";
-        }).join(", ")
+      ? '<span class="lbl">Also seen with</span>' + rest.map(function (a) {
+          return '<a class="seen-link" data-slug="' + a.slug + '" href="person.html?p=' + encodeURIComponent(a.slug) + '">' + esc(a.display) + '<span class="c">' + a.count + "</span></a>";
+        }).join("")
       : "";
   }
 }

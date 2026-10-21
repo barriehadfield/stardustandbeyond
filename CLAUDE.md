@@ -100,7 +100,7 @@ different surname). Each gallery item is a `figure.tile` with an `a.shot` photo 
 PhotoSwipe trigger) and a `figcaption.cap`; a faint film-grain overlay sits site-wide.
 Nav, home "rooms" grid, and page builders are all
 driven by the `SECTIONS` array (People and Updates are appended to the nav separately;
-neither is a photo section). `LEAD` (`the-stardust/image861`, the uncaptioned club photo) is
+neither is a photo section). `LEAD` (`the-stardust/image575`, the uncaptioned club photo) is
 the site's hero on the home page and a glowing lead figure atop the Stardust page.
 The Stardust page opens with `STARDUST_TEXT`, the Boudoir page with `BOUDOIR_TEXT`
 (section intros are wired via `SECTION_TEXT` in `build-pages.mjs`). Every page also
@@ -330,11 +330,11 @@ and `<name>-thumb.webp` / `<name>-thumb.jpg` (max edge 800px). Section folders a
   `public/images/site/{favicon.svg,icon-32.png,icon-180.png}` via `npm run favicon`.
 - **`SOCIAL.whatsapp` is set** (group invite → nav + footer); `instagram` / `bluesky`
   are empty and therefore omitted — fill them in to show them.
-- **Share card not yet rendered:** `og-card.jpg` (the `DEFAULT_OG_IMAGE` fallback) does
-  not exist in `public/images/site/` yet. It isn't currently fetched — every page
-  supplies its own `og:image` (the home/Stardust use the club `LEAD`, each section uses
-  its first photo) — but render it from `source/og-card.html` (see the comment at the
-  top of that file) before adding any page that omits an `image`.
+- **Share card:** `public/images/site/og-card.jpg` (1200x630, the `DEFAULT_OG_IMAGE`)
+  is rendered from `source/og-card.html` (disco palette + serif wordmark + the club
+  `LEAD`; render steps in the comment at its top). It is the share image for the home,
+  People, person and Updates pages; each photo section uses its first photo, Videos
+  the first video's thumbnail. Re-render it if the palette, tagline or `LEAD` change.
 
 ## Deploying
 

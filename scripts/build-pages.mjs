@@ -260,7 +260,7 @@ async function buildHome(videos = []) {
 ${rooms.join("\n")}
       </div>
     </section>`;
-  return layout({ title: "Home", active: "index.html", main, home: true, image: `${leadBase}.jpg` });
+  return layout({ title: "Home", active: "index.html", main, home: true }); // shares with the og-card (DEFAULT_OG_IMAGE)
 }
 
 async function buildSection(sec) {
@@ -386,7 +386,6 @@ ${secs}
   return layout({
     title: "People", active: "people.html", main,
     desc: "Browse the Stardust & Beyond archive by person, or search by name, place or occasion.",
-    image: `public/images/${LEAD.kind}/${LEAD.file}.jpg`,
     extraScript: `\n  <script type="module" src="js/people.js?v=${ASSET.people}"></script>`,
   });
 }
@@ -531,7 +530,6 @@ ${blocks.join("\n")}`;
   return layout({
     title: "Updates", active: "updates.html", main,
     desc: "The latest photographs added to the Stardust & Beyond archive, newest first.",
-    image: `public/images/${LEAD.kind}/${LEAD.file}.jpg`,
   });
 }
 
@@ -546,7 +544,6 @@ function buildPersonPage() {
   return layout({
     title: "People", active: "person.html", navActive: "people.html", main,
     desc: "A person from the Stardust & Beyond archive.",
-    image: `public/images/${LEAD.kind}/${LEAD.file}.jpg`,
     extraScript: `\n  <script type="module" src="js/person.js?v=${ASSET.person}"></script>`,
   });
 }

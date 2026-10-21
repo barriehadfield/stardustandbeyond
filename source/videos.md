@@ -10,5 +10,5 @@ This file is editable on GitHub and is **not** touched by the photo importer.
 
 | YouTube link or id | Title | Description |
 |--------------------|-------|-------------|
-| 2HQ-I_s-Yis | Boylesque | Performed by Mark Griffin, Spencer Pillay, Lesley Wallace, Neil Starr, Patrick Talmadge and Mathew Ronan |
+| 2HQ-I_s-Yis | Boylesque | Performed by Mark Griffin, Spencer Pillay, Lesley Wallace, Neil Starr, Neil Holland, Patrick Talmadge and Mathew Ronan |
 | https://youtu.be/NslrLJs2Taw | Slide show for the Onion Ring 40th anniversary, with music | |

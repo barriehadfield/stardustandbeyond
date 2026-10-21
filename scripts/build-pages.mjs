@@ -411,14 +411,21 @@ function parseVideos(md) {
   return out;
 }
 
-function buildVideos(videos) {
+// Video descriptions name people in prose; link anyone named in full (or by an alias)
+// who has a person page. No bare first names - there's no photo context to resolve them.
+function linkVideoDesc(desc, people) {
+  return linkCaption(desc, people.filter((p) =>
+    [p.display, ...p.aliases].some((t) => findWord(desc, t) >= 0)).map((p) => ({ ...p, first: null })));
+}
+
+function buildVideos(videos, people) {
   const items = videos.map((v) => `      <figure class="video reveal">
         <div class="video-frame">
           <iframe src="https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1" title="${esc(v.title || "Video")}" loading="lazy"
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
-        <figcaption>${v.title ? `<span class="v-title">${esc(v.title)}</span>` : ""}${v.desc ? `<span class="v-desc">${esc(v.desc)}</span>` : ""}</figcaption>
+        <figcaption>${v.title ? `<span class="v-title">${esc(v.title)}</span>` : ""}${v.desc ? `<span class="v-desc">${linkVideoDesc(v.desc, people)}</span>` : ""}</figcaption>
       </figure>`).join("\n");
   const main = `    <div class="page-intro reveal">
       <div>
@@ -632,7 +639,7 @@ async function run() {
 
   const pages = [["index.html", await buildHome(videos)]];
   for (const sec of SECTIONS) pages.push([sec.href, await buildSection(sec)]);
-  pages.push(["videos.html", buildVideos(videos)]);
+  pages.push(["videos.html", buildVideos(videos, people.map((p) => ({ slug: p.slug, display: p.display, aliases: rosterBySlug.get(p.slug)?.aliases || [] })))]);
   pages.push(["people.html", buildPeoplePage(people)]);
   pages.push(["updates.html", await buildUpdatesPage(updates)]);
   await writeFile(join(OUT, "person.html"), buildPersonPage(), "utf-8"); // JS shell, kept out of sitemap

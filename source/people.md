@@ -112,6 +112,7 @@ replaces whatever the caption auto-matched for that photo.
 | Gavin Woolf | Gavin Woolfe |  |
 | Marcel Wishura |  |  |
 | Mathew Kelly |  |  |
+| Mathew Ronan |  |  |
 | Heather Roche |  |  |
 | Luke Davies |  |  |
 | Rowan |  |  |
@@ -418,10 +419,10 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image112 | Steven Roche; Mark Dingley |
 | 80s | image265 | Patrick Brill; Rene Kent; Steven Roche; Ian Perry; Mark Dingley; Garth Gething |
 | 80s | image715 | Richard Rufus Ellis |
-| 80s | image824 | Mark Griffin; Mathew Kelly; Steven Roche |
+| 80s | image824 | Mark Griffin; Mathew Ronan; Steven Roche |
 | 80s | image716 | Alan Froneman; Louis de Araujo |
 | 80s | image922 | Henri Davies; Patrick Brill; Steven Roche |
-| 80s | image59 | Mathew Kelly; Alan Froneman |
+| 80s | image59 | Mathew Ronan; Alan Froneman |
 | 80s | image812 | Duncan Good; Liz Good |
 | 80s | image482 | Gary Halfpenny; Henri Davies; Mark Dingley |
 | 80s | image803 | Gary Halfpenny; Henri Davies; Mark Dingley |

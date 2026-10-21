@@ -74,33 +74,77 @@ source/images/<slug>/*            npm run optimize       public/images/<slug>/*
 - **`source/people.md`** — the **People** master index (hand-edited, allow-list +
   per-photo overrides). Single source of truth for the People tab; the importer
   never touches it. See **People index** below.
-- **`css/style.css`, `js/site.js`, `js/gallery.js`, `js/person.js`, `js/search.js`** —
+- **`css/style.css`, `js/site.js`, `js/gallery.js`, `js/person.js`, `js/people.js`** —
   hand-written, the real site assets. `js/gallery.js` holds the shared masonry +
-  PhotoSwipe init used by `site.js` (section pages), `js/person.js` (the People detail
-  page) and `js/search.js` (search results). Gallery items are `figure.tile` with an
-  `a.shot` photo link (the lightbox trigger) and a `figcaption.cap`; photos are rounded.
+  PhotoSwipe init used by `site.js` (section pages + the Updates red dot), `js/person.js`
+  (the People detail page) and `js/people.js` (the People page: filters the A-Z index
+  into search results; formerly the Search page). Gallery items are `figure.tile` with an `a.shot` photo link
+  (the lightbox trigger) and a `figcaption.cap`; photos are rounded.
 
 ## Pages & sections
 
 `index.html` (landing — club hero + section cards) and one page per tab:
 `the-stardust.html` · `the-boudoir.html` · `steven.html` · `70s.html` · `80s.html`
-· `90s.html` · `2000.html`, plus `people.html` (the People index), `person.html`
-(the JS-driven per-person view with a portrait header and the "Seen with" social-web
-constellation), `videos.html`, and `search.html` (client-side search over
-`public/search.json`, driven by `js/search.js`). Section pages carry a per-decade
+· `90s.html` · `2000.html`, plus `people.html` (the A-Z People index **with** the search
+box merged in — client-side over `public/search.json`, driven by `js/people.js`: an empty
+box shows the full letter-grouped index, typing hides it and filters to matching people +
+captioned photos), `person.html` (the JS-driven
+per-person view with a portrait header and the "Seen with" social-web constellation),
+`videos.html`, and `updates.html` (the **Updates** feed — new photos grouped by deploy;
+see below). (There is no separate `search.html` any more — it merged into People.)
+Section pages carry a per-decade
 **era accent** (`--era`, set from `data-era` on `<body>`); captions render as readable
 text beneath each photo (not a hover overlay), with recognised names linked to their person
 pages (`linkCaption` in `build-pages.mjs`; a bare first name isn't linked when followed by a
 different surname). Each gallery item is a `figure.tile` with an `a.shot` photo link (the
 PhotoSwipe trigger) and a `figcaption.cap`; a faint film-grain overlay sits site-wide.
 Nav, home "rooms" grid, and page builders are all
-driven by the `SECTIONS` array (People is appended to the nav separately; it is not
-a photo section). `LEAD` (`the-stardust/image861`, the uncaptioned club photo) is
+driven by the `SECTIONS` array (People and Updates are appended to the nav separately;
+neither is a photo section). `LEAD` (`the-stardust/image861`, the uncaptioned club photo) is
 the site's hero on the home page and a glowing lead figure atop the Stardust page.
 The Stardust page opens with `STARDUST_TEXT`, the Boudoir page with `BOUDOIR_TEXT`
 (section intros are wired via `SECTION_TEXT` in `build-pages.mjs`). Every page also
 carries a WhatsApp "Join the group" nav item and a footer button, from
 `SOCIAL.whatsapp`.
+
+## Updates feed
+
+`updates.html` lists new photographs grouped by the deploy on which they first
+appeared, so returning visitors can be pointed at pictures they haven't seen yet. A
+**red dot** sits on the Updates nav link until a visitor has seen the latest batch.
+
+- **`scripts/updates.mjs`** — `buildUpdates({ GALLERIES, SECTIONS, LEAD })` dates every
+  current photo by its **image content, not its filename**. This matters: a fresh export
+  renumbers every image, base names are **reused across folders and exports** (e.g. an old
+  `90s/image760` and a brand-new `70s/image760` are *different photos*), and the early
+  imports re-encoded the whole archive — so a filename is **not** a stable photo id across
+  history. Git tracks content, so we use the blob id (OID):
+  - **Identity & dedup:** a photo = its bytes (blob OID). Byte-identical copies shown in
+    two tabs merge into one; two photos that merely share a base name stay separate. (Do
+    **not** dedup Updates by base name — it silently collapses distinct photos.)
+  - **Past:** walk history (`git ls-tree -r <commit> -- source/images`, oldest first) and
+    record the first commit each blob id appears in. Everything first seen on/before
+    `STABLE_FROM` (**2026-09-20**, when `source/image-names.json` began and names became
+    stable) folds into one **"original archive"** baseline — per-deploy history before then
+    isn't meaningful (the archive was re-encoded wholesale). After it, each import only
+    adds genuinely-new bytes, so the per-deploy batches are real.
+  - **Going forward (automatic):** a photo whose bytes aren't committed yet is stamped
+    **today** (a batch forms the moment you add photos and `npm run build`); next build it
+    locks to its commit date. An unchanged photo keeps its date because its bytes don't
+    change. Nothing extra to commit — the feed is always derived at build time.
+  - Batches are keyed by date (one per deploy-day) newest-first; `baseline:true` marks the
+    folded pre-stable archive; `latest` = the newest non-baseline date.
+- **Rendering (`build-pages.mjs` → `buildUpdatesPage`):** each non-baseline batch renders
+  as a gallery (newest tagged **Latest**); the `baseline` batch renders as one lightweight
+  summary so the page stays light. Captions link people just like section pages.
+- **Red dot (`js/site.js`):** every page's `<body>` carries `data-updates="<latest>"`
+  and `data-page="<active>"`. `site.js` compares `latest` to `localStorage["stardust-
+  updates-seen"]` (per device) and adds `.has-new` to the Updates nav link until they
+  match; visiting `updates.html` writes the latest id as seen. There is no server state —
+  the dot is purely client-side.
+- **Caveat:** dating shells out to `git` at build time (fine locally, where the Pages
+  build is run) and reads blob ids under `source/images`. With no git available it
+  degrades to a single baseline batch dated today.
 
 ## People index
 
@@ -132,7 +176,8 @@ against the photo captions by `scripts/people.mjs` during `npm run build`.
   to seed the roster.
 - **Build outputs:** `public/people.json` (per-person photos + dims + linked-caption
   HTML + an `alsoWith` co-occurrence list, consumed by `js/person.js`), `people.html`
-  (static A-Z index by first name), `person.html` (JS shell; `person.html?p=<slug>`
+  (the A-Z index with the search box merged in, driven by `js/people.js` over `public/search.json`),
+  `person.html` (JS shell; `person.html?p=<slug>`
   shows a **portrait header**, the photos grouped by section, and a **"Seen with"
   social-web constellation** built from `alsoWith` — tap a node to travel in place;
   anyone the star can't fit is listed as pills below it), and `scripts/people-report.md`

@@ -44,8 +44,7 @@ replaces whatever the caption auto-matched for that photo.
 | Mark Cioli |  |  |
 | Sally Fisher | Sally Fiisher |  |
 | Sally Chance |  |  |
-| Lauren Shipton |  |  |
-| Lauren Estagarribia | Lauren Estagaribia |  |
+| Lauren Shipton | Lauren Estagarribia; Lauren Estagaribia |  |
 | Rene Kent |  |  |
 | Gillian Lenton |  |  |
 | Seyton Machattie | Seaton |  |
@@ -62,7 +61,6 @@ replaces whatever the caption auto-matched for that photo.
 | Kevin Rogers |  |  |
 | Kevin Botha |  |  |
 | Kevin MacInnes | Kevin McInnes; Kevin Mac; Kevin Mc |  |
-| Louis |  |  |
 | Neil Starr |  |  |
 | Neil Dundas |  |  |
 | Neil Farrelly |  |  |
@@ -78,6 +76,7 @@ replaces whatever the caption auto-matched for that photo.
 | David Ralphs |  |  |
 | David Ross |  |  |
 | David Wannamaker |  |  |
+| Divine |  |  |
 | Douglas Austin | Douglas |  |
 | Richard Rufus Ellis | Rufus Ellis |  |
 | Richard Lawton |  |  |
@@ -208,7 +207,7 @@ replaces whatever the caption auto-matched for that photo.
 | Anthony Kenney |  |  |
 | Tony |  |  |
 | Rocky Farren |  |  |
-| Louis de Araujo |  |  |
+| Louis de Araujo | Louis |  |
 | Michael van Rensburg |  |  |
 | Steve Lawrence | Steven Lawrence; Steven Lawrences |  |
 | Chi Chi La Rue | Chi Chi |  |
@@ -404,13 +403,14 @@ replaces whatever the caption auto-matched for that photo.
 | 70s | image616 | Henri Davies |
 | 70s | image443 | Illana Woolf; Louis de Araujo; Michael van Rensburg |
 | 70s | image355 |  |
-| 70s | image487 |  |
-| 70s | image841 |  |
+| 70s | image487 | Louis de Araujo |
+| 70s | image841 | Louis de Araujo |
 | 70s | image758 | Illana Woolf |
-| 70s | image256 |  |
+| 70s | image256 | Louis de Araujo |
 | 70s | image363 | Henri Davies |
 | 70s | image918 |  |
-| 70s | image285 |  |
+| 70s | image285 | Louis de Araujo |
+| 70s | image1319 | Louis de Araujo; Cindy West |
 | 70s | image252 | Cheryl Johnson; Henri Davies; Kerry Bennett; Sharon Coetsee; Stephen Pritchard; Louis de Araujo |
 | 80s | image875 | Graham Moore; Peter Moffat; Steven Roche |
 | 80s | image764 | Dale Schultz; Gail Butler; Gary Halfpenny; Henri Davies; Kerry Bennett; Steve Lawrence |
@@ -450,7 +450,7 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image894 | Noel Osborne; Garth Gething |
 | 80s | image486 | Bernard Hatch |
 | 80s | image634 | Patrick Brill; Mark Griffin |
-| 80s | image342 | Ian Perry; Mark Griffin; Patrick Brill; Rene Kent; Steven Roche; Henri Davies; Bruce Patterson |
+| 80s | image342 | Richard Rufus Ellis |
 | 80s | image56 | Garth Gething; Henri Davies; Steven Roche; Mark Dingley |
 | 80s | image383 | Garth Gething; Ronnie Botha |
 | 80s | image514 | Mark Griffin |
@@ -507,7 +507,7 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image478 | Treva Norris |
 | 80s | image410 | Trevor Norris; Michael Hunter Smith |
 | 80s | image707 | Trevor Norris; Michael Hunter Smith; Mark Griffin |
-| 80s | image286 | Louis; Louis de Araujo |
+| 80s | image286 | Louis de Araujo |
 | 2000 | image18 | Graham Moore; Marc Watson; James Moffat; Peter Moffat |
 | the-stardust | image348 | Lauren Shipton |
 | the-stardust | image659 | Henri Davies; Darryl Rogers |

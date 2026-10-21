@@ -1,6 +1,8 @@
-/* Search page: filters public/search.json (captioned photos + people) in the
-   browser. People matches link to their pages; photo matches render as a gallery
-   with the shared masonry + PhotoSwipe lightbox. */
+/* People page: the static A-Z index with a search box merged in (the old Search
+   page). With an empty box the full A-Z index shows; typing filters to results -
+   matching people (by name) and captioned photos - and hides the index. People
+   matches link to their pages; photo matches render as a gallery with the shared
+   masonry + PhotoSwipe lightbox, all over public/search.json. */
 import { initMasonry, initLightbox } from "./gallery.js";
 
 var DATA = null, MAXP = 150;
@@ -28,29 +30,40 @@ function tile(p, q) {
     "</a><figcaption class=\"cap\">" + markHtml(p.html || esc(p.c), q) + "</figcaption></figure>";
 }
 
+// People as chips (q highlights the match; "" for a plain browse list)
+function peopleChips(list, q) {
+  return '<div class="people-chips">' + list.map(function (p) {
+    return '<a href="person.html?p=' + encodeURIComponent(p.slug) + '">' + (q ? hilite(p.display, q) : esc(p.display)) + '<span class="c">' + p.count + "</span></a>";
+  }).join("") + "</div>";
+}
+
 var peopleBox = document.getElementById("people-results");
 var photoBox = document.getElementById("photo-results");
+var indexBox = document.getElementById("people-index");
 var cnt = document.getElementById("rcount");
 var input = document.getElementById("q");
+
+function browse() {
+  // empty box: show the full A-Z index, clear any results
+  peopleBox.innerHTML = "";
+  photoBox.innerHTML = "";
+  cnt.textContent = "";
+  if (indexBox) indexBox.hidden = false;
+}
 
 function run(q) {
   q = (q || "").trim();
   if (!DATA) return;
-  if (q.length < 2) {
-    peopleBox.innerHTML = ""; photoBox.innerHTML = "";
-    cnt.textContent = "Type a name, place or occasion, or pick a suggestion.";
-    return;
-  }
+  if (q.length < 2) { browse(); return; }
+
+  if (indexBox) indexBox.hidden = true;        // searching: hide the A-Z index
   var ql = q.toLowerCase();
   var people = DATA.people.filter(function (p) { return p.display.toLowerCase().indexOf(ql) > -1; })
     .sort(function (a, b) { return b.count - a.count; }).slice(0, 30);
   var photos = DATA.photos.filter(function (p) { return p.c.toLowerCase().indexOf(ql) > -1; });
 
   peopleBox.innerHTML = people.length
-    ? '<p class="sr-label">People <span class="n">' + people.length + "</span></p><div class=\"people-chips\">" +
-      people.map(function (p) {
-        return '<a href="person.html?p=' + encodeURIComponent(p.slug) + '">' + hilite(p.display, q) + '<span class="c">' + p.count + "</span></a>";
-      }).join("") + "</div>"
+    ? '<p class="sr-label">People <span class="n">' + people.length + "</span></p>" + peopleChips(people, q)
     : "";
 
   var shown = photos.slice(0, MAXP);
@@ -70,10 +83,7 @@ function run(q) {
 
 var t;
 input.addEventListener("input", function () { clearTimeout(t); t = setTimeout(function () { run(input.value); setHash(input.value); }, 160); });
-[].slice.call(document.querySelectorAll("#suggest button")).forEach(function (b) {
-  b.onclick = function () { input.value = b.dataset.q; run(input.value); setHash(input.value); input.focus(); };
-});
-function setHash(v) { try { history.replaceState(null, "", v ? "#q=" + encodeURIComponent(v) : "search.html"); } catch (e) {} }
+function setHash(v) { try { history.replaceState(null, "", v ? "#q=" + encodeURIComponent(v) : "people.html"); } catch (e) {} }
 
 fetch("public/search.json")
   .then(function (r) { return r.json(); })
@@ -82,6 +92,5 @@ fetch("public/search.json")
     var m = /[#&]q=([^&]+)/.exec(location.hash);
     if (m) { input.value = decodeURIComponent(m[1].replace(/\+/g, " ")); }
     run(input.value);
-    input.focus();
   })
-  .catch(function () { cnt.textContent = "Couldn’t load the search index. Please try again."; });
+  .catch(function () { cnt.textContent = "Couldn’t load the archive index. Please try again."; });

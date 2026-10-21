@@ -19,6 +19,24 @@ import { initMasonry, initLightbox } from "./gallery.js";
   nav.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
 })();
 
+/* ---- Updates red dot ----
+   Every page carries data-updates="<latest batch date>". We remember the last
+   batch a visitor has seen (localStorage, this device) and, until it matches,
+   show a red dot on the Updates nav link to point them at new photographs.
+   Visiting the Updates page marks the latest batch seen. */
+(function () {
+  var latest = document.body.getAttribute("data-updates");
+  if (!latest) return;
+  var KEY = "stardust-updates-seen";
+  var onUpdates = document.body.getAttribute("data-page") === "updates.html";
+  if (onUpdates) { try { localStorage.setItem(KEY, latest); } catch (e) {} return; }
+  var seen = null;
+  try { seen = localStorage.getItem(KEY); } catch (e) {}
+  if (seen !== latest) {
+    document.querySelectorAll('.nav a[href="updates.html"]').forEach(function (a) { a.classList.add("has-new"); });
+  }
+})();
+
 /* ---- Row-major masonry (shared) ---- */
 initMasonry();
 

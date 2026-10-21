@@ -14,6 +14,7 @@ import sharp from "sharp";
 import { SITE, SOCIAL, LEAD, SECTIONS, STARDUST_TEXT, BOUDOIR_TEXT, GALLERIES } from "./site-data.mjs";
 import { parsePeopleMd, computePeople } from "./people.mjs";
 import { buildEditorData } from "./build-editor.mjs";
+import { buildUpdates, formatBatchDate } from "./updates.mjs";
 
 // Intro prose shown above a section's gallery, keyed by section slug.
 const SECTION_TEXT = { "the-stardust": STARDUST_TEXT, "the-boudoir": BOUDOIR_TEXT };
@@ -23,14 +24,18 @@ const OUT = ROOT;
 const SITE_URL = SITE.url;
 
 // content-hashed asset versions so browsers always fetch fresh css/js on change.
-const ASSET = { css: "1", js: "1", person: "1", search: "1" };
+const ASSET = { css: "1", js: "1", person: "1", people: "1" };
+
+// The newest Updates batch id (a date) - embedded on every page so js/site.js can
+// show a red dot on the Updates nav link until a visitor has seen it.
+let LATEST_UPDATE = "";
 async function assetVersion(rel) {
   try { return createHash("sha1").update(await readFile(join(ROOT, rel))).digest("hex").slice(0, 8); }
   catch { return "1"; }
 }
 
-// Nav: the photo sections plus the People index.
-const NAV = [...SECTIONS.map((s) => ({ href: s.href, label: s.label })), { href: "videos.html", label: "Videos" }, { href: "people.html", label: "People" }, { href: "search.html", label: "Search" }];
+// Nav: the photo sections, Videos, the People index (now also the search), and Updates.
+const NAV = [...SECTIONS.map((s) => ({ href: s.href, label: s.label })), { href: "videos.html", label: "Videos" }, { href: "people.html", label: "People" }, { href: "updates.html", label: "Updates" }];
 
 // WhatsApp glyph (inline SVG, no external asset — CSP-clean).
 const WA_ICON = `<svg class="wa-ico" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.96-.94-.26-.1-.45-.14-.64.15-.19.29-.74.94-.9 1.13-.17.19-.33.21-.62.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.72-1.6-2.01-.17-.29-.02-.45.13-.59.13-.13.29-.34.43-.51.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.64-1.56-.88-2.13-.23-.55-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 .98-1 2.39 0 1.41 1.03 2.78 1.17 2.97.14.19 2.02 3.08 4.89 4.32.68.29 1.22.47 1.63.6.69.22 1.31.19 1.8.11.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34zM12 2.06C6.55 2.06 2.11 6.5 2.11 11.95c0 1.75.46 3.46 1.33 4.97L2.03 22l5.2-1.36a9.86 9.86 0 0 0 4.77 1.22h.01c5.45 0 9.89-4.44 9.89-9.9 0-2.64-1.03-5.13-2.9-7A9.82 9.82 0 0 0 12 2.06zm0 18.06h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.09.81.82-3.01-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.53 3.69-8.21 8.22-8.21 2.2 0 4.26.86 5.81 2.41a8.16 8.16 0 0 1 2.41 5.81c0 4.53-3.69 8.21-8.22 8.21z"/></svg>`;
@@ -186,7 +191,7 @@ function layout({ title, active, navActive, main, home, desc, image, extraScript
   <link rel="stylesheet" href="js/vendor/photoswipe/photoswipe.css">
   <link rel="stylesheet" href="css/style.css?v=${ASSET.css}">${jsonLd}
 </head>
-<body${era ? ` data-era="${era}"` : ""}>
+<body data-page="${esc(navCur)}"${era ? ` data-era="${era}"` : ""}${LATEST_UPDATE ? ` data-updates="${esc(LATEST_UPDATE)}"` : ""}>
   <header class="hdr">
     <div class="hdr-inner">
       <a class="mark" href="index.html">Stardust<b> &amp; </b>Beyond</a>
@@ -335,8 +340,11 @@ async function buildPeopleData(people) {
   return out;
 }
 
-// The A-Z index page (static HTML, no JS needed to browse).
-function buildPeopleIndex(people) {
+// The People page: a search box (merged in from the old Search page) above the
+// full A-Z index of everyone, grouped by first-name letter. Typing filters to
+// results (people + captioned photos); clearing the box shows the index again.
+// Driven client-side by js/people.js over public/search.json.
+function buildPeoplePage(people) {
   const sorted = [...people].sort((a, b) => a.display.localeCompare(b.display));
   const groups = new Map();
   for (const p of sorted) {
@@ -346,32 +354,40 @@ function buildPeopleIndex(people) {
     groups.get(letter).push(p);
   }
   const letters = [...groups.keys()].sort();
-  const bar = letters.map((l) => `<a href="#ltr-${l}">${l}</a>`).join("");
   const secs = letters.map((l) => {
     const items = groups.get(l).map((p) =>
       `        <li><a href="person.html?p=${p.slug}">${esc(p.display)}</a><span class="n">${p.count}</span></li>`
     ).join("\n");
-    return `    <section class="alpha reveal" id="ltr-${l}">
-      <h2 class="label">${l}</h2>
-      <ul class="namelist">
+    return `      <section class="alpha" id="ltr-${l}">
+        <h2 class="label">${l}</h2>
+        <ul class="namelist">
 ${items}
-      </ul>
-    </section>`;
+        </ul>
+      </section>`;
   }).join("\n");
+
   const main = `    <div class="page-intro reveal">
       <div>
         <p class="eyebrow">The archive</p>
         <h1>People</h1>
-        <p class="sub">Everyone named in the photographs - tap a name to see their pictures.</p>
+        <p class="sub">Everyone named in the photographs - tap a name to see their pictures, or search a name, place or night.</p>
       </div>
       <span class="count">${people.length} people</span>
     </div>
-    <nav class="alpha-bar reveal" aria-label="Jump to letter">${bar}</nav>
-${secs}`;
+    <div class="search-wrap reveal">
+      <input id="q" type="search" placeholder="Search a name, place or night…" autocomplete="off" spellcheck="false" aria-label="Search the archive">
+      <p class="rcount" id="rcount"></p>
+      <div id="people-results"></div>
+      <div id="photo-results"></div>
+    </div>
+    <div id="people-index">
+${secs}
+    </div>`;
   return layout({
     title: "People", active: "people.html", main,
-    desc: "Browse the Stardust & Beyond archive by person - everyone named in the photographs.",
+    desc: "Browse the Stardust & Beyond archive by person, or search by name, place or occasion.",
     image: `public/images/${LEAD.kind}/${LEAD.file}.jpg`,
+    extraScript: `\n  <script type="module" src="js/people.js?v=${ASSET.people}"></script>`,
   });
 }
 
@@ -453,28 +469,62 @@ async function buildSearchIndex(people) {
   return { people: peopleOut, photos };
 }
 
-function buildSearchPage() {
+/* ---------- Updates ---------- */
+// A gallery whose photos each carry their own section (kind), unlike the
+// single-section gallery() helper.
+async function mixedGallery(photos) {
+  const tiles = await Promise.all(photos.map((p, i) => tile(p.kind, { file: p.file, title: p.title }, i < 6)));
+  return `  <div class="grid">\n${tiles.join("\n")}\n  </div>`;
+}
+
+// The Updates feed: each recent deploy batch as a gallery; the pre-stable archive
+// (batch.baseline) as a single lightweight summary so the page stays light.
+async function buildUpdatesPage({ batches }) {
+  const recent = batches.filter((b) => !b.baseline);
+  const baseline = batches.find((b) => b.baseline);
+  const recentTotal = recent.reduce((n, b) => n + b.photos.length, 0);
+
+  const blocks = [];
+  for (let i = 0; i < recent.length; i++) {
+    const b = recent[i];
+    const g = await mixedGallery(b.photos);
+    const n = b.photos.length;
+    blocks.push(`    <section class="update-batch reveal">
+      <div class="batch-head">
+        <h2 class="label">${esc(formatBatchDate(b.date))}${i === 0 ? ' <span class="badge-new">Latest</span>' : ""}</h2>
+        <span class="count">${n} ${n === 1 ? "photo" : "photos"}</span>
+      </div>
+${g}
+    </section>`);
+  }
+
+  if (baseline) {
+    const baseN = baseline.photos.length;
+    blocks.push(`    <section class="update-batch baseline reveal">
+      <div class="batch-head">
+        <h2 class="label">The original archive</h2>
+        <span class="count">${baseN} photos</span>
+      </div>
+      <p class="sub">The founding collection - ${baseN} photographs gathered before the archive began tracking what's new. <a href="index.html">Browse the rooms</a> to see them all.</p>
+    </section>`);
+  }
+
+  const intro = recentTotal
+    ? "New photographs, grouped by the day they were added. Come back for more - the latest are always at the top."
+    : "No new photographs since the archive opened - check back after the next additions.";
   const main = `    <div class="page-intro reveal">
       <div>
         <p class="eyebrow">The archive</p>
-        <h1>Search</h1>
-        <p class="sub">Find a name, a place, a night.</p>
+        <h1>Updates</h1>
+        <p class="sub">${intro}</p>
       </div>
+      ${recentTotal ? `<span class="count">${recentTotal} recent</span>` : ""}
     </div>
-    <div class="search-wrap">
-      <input id="q" type="search" placeholder="Search the archive…" autocomplete="off" spellcheck="false" aria-label="Search the archive">
-      <div class="chips" id="suggest">
-        <button type="button" data-q="Mallorca">Mallorca</button><button type="button" data-q="Miss Stardust">Miss Stardust</button><button type="button" data-q="Onion Ring">Onion Ring</button><button type="button" data-q="Boudoir">Boudoir</button><button type="button" data-q="London">London</button>
-      </div>
-      <p class="rcount" id="rcount">Type a name, place or occasion, or pick a suggestion.</p>
-      <div id="people-results"></div>
-      <div id="photo-results"></div>
-    </div>`;
+${blocks.join("\n")}`;
   return layout({
-    title: "Search", active: "search.html", main,
-    desc: "Search the Stardust & Beyond archive by name, place or occasion.",
+    title: "Updates", active: "updates.html", main,
+    desc: "The latest photographs added to the Stardust & Beyond archive, newest first.",
     image: `public/images/${LEAD.kind}/${LEAD.file}.jpg`,
-    extraScript: `\n  <script type="module" src="js/search.js?v=${ASSET.search}"></script>`,
   });
 }
 
@@ -539,7 +589,7 @@ async function run() {
   ASSET.css = await assetVersion("css/style.css");
   ASSET.js = await assetVersion("js/site.js");
   ASSET.person = await assetVersion("js/person.js");
-  ASSET.search = await assetVersion("js/search.js");
+  ASSET.people = await assetVersion("js/people.js");
 
   // People index: match captions against the master index (source/people.md).
   const peopleMd = await readFile(join(ROOT, "source", "people.md"), "utf-8");
@@ -574,11 +624,17 @@ async function run() {
   await writeFile(join(ROOT, "public", "search.json"), JSON.stringify(searchData), "utf-8");
   console.log(`  wrote public/search.json (${searchData.photos.length} captioned photos)`);
 
+  // Updates feed: git-reconstructed deploy history + a going-forward "today" batch
+  // for any photos added but not yet committed. Sets the red-dot id for all pages.
+  const updates = buildUpdates({ GALLERIES, SECTIONS, LEAD });
+  LATEST_UPDATE = updates.latest;
+  console.log(`  updates: ${updates.batches.length} intervals, latest ${updates.latest || "(none)"}`);
+
   const pages = [["index.html", await buildHome(videos)]];
   for (const sec of SECTIONS) pages.push([sec.href, await buildSection(sec)]);
   pages.push(["videos.html", buildVideos(videos)]);
-  pages.push(["people.html", buildPeopleIndex(people)]);
-  pages.push(["search.html", buildSearchPage()]);
+  pages.push(["people.html", buildPeoplePage(people)]);
+  pages.push(["updates.html", await buildUpdatesPage(updates)]);
   await writeFile(join(OUT, "person.html"), buildPersonPage(), "utf-8"); // JS shell, kept out of sitemap
   console.log("  wrote person.html");
 

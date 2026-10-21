@@ -44,7 +44,8 @@ replaces whatever the caption auto-matched for that photo.
 | Mark Cioli |  |  |
 | Sally Fisher | Sally Fiisher |  |
 | Sally Chance |  |  |
-| Lauren Shipton | Lauren Estagarribia; Lauren Estagaribia |  |
+| Lauren Shipton |  | yes |
+| Lauren Estagaribia | Lauren Estagarribia |  |
 | Rene Kent |  |  |
 | Gillian Lenton |  |  |
 | Seyton Machattie | Seaton |  |
@@ -69,7 +70,8 @@ replaces whatever the caption auto-matched for that photo.
 | Cindy West |  |  |
 | Kerry Bennett |  |  |
 | Jackie Bryant |  |  |
-| Trevor Norris |  |  |
+| Trevor Norris | Treva Norris; Treva |  |
+| Trevor Dykeman | Trevor Dykman |  |
 | Karen Ward |  |  |
 | David Goudge |  |  |
 | David Davies |  |  |
@@ -97,9 +99,9 @@ replaces whatever the caption auto-matched for that photo.
 | Gary Halfpenny |  |  |
 | Gary Moore |  |  |
 | Gary Searle |  |  |
-| Treva Norris | Treva |  |
 | Noel Osborne |  |  |
 | Leigh Downing |  |  |
+| Leigh Scott |  |  |
 | Alan Whitehead |  |  |
 | Alan Horn |  |  |
 | Alan Morrison |  |  |
@@ -116,6 +118,7 @@ replaces whatever the caption auto-matched for that photo.
 | Keith Schultz |  |  |
 | Dale Schultz | Dale Shultz |  |
 | Craig Peetz |  |  |
+| Craig Taylor |  |  |
 | Graham Moore |  |  |
 | Tom Collins |  |  |
 | Murray Scannell | Murray Scanell |  |
@@ -135,6 +138,7 @@ replaces whatever the caption auto-matched for that photo.
 | Janet Doby | Janet Dobey |  |
 | Bernard Hatch |  |  |
 | Linda Basson |  |  |
+| Linda Fitzpatrick |  |  |
 | Adele Shandel |  |  |
 | Duncan Good | Duncan |  |
 | Liz Good |  |  |
@@ -223,7 +227,7 @@ replaces whatever the caption auto-matched for that photo.
 | Eddie Da Lima | Eddy de Lima |  |
 | Bruce Patterson |  |  |
 | Jenny Jarvis |  |  |
-| Jackie Woolf |  |  |
+| Jackie Woolf | Jackie Woolfe |  |
 | Noel von Wildenrath | Noel van Wildenrath |  |
 | Alex Botha |  |  |
 | Lynton Lefevre |  |  |
@@ -252,7 +256,6 @@ replaces whatever the caption auto-matched for that photo.
 | John Bekker |  |  |
 | Chris Levin |  |  |
 | Wayne Saville |  |  |
-| Jackie Woolfe |  |  |
 | Garth Falkner |  |  |
 | Kevin Halcut |  |  |
 | Darryl Roffey |  |  |
@@ -373,7 +376,6 @@ replaces whatever the caption auto-matched for that photo.
 | the-stardust | image374 | Steven Roche; Vanessa; Gillian Lenton; Eric Reeves |
 | the-stardust | image228 | Steven Roche; Grant Patterson |
 | the-stardust | image213 | Steven Roche |
-| the-stardust | image877 |  |
 | the-boudoir | image370 | Henri Davies; Mark Griffin; Trevor Norris |
 | the-boudoir | image447 | Elaine Welsh; Henri Davies; Jackie Bryant; Karen Ward; Mark Griffin; Michael Hunter Smith; Patrick Brill; Rodney Symes; Steven Kent; Steven Roche; Trevor Norris |
 | the-boudoir | image437 | Conrad Coward; Henri Davies; Jackie Bryant; Pam Harmse; Steven Roche |
@@ -399,16 +401,13 @@ replaces whatever the caption auto-matched for that photo.
 | 70s | image806 | Michael Hunter Smith; Steven Roche |
 | 70s | image773 | Thelma; Tony |
 | 70s | image736 | Richard Rufus Ellis; Steven Roche; Treva Norris |
-| 70s | image29 | Lauren Shipton; Rocky Farren |
-| 70s | image616 | Henri Davies |
 | 70s | image443 | Illana Woolf; Louis de Araujo; Michael van Rensburg |
 | 70s | image355 |  |
 | 70s | image487 | Louis de Araujo |
 | 70s | image841 | Louis de Araujo |
-| 70s | image758 | Illana Woolf |
+| 70s | image758 | Louis de Araujo; Illana Woolf |
 | 70s | image256 | Louis de Araujo |
 | 70s | image363 | Henri Davies |
-| 70s | image918 |  |
 | 70s | image285 | Louis de Araujo |
 | 70s | image1319 | Louis de Araujo; Cindy West |
 | 70s | image252 | Cheryl Johnson; Henri Davies; Kerry Bennett; Sharon Coetsee; Stephen Pritchard; Louis de Araujo |
@@ -417,10 +416,10 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image84 | Steven Roche; Chi Chi La Rue |
 | 80s | image907 | Henri Davies; Louis de Araujo |
 | 80s | image112 | Steven Roche; Mark Dingley |
-| 80s | image265 | Garth Gething; Ian Perry; Patrick Brill; Rene Kent; Steven Roche |
+| 80s | image265 | Patrick Brill; Rene Kent; Steven Roche; Ian Perry; Mark Dingley; Garth Gething |
 | 80s | image715 | Richard Rufus Ellis |
 | 80s | image824 | Mark Griffin; Mathew Kelly; Steven Roche |
-| 80s | image716 | Alan Froneman |
+| 80s | image716 | Alan Froneman; Louis de Araujo |
 | 80s | image922 | Henri Davies; Patrick Brill; Steven Roche |
 | 80s | image59 | Mathew Kelly; Alan Froneman |
 | 80s | image812 | Duncan Good; Liz Good |
@@ -466,14 +465,11 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image402 | Steven Roche; Neil Dundas |
 | 80s | image350 | Michael van Rensburg |
 | 80s | image145 | Spencer Pillay |
-| 80s | image508 | Michael van Rensburg |
-| 80s | image677 | Seyton Machattie; Leonardo Lupini |
+| 80s | image508 | Cindy West; Rory West |
 | 80s | image45 | Leigh Downing; Henri Davies; Jenny Jarvis |
 | 80s | image397 | Louis de Araujo; Michael van Rensburg |
-| 80s | image184 | Michael van Rensburg |
 | 80s | image809 | Louis de Araujo |
-| 80s | image781 | Louis de Araujo |
-| 80s | image71 | Tanya van Agthoven |
+| 80s | image71 | Tanya van Agthoven; Henri Davies |
 | 80s | image147 | Steven Roche; Trevor Norris; Neil Dundas |
 | 80s | image730 | Mark Griffin; Spencer Pillay; Seyton Machattie |
 | 80s | image137 | Peter Moffat; Steven Roche |
@@ -490,9 +486,7 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image747 | Henri Davies; Kerry Bennett; Lianne Basson; Linda Basson; Marcel Wishura; Alex Botha |
 | 80s | image424 | Tanya van Agthoven; Eddie Da Lima |
 | 80s | image185 | Maxi Spazzoli; Patrick Brill; Stephen Doubell |
-| 80s | image378 | Louis de Araujo |
 | 80s | image257 | Henri Davies; Patrick Brill; Louis de Araujo |
-| 80s | image477 | Gillian Lenton |
 | 80s | image720 | Louis de Araujo |
 | 80s | image276 | Treva Norris |
 | 80s | image440 | Maxi Spazzoli; Patrick Brill; Lynton Lefevre |
@@ -500,7 +494,7 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image865 | Henri Davies; Noel Osborne; Wayne Kobusch; Mark Dingley |
 | 80s | image327 | Ian Perry |
 | 80s | image703 | Henri Davies |
-| 80s | image708 | Barbara Lindsey; Kerry Bennett; Maxi Spazzoli; Patrick Brill |
+| 80s | image708 | Henri Davies; Barbara Lindsey; Kerry Bennett; Maxi Spazzoli; Patrick Brill |
 | 80s | image12 | Henri Davies |
 | 80s | image68 | Mark Griffin |
 | 80s | image31 | Leigh Downing; Tanya van Agthoven |
@@ -526,7 +520,7 @@ replaces whatever the caption auto-matched for that photo.
 | 70s | image403 | Darryl Rogers |
 | 70s | image1106 | Craig Peetz; Greg Reichman; Ian Perry; Noel von Wildenrath |
 | 70s | image975 | Ian Perry; Noel von Wildenrath |
-| 70s | image356-2 | Craig Peetz; Greg Reichman; Noel von Wildenrath |
+| 70s | image356-2 | Greg Reichman; Noel von Wildenrath; Ian Perry; Craig Peetz |
 | 80s | image606 | Steven Roche; Lauren Shipton |
 | 80s | image65 | Ian Perry; Steven Roche |
 | 80s | image872 | Lauren Shipton |
@@ -576,12 +570,12 @@ replaces whatever the caption auto-matched for that photo.
 | 90s | image680-2 | Michael Hunter Smith |
 | 90s | image390 | Patrick Brill; Michael Hunter Smith |
 | 90s | image119 | Sally Fisher |
-| 90s | image42 | Michael Hunter Smith; Patrick Brill; Neil Dundas |
+| 90s | image42 | Neil Dundas; Sally Fisher; Patrick Brill; Michael Hunter Smith |
 | 90s | image721 | Michael Hunter Smith |
 | 90s | image414 | Gillian Lenton; Michael Hunter Smith |
-| 90s | image471 | Lisa Owen; Sally Fisher; Lee |
+| 90s | image471 | Lisa Owen; Karen Hollister; Sally Fisher; Leigh Scott; Glenda Halfpenny |
 | 90s | image760 | Louis de Araujo |
-| 90s | image241 | Louis de Araujo |
+| 90s | image241 | Kevin MacInnes; Michael Hunter Smith; Peter Moffat |
 | 90s | image496 | Louis de Araujo |
 | 90s | image826 | Patrick Brill; Louis de Araujo |
 | 90s | image674 | Michael Hunter Smith |
@@ -616,3 +610,10 @@ replaces whatever the caption auto-matched for that photo.
 | 2000 | image626 | Michael Hunter Smith; Seyton Machattie; Noel von Wildenrath |
 | 70s | image201-2 | Danny; Alan Whitehead |
 | 90s | image644-2 | Hilton Wolman; Melanie Wolman |
+| 2000 | image797 | Barrie Hadfield; Henri Davies |
+| 80s | image193 | Henri Davies |
+| 2000 | image540 | Patrick Brill; Henri Davies |
+| 70s | image601 | Anthony Harris; Peter Wheeler; Tony de Klerk; Aubrey Walsh; Greg Reichman |
+| 80s | image163-2 | Kerry Bennett; Liz Staniford; Cheryl Johnson |
+| 80s | image278 | Daniel Woolfe; Karl; Suzie; Peter Shanley; Gail Butler; Kerry Bennett; Henri Davies; Dudu Mkhize |
+| 2000 | image233 | Didier; Michael Hunter Smith; Steven Roche; Patrick Brill |

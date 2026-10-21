@@ -157,8 +157,9 @@ against the photo captions by `scripts/people.mjs` during `npm run build`.
   links, so caption noise (place/event names) is ignored automatically. `Aliases`
   (`;`-separated) merge spelling variants/nicknames into one person. `Primary` marks a
   **deliberate** default person for a shared first name — used **sparingly** (currently
-  only the two central figures **Steven Roche** and **Patrick Brill**, whom a lone
-  "Steven"/"Patrick" always means); leave it blank for everyone else so bare mentions
+  the two central figures **Steven Roche** and **Patrick Brill**, plus **Lauren Shipton**:
+  a lone "Lauren" means her, and Lauren Estagaribia is linked only when named in full);
+  leave it blank for everyone else so bare mentions
   resolve by evidence, not a guess (see matching below). An override row gives the
   definitive people for one photo (replaces auto-matching). **The importer never rewrites
   this file**, so corrections survive a re-import.
@@ -212,10 +213,12 @@ surname re-added when ambiguous - so matching is a pipeline, not a lookup:
    roster → ignored by the allow-list, tallied in the report).
 3. **Overrides win:** a photo with an override row skips steps 1-2 and uses the listed
    people verbatim (names resolved via the roster/aliases).
-4. **Resolve the ambiguous ones by evidence** (pass 2): score each candidate by how often
+4. **Resolve the ambiguous ones by evidence** (pass 2): first, a **repeat mention** - if
+   exactly one candidate is already named in full in the same caption ("Lauren modelling
+   ... Lauren Shipton", "Steven as Margot") the bare name is that person; otherwise score each candidate by how often
    it **co-occurs with the photo's confidently-resolved people, weighted to the same
    section/decade** (3× same-section, 1× global); pick the top score; else the deliberate
-   `Primary` (kept only for Steven Roche / Patrick Brill); else **leave it unresolved**
+   `Primary` (Steven Roche / Patrick Brill / Lauren Shipton); else **leave it unresolved**
    (do not guess). Confident attributions (full names, unique firsts, overrides) are the
    only training signal - so **overrides both fix a photo and teach the resolver**.
 5. **Report** (`scripts/people-report.md`): co-occurrence resolutions (spot-check

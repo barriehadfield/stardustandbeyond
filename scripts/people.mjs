@@ -311,6 +311,9 @@ export function computePeople({ GALLERIES, SECTIONS, LEAD, roster, overrides }) 
   const priByFirst = {}, cooByFirst = {}, unresByFirst = {};
   for (const p of photos) {
     for (const amb of p.ambiguous) {
+      // a repeat mention: "Lauren modelling ... Lauren Shipton" - the bare name is
+      // the candidate already named in full here, not someone they co-occur with
+      if (amb.candidates.filter((c) => p.confident.has(c)).length === 1) continue;
       const coPresent = [...p.confident];
       let best = null, bestScore = 0, tie = [];
       for (const cand of amb.candidates) {

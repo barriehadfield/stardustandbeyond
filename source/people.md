@@ -31,13 +31,13 @@ replaces whatever the caption auto-matched for that photo.
 
 | Name | Aliases | Primary |
 |------|---------|---------|
-| Steven Roche | Margot | yes |
+| Steven Roche | Margot; Steven Rooche | yes |
 | Steven Kent |  |  |
 | Adi Coetzee | Aydee; Adee; Adi |  |
 | Henri Davies | Henry Davies; Henry; Henr Davies |  |
 | Patrick Brill | Patrick Brilland | yes |
 | Michael Crouch |  |  |
-| Michael Hunter Smith | Michael Hunter |  |
+| Michael Hunter Smith | Michael Hunter; Michael Hunter Smiith |  |
 | Mark Griffin |  |  |
 | Mark Lowe |  |  |
 | Mark Davis |  |  |
@@ -61,7 +61,7 @@ replaces whatever the caption auto-matched for that photo.
 | Peter Amsden |  |  |
 | Kevin Rogers |  |  |
 | Kevin Botha |  |  |
-| Kevin MacInnes | Kevin McInnes; Kevin Mac; Kevin Mc |  |
+| Kevin MacInnes | Kevin McInnes; Kevin Mac; Kevin Mc; Kevin Mac Innes; Kevin Mc Innes |  |
 | Neil Starr |  |  |
 | Neil Dundas |  |  |
 | Neil Farrelly |  |  |
@@ -70,7 +70,7 @@ replaces whatever the caption auto-matched for that photo.
 | Cindy West |  |  |
 | Kerry Bennett |  |  |
 | Jackie Bryant |  |  |
-| Trevor Norris | Treva Norris; Treva |  |
+| Trevor Norris | Treva Norris; Treva | yes |
 | Trevor Dykeman | Trevor Dykman |  |
 | Karen Ward |  |  |
 | David Goudge |  |  |
@@ -149,7 +149,7 @@ replaces whatever the caption auto-matched for that photo.
 | Glenda Holmes |  |  |
 | Herb Klein |  |  |
 | Stephane |  |  |
-| Francois |  |  |
+| Francois Fowler | Francois |  |
 | James Moffat | James Moffatt |  |
 | Chloe Rolfes |  |  |
 | Guy Woods |  |  |
@@ -189,7 +189,7 @@ replaces whatever the caption auto-matched for that photo.
 | Phillip Schaffer |  |  |
 | Andries Botha |  |  |
 | Derek Lavarack | Derek Lavarak |  |
-| Anina Cummings |  |  |
+| Anina Cummings | Anina Cumming |  |
 | Boyd Ferguson |  |  |
 | Carl Isaacs |  |  |
 | Carmen Laurier |  |  |
@@ -212,8 +212,8 @@ replaces whatever the caption auto-matched for that photo.
 | Anthony Kenney |  |  |
 | Tony |  |  |
 | Rocky Farren |  |  |
-| Louis de Araujo | Louis |  |
-| Michael van Rensburg |  |  |
+| Louis de Araujo | Louis; Janet Marchpane |  |
+| Michael van Rensburg | Micaheal van Rensburg | yes |
 | Steve Lawrence | Steven Lawrence; Steven Lawrences |  |
 | Chi Chi La Rue | Chi Chi |  |
 | Mark Dingley |  |  |
@@ -225,7 +225,7 @@ replaces whatever the caption auto-matched for that photo.
 | Marcus |  |  |
 | Sandra Scott |  |  |
 | Elsa Pretorius |  |  |
-| Eddie Da Lima | Eddy de Lima |  |
+| Eddie Da Lima | Eddy de Lima; Eddie de Lima |  |
 | Bruce Patterson |  |  |
 | Jenny Jarvis |  |  |
 | Jackie Woolf | Jackie Woolfe |  |
@@ -236,7 +236,7 @@ replaces whatever the caption auto-matched for that photo.
 | Kim Prue | Kim Pru; Kim |  |
 | Patrick Talmadge | Doris |  |
 | Michael McCann | Michael Mc Cann; Mike McCann |  |
-| Colin McGree | Colin Mc Gree |  |
+| Colin McGree | Colin Mc Gree; Colin MacGree |  |
 | Jamie & Alfie | Jamie; Alfie |  |
 | Greg Reichman |  |  |
 | Peter Cole |  |  |
@@ -306,7 +306,7 @@ replaces whatever the caption auto-matched for that photo.
 | Shaun |  |  |
 | Johann |  |  |
 | Ricky |  |  |
-| Albie |  |  |
+| Albie van Loggenberg | Albie |  |
 | Miguel |  |  |
 | Simone |  |  |
 | Lindi |  |  |
@@ -359,13 +359,38 @@ replaces whatever the caption auto-matched for that photo.
 | Andy Machlup |  |  |
 | Melanie Wolman |  |  |
 | Hilton Wolman |  |  |
-| John Ottard |  |  |
+| John Ottard | John Autard |  |
 | Wayne Jones |  |  |
 | Kevin Wilson |  |  |
 | Warwick |  |  |
 | Colin Hawyes | Drussilla Hawyes |  |
-| Victor Lilyfeld |  |  |
+| Victor Lilyfeld | Victor Lilliveld |  |
 | Andrea Stelzer |  |  |
+| Gavin Julius |  |  |
+| James Davis | Elaine Lancaster |  |
+| Sue Dark |  |  |
+| Megan de Beyer |  |  |
+| Cristina Cruz |  |  |
+| Eric van Soelen |  |  |
+| Cheryl Gallinsky |  |  |
+| Karen Benson |  |  |
+| Karen McCarthy | Karen Mc Carthy |  |
+| David McCullum |  |  |
+| Arthur Mendonca |  |  |
+| Gail Kaplan |  |  |
+| Andrew Harris |  |  |
+| Graham McDonald |  |  |
+| Lawrence Atkinson |  |  |
+| Gary Wallace |  |  |
+| Jean Claude |  |  |
+| Phillip Lee |  |  |
+| Paul Milton |  |  |
+| Dale Foley |  |  |
+| Gordon Petzer |  |  |
+| Conrad Heyns |  |  |
+| Guadi de Araujo |  |  |
+| Barry Merkeley |  |  |
+| Jamie Davies |  |  |
 
 ## Overrides
 

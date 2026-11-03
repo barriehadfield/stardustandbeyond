@@ -64,7 +64,11 @@ export function mentions(caption) {
       const w = words[i];
       if (isCapWord(w)) { const c = cleanWord(w); if (c) run.push(c); continue; }
       const lw = w.toLowerCase().replace(/[^a-z]/g, "");
-      if (run.length && PARTICLES.has(lw) && words[i + 1] && isCapWord(words[i + 1])) { run.push(lw); continue; }
+      if (run.length && PARTICLES.has(lw)) {          // a chain of particles ("van der") before a surname
+        let j = i;
+        while (j < words.length && PARTICLES.has(words[j].toLowerCase().replace(/[^a-z]/g, ""))) j++;
+        if (j > i && words[j] && isCapWord(words[j])) { run.push(lw); continue; }
+      }
       break;
     }
     // drop leading stopwords (Miss / SA / South Africa ...)
@@ -201,7 +205,7 @@ function buildLookups(roster) {
 function resolveMention(run, L) {
   const { exact, firstToSlugs, primaryByFirst } = L;
   // longest-first exact match (multi-word alias / full name / nickname)
-  for (let n = Math.min(run.length, 3); n >= 1; n--) {
+  for (let n = Math.min(run.length, 4); n >= 1; n--) {   // 4 covers "Andrew van der Merwe"
     const key = run.slice(0, n).join(" ").toLowerCase();
     if (exact.has(key)) return { slug: exact.get(key) };
   }

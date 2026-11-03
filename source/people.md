@@ -391,6 +391,13 @@ replaces whatever the caption auto-matched for that photo.
 | Guadi de Araujo |  |  |
 | Barry Merkeley |  |  |
 | Jamie Davies |  |  |
+| Acca Brill |  |  |
+| Ken Blackie |  |  |
+| Neil Stowe |  |  |
+| George Ktistakis |  |  |
+| Andre Calius |  |  |
+| Sang Fung |  |  |
+| Andrew van der Merwe |  |  |
 
 ## Overrides
 
@@ -643,3 +650,5 @@ replaces whatever the caption auto-matched for that photo.
 | 80s | image163-2 | Kerry Bennett; Liz Staniford; Cheryl Johnson |
 | 80s | image278 | Daniel Woolfe; Karl; Suzie; Peter Shanley; Gail Butler; Kerry Bennett; Henri Davies; Dudu Mkhize |
 | 2000 | image233 | Didier; Michael Hunter Smith; Steven Roche; Patrick Brill |
+| 90s | image773-2 | Karen Hollister; Mark Dingley |
+| 70s | image636-2 | Acca Brill; Ken Blackie; Priscilla Blackie; Penny Brill |

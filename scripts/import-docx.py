@@ -127,13 +127,16 @@ def main():
     # remembers names for photos that were absent from an intermediate export.
     manifest_path = os.path.join(ROOT, "source", "image-names.json")
     manifest = json.load(open(manifest_path, encoding="utf-8")) if os.path.exists(manifest_path) else {}
-    hash2base = {}
+    hash2base, in_place = {}, set()            # in_place: (section, hash, base) already on disk
     for p in glob.glob(os.path.join(ROOT, "source", "images", "*", "*")):
         if os.path.isfile(p):
-            hash2base.setdefault(sha1_file(p), os.path.splitext(os.path.basename(p))[0])
+            hp, bp = sha1_file(p), os.path.splitext(os.path.basename(p))[0]
+            hash2base.setdefault(hp, bp)
+            in_place.add((os.path.basename(os.path.dirname(p)), hp, bp))
     hash2base.update(manifest)
 
     buckets = {s: [] for _, s in SECTIONS}
+    raw = []                                   # (sec, item, stable?) in document order
     seen_ms, dups, reused = set(), [], 0
     for m in re.finditer(r'<wp:docPr\b([^>]*)/>.*?<a:blip r:embed="([^"]+)"', xml, re.S):
         attrs, rid = m.group(1), m.group(2)
@@ -149,17 +152,36 @@ def main():
             continue
         seen_ms.add((sec, media))
         h = sha1_file(os.path.join(word, "media", media))
-        if h in hash2base:                     # same bytes as an existing photo -> keep its name
+        stable = h in hash2base
+        if stable:                             # same bytes as an existing photo -> keep its name
             base = hash2base[h]
             reused += 1
         else:
             base = os.path.splitext(name.group(1))[0] if name else os.path.splitext(media)[0]
         ext = os.path.splitext(media)[1].lower()
-        existing = {b["base"] for b in buckets[sec]}
-        ob, k = base, 2
-        while ob in existing:
-            ob, k = f"{base}-{k}", k + 1
-        buckets[sec].append({"base": ob, "ext": ext, "cap": cap, "media": media, "hash": h})
+        raw.append((sec, {"base": base, "ext": ext, "cap": cap, "media": media, "hash": h}, stable))
+
+    # Assign final names in priority order, so an existing photo is never bumped to
+    # "-2" (which would orphan its overrides): (0) photos already in this tab under
+    # this name, (1) photos moved in from another tab, (2) genuinely-new photos,
+    # which also avoid any name the manifest already records, anywhere.
+    known = set(hash2base.values())
+    taken = {s: set() for _, s in SECTIONS}
+    def rank(sec, it, stable):
+        if not stable:
+            return 2
+        return 0 if (sec, it["hash"], it["base"]) in in_place else 1
+    for tier in (0, 1, 2):
+        for sec, it, stable in raw:
+            if rank(sec, it, stable) != tier:
+                continue
+            ob, k = it["base"], 2
+            while ob in taken[sec] or (tier == 2 and ob in known):
+                ob, k = f"{it['base']}-{k}", k + 1
+            it["base"] = ob
+            taken[sec].add(ob)
+    for sec, it, _ in raw:
+        buckets[sec].append(it)
 
     stardust = buckets["the-stardust"]
     lead = next((it for it in stardust if not it["cap"]), stardust[0] if stardust else None)

@@ -35,7 +35,7 @@ replaces whatever the caption auto-matched for that photo.
 | Steven Kent |  |  |
 | Adi Coetzee | Aydee; Adee; Adi |  |
 | Henri Davies | Henry Davies; Henry; Henr Davies |  |
-| Patrick Brill | Patrick Brilland | yes |
+| Patrick Brill | Patrick Brilland; Patrick Briall | yes |
 | Michael Crouch |  |  |
 | Michael Hunter Smith | Michael Hunter; Michael Hunter Smiith |  |
 | Mark Griffin |  |  |
@@ -45,7 +45,7 @@ replaces whatever the caption auto-matched for that photo.
 | Sally Fisher | Sally Fiisher |  |
 | Sally Chance |  |  |
 | Lauren Shipton |  | yes |
-| Lauren Estagaribia | Lauren Estagarribia |  |
+| Lauren Estagaribia | Lauren Estagarribia; Laure Estagarribia |  |
 | Rene Kent |  |  |
 | Gillian Lenton |  |  |
 | Seyton Machattie | Seaton |  |
@@ -221,7 +221,7 @@ replaces whatever the caption auto-matched for that photo.
 | Neville Ward |  |  |
 | Glenda Halfpenny |  |  |
 | Debbie Reynolds |  |  |
-| Carrie |  |  |
+| Carrie Carr | Carrie |  |
 | Marcus |  |  |
 | Sandra Scott |  |  |
 | Elsa Pretorius |  |  |
@@ -266,7 +266,7 @@ replaces whatever the caption auto-matched for that photo.
 | Aubrey Walsh |  |  |
 | Butch Loggenberg |  |  |
 | Blane Mackintosh |  |  |
-| Peet Coetzee |  |  |
+| Peet Coetzee | Peet Coetze |  |
 | Dudu Mkhize |  |  |
 | Brian Hirst |  |  |
 | Dudley Manicom |  |  |
@@ -351,6 +351,7 @@ replaces whatever the caption auto-matched for that photo.
 | Louella McKuen |  |  |
 | Marjorie Chase |  |  |
 | Michael Louis |  |  |
+| Michael Robinson |  |  |
 | Karen Pickard |  |  |
 | Cheryl Schmidt |  |  |
 | Deborah Good |  |  |
@@ -364,7 +365,7 @@ replaces whatever the caption auto-matched for that photo.
 | Kevin Wilson |  |  |
 | Warwick |  |  |
 | Colin Hawyes | Drussilla Hawyes |  |
-| Victor Lilyfeld | Victor Lilliveld |  |
+| Victor Lilyfeld | Victor Lilliveld; Victor Lillyveld |  |
 | Andrea Stelzer |  |  |
 | James Davis | Elaine Lancaster |  |
 | Sue Dark |  |  |
@@ -397,6 +398,39 @@ replaces whatever the caption auto-matched for that photo.
 | Andre Calius |  |  |
 | Sang Fung |  |  |
 | Andrew van der Merwe |  |  |
+| Michael Hillier |  |  |
+| Howard Sachs |  |  |
+| Melissa Joffe |  |  |
+| Clive Rundle |  |  |
+| Mervyn Tyrer |  |  |
+| Greg Bailey |  |  |
+| Peter Taylor |  |  |
+| Andre Buitendach |  |  |
+| Gavin Grey |  |  |
+| Chris Herbst |  |  |
+| Greg Potter |  |  |
+| Michael Potter |  |  |
+| Lauren Grazia |  |  |
+| John Bell |  |  |
+| Francois Coetzee |  |  |
+| Gillian Burns |  |  |
+| Richard Rainey |  |  |
+| Andrew Wilson |  |  |
+| Craig Fraser |  |  |
+| Andre Norden |  |  |
+| Charles Marinier |  |  |
+| Anton Kluesner |  |  |
+| Ari Nitzan |  |  |
+| Jimmy Hodnett |  |  |
+| Toni Lowry |  |  |
+| Kendal Jordi |  |  |
+| Lance Berman |  |  |
+| Rico Rodrigues |  |  |
+| Werner Slade |  |  |
+| Reg Strauss |  |  |
+| Scott Showen |  |  |
+| Luis Ferreira da Silva | Luis Ferierra da Silva |  |
+| Pedro Struwig | Pedro Struweg |  |
 
 ## Overrides
 
@@ -651,3 +685,18 @@ replaces whatever the caption auto-matched for that photo.
 | 2000 | image233 | Didier; Michael Hunter Smith; Steven Roche; Patrick Brill |
 | 90s | image773-2 | Karen Hollister; Mark Dingley |
 | 70s | image636-2 | Acca Brill; Ken Blackie; Priscilla Blackie; Penny Brill |
+| the-stardust | image130 | Darryl Rogers; Gillian Lenton |
+| the-boudoir | image592 | Gillian Lenton |
+| the-boudoir | image328 | Gillian Lenton |
+| the-boudoir | image623 | Henri Davies; Illana Woolf; Gavin Woolf |
+| 80s | image146 | Mark Griffin; Rene Kent; Gillian Lenton |
+| 80s | image484 | Gillian Lenton |
+| 80s | image751 | Gillian Lenton |
+| 80s | image635 | Lee Fine; Gillian Lenton; Ian Perry |
+| 90s | image644 | Ian Perry; Gillian Lenton |
+| 90s | image602 | Lisa Owen; Gillian Lenton |
+| 90s | image138 | Neil Dundas; Gillian Lenton |
+| 90s | image818 | Lisa Owen; Karen; Gillian Lenton |
+| 90s | image745 | Neil Starr; Spencer Pillay; Gillian Lenton |
+| 90s | image82 | Gavin Woolf; Jackie Woolf |
+| 90s | image220 | June Schmarmen; Gillian Lenton |

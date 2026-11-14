@@ -31,6 +31,7 @@ const STOPWORDS = new Set([
   "miss", "mr", "mrs", "ms", "mister", "sir", "dr", "dj",
   "south", "africa", "african", "natal", "sunshine", "stardust", "boudoir",
   "world", "universe", "gay", "sa", "rsa", "queen", "king",
+  "london", "durban",
 ]);
 
 // Split on list connectors AND sentence punctuation (. ; :) - captions often put

@@ -359,14 +359,13 @@ replaces whatever the caption auto-matched for that photo.
 | Andy Machlup |  |  |
 | Melanie Wolman |  |  |
 | Hilton Wolman |  |  |
-| John Ottard | John Autard |  |
+| John Autard | John Ottard |  |
 | Wayne Jones |  |  |
 | Kevin Wilson |  |  |
 | Warwick |  |  |
 | Colin Hawyes | Drussilla Hawyes |  |
 | Victor Lilyfeld | Victor Lilliveld |  |
 | Andrea Stelzer |  |  |
-| Gavin Julius |  |  |
 | James Davis | Elaine Lancaster |  |
 | Sue Dark |  |  |
 | Megan de Beyer |  |  |

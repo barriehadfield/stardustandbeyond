@@ -14,9 +14,14 @@ It copies each image into source/images/<slug>/ and regenerates
 scripts/site-data.mjs. STARDUST_TEXT / BOUDOIR_TEXT narrative blocks are
 preserved from the existing site-data.mjs (they are hand-written, not in the doc).
 
+The doc may be split across several .docx files (one per tab, e.g. "1 Stardust -
+The Stardust.docx" .. "7 Stardust - 2000s.docx" - Google can't export the whole
+archive as one file any more). Pass them all; each file's own headings say which
+tab(s) it holds, and they are read in the order given as if one document.
+
 Usage:
-  python3 scripts/import-docx.py "source/Stardust and Beyond.docx"          # dry-run report
-  python3 scripts/import-docx.py "source/Stardust and Beyond.docx" --apply  # write changes
+  python3 scripts/import-docx.py source/[0-9]*.docx          # dry-run report
+  python3 scripts/import-docx.py source/[0-9]*.docx --apply  # write changes
 
 After --apply:  npm run optimize  &&  npm run build
 """
@@ -58,6 +63,10 @@ BLURB = {
 # inconsistently). Whole-word, case-sensitive.
 NAME_FIXES = {"Aydee": "Adi", "Adee": "Adi"}
 
+# People who asked not to appear on the site: any photo whose caption names them
+# is left out on every import, even if it is still in the doc. Case-insensitive.
+EXCLUDE_NAMES = ["Gavin Julius"]
+
 
 def clean(t):
     t = html.unescape(t).replace("\xa0", " ")
@@ -72,36 +81,49 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     apply = "--apply" in sys.argv
     if not args:
-        sys.exit("usage: import-docx.py <file.docx> [--apply]")
-    docx = args[0] if os.path.isabs(args[0]) else os.path.join(ROOT, args[0])
-    if not os.path.isfile(docx):
-        sys.exit(f"not found: {docx}")
+        sys.exit("usage: import-docx.py <file.docx> [<file.docx> ...] [--apply]")
+    docxs = [a if os.path.isabs(a) else os.path.join(ROOT, a) for a in args]
+    for d in docxs:
+        if not os.path.isfile(d):
+            sys.exit(f"not found: {d}")
 
     tmp = tempfile.mkdtemp(prefix="stardust-docx-")
-    with zipfile.ZipFile(docx) as z:
-        z.extractall(tmp)
-    word = os.path.join(tmp, "word")
-    xml = open(os.path.join(word, "document.xml"), encoding="utf-8").read()
-    rels = open(os.path.join(word, "_rels", "document.xml.rels"), encoding="utf-8").read()
-    rid2media = {m.group(1): m.group(2) for m in
-                 re.finditer(r'<Relationship Id="([^"]+)"[^>]*Target="media/([^"]+)"', rels)}
+    docs, sec_file = [], {}                    # docs: (docx, word dir, xml, rid2media, heads)
+    for i, docx in enumerate(docxs):
+        out = os.path.join(tmp, str(i))
+        with zipfile.ZipFile(docx) as z:
+            z.extractall(out)
+        word = os.path.join(out, "word")
+        xml = open(os.path.join(word, "document.xml"), encoding="utf-8").read()
+        rels = open(os.path.join(word, "_rels", "document.xml.rels"), encoding="utf-8").read()
+        rid2media = {m.group(1): m.group(2) for m in
+                     re.finditer(r'<Relationship Id="([^"]+)"[^>]*Target="media/([^"]+)"', rels)}
 
-    # Section boundaries: a <w:t> run whose text is exactly a section name. We match
-    # on the title TEXT alone (not font size) - Google's exports change the heading
-    # size between versions (was sz=52, later sz=36/40), but the distinctive titles
-    # ("The Stardust", "The Boudoir", "70's".."2000's", "Steven") only ever appear as
-    # their own run at a heading, never mid-prose. First occurrence per section wins.
-    heads, seen_h = [], set()
-    for m in re.finditer(r'<w:t[^>]*>([^<]*)</w:t>', xml):
-        key = norm_head(html.unescape(m.group(1)))
-        if key in NORM2SLUG and key not in seen_h:
-            seen_h.add(key)
-            heads.append((m.start(), NORM2SLUG[key]))   # store slug directly
-    heads.sort()
-    if len(heads) != len(SECTIONS):
-        print(f"WARNING: found {len(heads)} of {len(SECTIONS)} section headings: {[s for _, s in heads]}")
+        # Section boundaries: a <w:t> run whose text is exactly a section name. We match
+        # on the title TEXT alone (not font size) - Google's exports change the heading
+        # size between versions (was sz=52, later sz=36/40), but the distinctive titles
+        # ("The Stardust", "The Boudoir", "70's".."2000's", "Steven") only ever appear as
+        # their own run at a heading, never mid-prose. First occurrence per section wins.
+        heads, seen_h = [], set()
+        for m in re.finditer(r'<w:t[^>]*>([^<]*)</w:t>', xml):
+            key = norm_head(html.unescape(m.group(1)))
+            if key in NORM2SLUG and key not in seen_h:
+                seen_h.add(key)
+                heads.append((m.start(), NORM2SLUG[key]))   # store slug directly
+        heads.sort()
+        for _, slug in heads:
+            if slug in sec_file:
+                print(f"WARNING: tab {slug} is in both {os.path.basename(sec_file[slug])} "
+                      f"and {os.path.basename(docx)} - the later one is ignored")
+            else:
+                sec_file[slug] = docx
+        heads = [(p, s) for p, s in heads if sec_file[s] == docx]
+        docs.append((docx, word, xml, rid2media, heads))
+    if len(sec_file) != len(SECTIONS):
+        missing = [s for _, s in SECTIONS if s not in sec_file]
+        print(f"WARNING: found {len(sec_file)} of {len(SECTIONS)} section headings; missing: {missing}")
 
-    def section_at(pos):
+    def section_at(heads, pos):
         cur = None
         for bpos, slug in heads:
             if bpos <= pos:
@@ -137,21 +159,26 @@ def main():
 
     buckets = {s: [] for _, s in SECTIONS}
     raw = []                                   # (sec, item, stable?) in document order
-    seen_ms, dups, reused = set(), [], 0
-    for m in re.finditer(r'<wp:docPr\b([^>]*)/>.*?<a:blip r:embed="([^"]+)"', xml, re.S):
+    seen_ms, dups, reused, excluded = set(), [], 0, []
+    for docx, word, xml, rid2media, heads in docs:
+      for m in re.finditer(r'<wp:docPr\b([^>]*)/>.*?<a:blip r:embed="([^"]+)"', xml, re.S):
         attrs, rid = m.group(1), m.group(2)
         media = rid2media.get(rid)
-        sec = section_at(m.start())
+        sec = section_at(heads, m.start())
         if not media or not sec:
             continue
         descr = re.search(r'descr="([^"]*)"', attrs)
         name = re.search(r'name="([^"]*)"', attrs)
         cap = clean(descr.group(1)) if descr else ""
-        if (sec, media) in seen_ms:           # dedupe within the same tab only
+        if any(re.search(rf"\b{re.escape(n)}\b", cap, re.I) for n in EXCLUDE_NAMES):
+            excluded.append((sec, cap))
+            continue
+        src = os.path.join(word, "media", media)
+        if (sec, src) in seen_ms:             # dedupe within the same tab only
             dups.append((sec, media, cap))
             continue
-        seen_ms.add((sec, media))
-        h = sha1_file(os.path.join(word, "media", media))
+        seen_ms.add((sec, src))
+        h = sha1_file(src)
         stable = h in hash2base
         if stable:                             # same bytes as an existing photo -> keep its name
             base = hash2base[h]
@@ -159,7 +186,7 @@ def main():
         else:
             base = os.path.splitext(name.group(1))[0] if name else os.path.splitext(media)[0]
         ext = os.path.splitext(media)[1].lower()
-        raw.append((sec, {"base": base, "ext": ext, "cap": cap, "media": media, "hash": h}, stable))
+        raw.append((sec, {"base": base, "ext": ext, "cap": cap, "media": media, "src": src, "hash": h}, stable))
 
     # Assign final names in priority order, so an existing photo is never bumped to
     # "-2" (which would orphan its overrides): (0) photos already in this tab under
@@ -187,8 +214,8 @@ def main():
     lead = next((it for it in stardust if not it["cap"]), stardust[0] if stardust else None)
 
     # ---- report ----
-    print(f"docx: {docx}")
-    print(f"media in doc: {len(rid2media)}   tabs: {[s for _, s in heads]}")
+    for docx, _, _, rid2media, heads in docs:
+        print(f"docx: {os.path.basename(docx)}   media: {len(rid2media)}   tabs: {[s for _, s in heads]}")
     print(f"lead: {lead['base']}{lead['ext']} (media {lead['media']})")
     total = 0
     for name, slug in SECTIONS:
@@ -199,6 +226,8 @@ def main():
         print(f"  {slug:14} {len(items):3} imgs, {capped:3} captioned{note}")
     print(f"TOTAL placed: {total}   same-tab duplicates skipped: {len(dups)}")
     print(f"content-stable names reused from existing images: {reused}")
+    for sec, cap in excluded:
+        print(f"excluded (EXCLUDE_NAMES): {sec}: {cap}")
 
     if not apply:
         print("\nDRY RUN. Re-run with --apply to copy images and write site-data.mjs.")
@@ -215,7 +244,7 @@ def main():
     copied = 0
     for _, slug in SECTIONS:
         for it in buckets[slug]:
-            shutil.copy2(os.path.join(word, "media", it["media"]),
+            shutil.copy2(it["src"],
                          os.path.join(ROOT, "source", "images", slug, it["base"] + it["ext"]))
             copied += 1
     print(f"copied {copied} images into source/images/")

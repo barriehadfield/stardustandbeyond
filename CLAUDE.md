@@ -27,13 +27,24 @@ genuinely new photos get new names. It copies each embedded image into
 `BOUDOIR_TEXT` intros). The raw `.docx` (and any earlier HTML export folder) are
 **gitignored** (large, redundant with `source/images/`).
 
-**Re-import after the doc changes:** download it as `.docx` into `source/`, then
+**The doc is split into one Google Doc per tab** (`1 Stardust - The Stardust` ..
+`7 Stardust - 2000s`): the single doc grew past ~500 MB and Google could no longer
+export it. The split was made by "Make a copy" + trimming (not copy-paste, which can
+re-encode images and break filename stability). Each doc keeps its section heading
+text exactly; the importer reads all files in order as one document and warns if a
+tab is missing or duplicated.
+
+**Re-import after the doc changes:** download each as `.docx` into `source/`, then
 
 ```bash
-python3 scripts/import-docx.py "source/Stardust and Beyond.docx"          # dry-run: prints per-tab counts
-python3 scripts/import-docx.py "source/Stardust and Beyond.docx" --apply  # rewrites source/images + site-data.mjs
+python3 scripts/import-docx.py source/[0-9]*.docx          # dry-run: prints per-tab counts
+python3 scripts/import-docx.py source/[0-9]*.docx --apply  # rewrites source/images + site-data.mjs
 npm run optimize && npm run build
 ```
+
+**`EXCLUDE_NAMES`** (top of `import-docx.py`) lists people who asked not to appear:
+any photo whose caption names them is skipped on every import, even if still in the
+doc. Remove them from the `source/people.md` roster too.
 
 ## Filename stability (why this matters for re-imports)
 

@@ -144,8 +144,11 @@ var rt;
 window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { if (CURRENT) layoutConstellation(CURRENT); }, 150); });
 
 var slug = new URLSearchParams(location.search).get("p") || "";
-fetch("public/people.json")
-  .then(function (r) { return r.json(); })
+function load(opts) { return fetch("public/people.json", opts).then(function (r) { return r.json(); }); }
+// Pages lets browsers cache people.json for 10 minutes, so right after a deploy a
+// newly added person can be missing from the cached copy: refetch once, uncached.
+load()
+  .then(function (data) { return data.people[slug] ? data : load({ cache: "no-cache" }).catch(function () { return data; }); })
   .then(function (data) { DATA = data; render(slug); })
   .catch(function () {
     document.querySelector("main").innerHTML =

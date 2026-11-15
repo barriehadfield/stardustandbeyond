@@ -67,6 +67,38 @@ NAME_FIXES = {"Aydee": "Adi", "Adee": "Adi"}
 # is left out on every import, even if it is still in the doc. Case-insensitive.
 EXCLUDE_NAMES = ["Gavin Julius"]
 
+# People who asked not to be NAMED (the standard treatment): their photos stay,
+# but the name is cut out of every caption (list punctuation tidied), so they get
+# no person page and no search hit. UNNAMED is matched anywhere as a full name;
+# UNNAMED_PHOTOS covers captions that use only a shared first name, keyed by
+# "<section>/<file>" (stable across re-imports via image-names.json).
+UNNAMED = ["Tom Lewis"]
+UNNAMED_PHOTOS = {                  # Tom Lewis, captioned as just "Tom"
+    "80s/image112": ["Tom"],
+    "80s/image265": ["Tom"],
+    "80s/image715": ["Tom"],
+}
+
+
+def unname(cap, names):
+    """Remove each name from a caption's list of people, keeping the list readable:
+    "A, Tom, B" -> "A, B", "A and Tom" -> "A", "A, B and Tom. Place" -> "A and B. Place"."""
+    def drop_last(m):                  # "A, B and Tom." -> "A and B." (the list keeps its "and")
+        head = m.group(1)
+        seg = re.split(r"[.;]\s*", head)[-1]
+        if ", " in seg and " and " not in seg and "&" not in seg:
+            i = head.rindex(", ")
+            head = head[:i] + " and " + head[i + 2:]
+        return head
+    for n in names:
+        n = re.escape(n) + r"\b(?! +[A-Z])"          # not the first word of a longer name
+        cap = re.sub(rf"\s*,\s*\b{n}(?=\s*(?:,|\band\b|&))", "", cap)   # "A, Tom, B" / "A, Tom and B"
+        cap = re.sub(rf"(.*?)\s+(?:and|&)\s+\b{n}(?=\s*(?:[.;]|$))", drop_last, cap)   # "A, B and Tom."
+        cap = re.sub(rf"\s+(?:and|&)\s+\b{n}", "", cap)                  # "A and Tom, London"
+        cap = re.sub(rf"^\s*\b{n}\s*(?:,|\band\b|&)\s*", "", cap)      # "Tom, A" / "Tom and A"
+        cap = re.sub(rf"\b{n}", "", cap)
+    return re.sub(r"\s{2,}", " ", cap).strip(" ,&")
+
 
 def clean(t):
     t = html.unescape(t).replace("\xa0", " ")
@@ -213,6 +245,18 @@ def main():
     stardust = buckets["the-stardust"]
     lead = next((it for it in stardust if not it["cap"]), stardust[0] if stardust else None)
 
+    # Un-name people who asked not to be named (after LEAD, so an emptied caption
+    # can't become the club lead).
+    unnamed, unused = [], set(UNNAMED_PHOTOS)
+    for sec, items in buckets.items():
+        for it in items:
+            key = f"{sec}/{it['base']}"
+            unused.discard(key)
+            cap = unname(it["cap"], UNNAMED + UNNAMED_PHOTOS.get(key, []))
+            if cap != it["cap"]:
+                unnamed.append((key, it["cap"], cap))
+                it["cap"] = cap
+
     # ---- report ----
     for docx, _, _, rid2media, heads in docs:
         print(f"docx: {os.path.basename(docx)}   media: {len(rid2media)}   tabs: {[s for _, s in heads]}")
@@ -228,6 +272,10 @@ def main():
     print(f"content-stable names reused from existing images: {reused}")
     for sec, cap in excluded:
         print(f"excluded (EXCLUDE_NAMES): {sec}: {cap}")
+    for key, old, new in unnamed:
+        print(f"un-named (UNNAMED): {key}: {old!r} -> {new!r}")
+    for key in sorted(unused):
+        print(f"WARNING: UNNAMED_PHOTOS entry {key} matches no photo")
 
     if not apply:
         print("\nDRY RUN. Re-run with --apply to copy images and write site-data.mjs.")

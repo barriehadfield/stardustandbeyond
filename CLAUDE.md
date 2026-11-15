@@ -42,9 +42,15 @@ python3 scripts/import-docx.py source/[0-9]*.docx --apply  # rewrites source/ima
 npm run optimize && npm run build
 ```
 
-**`EXCLUDE_NAMES`** (top of `import-docx.py`) lists people who asked not to appear:
-any photo whose caption names them is skipped on every import, even if still in the
-doc. Remove them from the `source/people.md` roster too.
+**People who ask not to be on the site** are handled in `import-docx.py`, applied on
+every import (so it holds even if the doc still names them):
+- **Standard treatment - un-name, keep the photos:** add the full name to `UNNAMED`;
+  it is cut out of every caption with the list tidied ("A, B and Tom" -> "A and B"),
+  so the person gets no page and no search hit. Captions that use only a shared first
+  name ("Tom") go in `UNNAMED_PHOTOS` as `"<section>/<file>": ["Tom"]`. Keep them out
+  of the `source/people.md` roster. The dry-run prints every caption it changed.
+- **Remove the photos entirely** (only when asked): `EXCLUDE_NAMES` skips any photo
+  whose caption names them.
 
 ## Filename stability (why this matters for re-imports)
 
